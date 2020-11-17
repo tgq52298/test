@@ -1,0 +1,154 @@
+﻿{extend name="$index_style_layout" /}
+
+<!--SEO相关-->
+{block name="head_title"}附近的商铺{/block}
+{block name="head_keword"}{$webdb.mseo_keyword?:$webdb.seo_keyword}{/block}
+{block name="head_description"}{$webdb.mseo_description?:$webdb.seo_description}{/block}
+
+{block name="body_content"}
+<link rel="stylesheet" href="__STATIC__/group/list.css">	
+<div class="MainContainer ShowContentType">
+	<div class="ShowTypes">
+		<a href="#" class="ck">附近商铺</a>
+		<a href="#" class="address" onclick='reload_map()'>...</a>
+	</div>
+	<div class="ListBox showlist">
+
+	</div>
+	<div class="ListBox"></div>
+	<div class="ListBox"></div>
+	<div class="ShowMores" onclick="showmorelist()">查看更多...</div>
+	<!--
+	<div class="addGroup">
+		<ul>
+			<ol><a href="{:murl('content/postnew')}"><i class="fa fa-plus"></i></a></ol>
+			<li>创建村庄</li>
+		</ul>
+	</div>-->
+</div>	
+
+<script type="text/javascript" src="https://api.map.baidu.com/api?v=2.0&ak=MGdbmO6pP5Eg1hiPhpYB0IVd"></script>
+<script type="text/javascript" src="http://developer.baidu.com/map/jsdemo/demo/convertor.js"></script>
+<script type="text/javascript" src="__STATIC__/js/map-gps.js"></script>
+
+<script type="text/javascript">
+
+function showmorelist(){
+	showMapPosition(map_x,map_y)
+}
+
+var page = 1;
+var j = 0;
+
+//根据当前坐标位置去数据库按位置远近排序读取
+function showMapPosition(longitude,latitude){
+	$.get("{:urls('wxapp.near/index')}?rows=5&point=" + longitude + ',' + latitude + "&page=" + page + '&' + Math.random(),function(res){
+		var d ='';
+	   if(res.code==0){
+		   if(res.data.length==0){
+			   layer.msg("已经显示完了！",{time:500});
+				$('.ShowMores').off("click");
+				$('.ShowMores').html('显示完了');
+				$('.ShowMores').css({'background':'#eee'});
+		   }else{
+				page++;
+			   res.data.forEach(function(rs){
+				   j++;
+					d +=	'<div class="list">'+
+						'<ul>'+
+							'<li class="img"><a href="'+rs.url+'"><img src="'+rs.picurl+'" onerror="this.src=\'__STATIC__/images/nopic.png\'"><span class="num'+j+'">'+j+'</span></a></li>'+
+							'<li class="info">'+
+								'<div class="title"><a href="'+rs.url+'">'+rs.title+'</a></div>'+
+								'<div class="cnt">'+rs.content+'</div>'+
+								'<div class="other">'+
+									'<em data-map="'+rs.map+'"><i class="fa fa-file-text-o"> 距离 0 米</i></em>'+
+								'</div>'+
+							'</li>'+
+							'<li class="join"><a href="'+rs.url+'">查看</a></li>'+
+						'</ul>'+
+					'</div>';
+			   });		   
+			   $(".showlist").append(d);
+			   show_distance(longitude,latitude);
+		   }			  
+	   }
+	});
+	
+	
+	//显示当前位置的街道名
+	var gpsPoint = new BMap.Point(longitude, latitude);
+	BMap.Convertor.translate(gpsPoint, 0, function(point){
+	//alert('x:'+point.lng+' y:'+point.lat);
+		var geoc = new BMap.Geocoder();
+		geoc.getLocation(point, function(rs){
+			var addComp = rs.addressComponents;
+			$('.ShowTypes .address').html('定位:'+addComp.district + addComp.street + addComp.streetNumber);
+		});
+	});
+}
+
+
+var map_x = 0;
+var map_y = 0;
+//获取当前坐标位置
+function reload_map(){
+	page = 1;
+	$(".showlist").html('');
+	var geolocation = new BMap.Geolocation();
+	geolocation.getCurrentPosition(function(result){
+		if(this.getStatus() == window.BMAP_STATUS_SUCCESS){
+		  map_x = result.point.lng;
+		  map_y = result.point.lat;
+		  showMapPosition(map_x,map_y);
+			//var geoc = new BMap.Geocoder();
+			//geoc.getLocation(result.point, function(rs){
+			//	var addComp = rs.addressComponents;
+			//	alert(addComp.district + addComp.street + addComp.streetNumber);
+			//});
+
+			//gg = GPS.bd_decrypt(result.point.lat, result.point.lng);	//百度转谷歌
+			//wgs = GPS.gcj_decrypt(gg.lat, gg.lon); //谷歌转GPS
+		    //showMapPosition(wgs.lon,wgs.lat);
+		} else {
+			alert('failed:'+this.getStatus());
+		}        
+	},{enableHighAccuracy: true})
+}
+reload_map();
+
+//计算距离当前位置的公里数
+function show_distance(map_lat,map_lon){
+	$('.showlist .list').each(function(){
+		var this_map=$(this).find('em').data('map');
+		var thismap=this_map.split(",");
+		var this_lon = thismap[0];
+		var this_lat = thismap[1];
+		var show_map_str = GPS.distance(map_lat,map_lon,this_lon,this_lat);
+		var kilometres = Math.floor(show_map_str/1000);  
+		var metres=Math.floor(show_map_str%1000);
+		var show_word='距离';
+		if(kilometres>0){
+			show_word+='<font style="color:red;">'+kilometres+'</font>公里';
+		}
+		show_word += isNaN(metres)?'未知':'<font style="color:red;">'+metres+'</font>米';
+		$(this).find('em i').html(show_word);
+	});	
+}
+
+</script>
+
+
+<script type="text/javascript">
+
+function joinGroup(id){
+	$.get("{:urls('wxapp.member/join')}?id=" + id ,function(res){
+		if(res.code==0){
+			layer.alert("加入成功！");
+		}else{
+			layer.alert("加入失败:"+res.msg);
+		}	
+	});
+}
+</script>
+
+{/block}

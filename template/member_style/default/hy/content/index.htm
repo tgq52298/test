@@ -1,0 +1,37 @@
+{extend name="$member_style_layout" /}
+
+{block name="title"}我创建的商铺{/block}
+
+{block name="content"}
+<ul class="qb_ui_page_menu">
+	<li><a href="{:urls('member/index/index')}" class="blue fa fa-fw fa-mail-reply-all" style="width:60px;">返回</a></li>
+	<li class="right"><a href="{:urls('postnew')}" class="red fa fa-fw fa-plus-square" style="width:80px;"> 创建商铺</a></li>
+</ul>
+<link rel="stylesheet" href="__STATIC__/css/waplistshop.css">
+<div class="MyshopBox">
+{volist name="listdb" id="rs"}
+	<div class="ListShop">
+		<dl>
+			<dt><a href="{$rs.url}"><img src="{$rs.picurl}" onerror="this.src='__STATIC__/images/nopic.png';"/></a></dt>
+			<dd>
+				<div class="t"><a href="{$rs.url}" target="_blank">{$rs.title}</a></div>
+				<div class="f">分类:<a href="{$rs.sort_url}" target="_blank">{$rs.sort_name}</a></div>
+				<div class="f">成员: {$rs.usernum} 人</div>
+				<div class="time">创建于:{$rs.time}</div>
+			</dd>
+		</dl>
+		<div class="submit">
+		<a href="{:urls('shop/index',['id'=>$rs['id']])}">商品</a>
+		<a href="{:urls('cms/index',['id'=>$rs['id'],'mid'=>1])}">资讯</a>
+		<a href="{:urls('cms/index',['id'=>$rs['id'],'mid'=>2])}">图片</a>
+		<a href="{:urls('bbs/index',['id'=>$rs['id']])}">话题</a>
+		<a href="{:urls('member/index',['id'=>$rs['id']])}">会员</a>
+			<a href="{:urls('edit',['id'=>$rs['id']])}">修改</a>
+			<a href="{:urls('delete',['ids'=>$rs['id']])}" onclick="return confirm('你确认要注销吗?数据不可恢复');">注销</a>
+		</div>
+	</div>
+{/volist}
+	<div class="Showpage">{$pages}</div>
+</div>
+
+{/block}

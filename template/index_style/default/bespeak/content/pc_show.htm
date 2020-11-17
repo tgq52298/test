@@ -1,0 +1,168 @@
+{extend name="$index_style_layout" /}
+
+<!--SEO相关-->
+{block name="head_title"}{$info.title}{/block}
+{block name="head_keword"}{$info.keywords?:$info.title}  {$s_info.name} {/block}
+{block name="head_description"}{:get_word(del_html($info['content']),300)}{/block}
+
+{block name="body_content"}
+<link rel="stylesheet" type="text/css" href="__STATIC__/bespeak/default/pc/bencandy.css"/>
+<style>
+.a_yybtn{
+    background: #1E9FFF;
+    font-size: 20px;
+    padding: 5px 10px;
+    color: #fff;
+    border-radius: 3px;
+    box-shadow: 3px 4px 2px #888;
+
+}
+</style>
+<div class='wrap'>
+
+<div class='main_box'>
+	<div class='banner'>
+		{qb:tag name="pcbespeak_show_banner1" type="image"}
+		<!--<a href="#"> <img src="__STATIC__/bespeak/default/demo/banner2.png" width='1200'  height='165' border='0'/></a> --> 
+		{/qb:tag}
+	</div>
+
+	<div class='main_content'>
+
+		<div class='main_contentleft'>
+			<div class='fitment'>
+				<div class='head'>{$info.title}</div>
+				<div class='img_info'>
+					<div class='img'><img src="{$info.picurl}" alt="{$info.title}" onError="this.src='__STATIC__/images/nopic.png'"></div>
+					<div class='info'>
+						<ul>
+							{if $s_info.name}<li>服务分类：{$s_info.name}</li>{/if}
+							{if $info.price}<li>计费方式：<span class='c_red'>{$info.price}</span></li>{/if}
+							{if $info.service_time}<li>服务时间：<span class='c_red'>{$info.service_time}</span></li>{/if}
+							{if $info.linkman}<li>联系人：{$info.linkman}</li>{/if}
+							
+							<!-- <li class='qq_blue'><span class='left'><span></span></span><span class='number'>7845454</span></li> -->
+							{if $info.telphone}<li class='tel_red'><span class='left'><span></span></span><span class='number'>{$info.telphone}</span></li>{/if}
+							<li><a href="{:urls('order/add',['id'=>$info['id']])}" class='_pop a_yybtn' onclick="cklogin();">立即预约</a></li>
+						</ul>
+					</div>
+				</div>
+			</div>   
+			<div class='merchant_introduce'>   
+				<div class='head'>{qb:tag name='pcbespeak_show_content_head'}<span>商家介绍</span>{/qb:tag}</div>
+				<div class='contents'>
+					{$info.content}
+					{notempty name="$info.map"}
+						<iframe src="{:urls('index/map/index')}?xy={$info.map}&title={$info.title|urlencode}"  width="100%" height="350" scrolling="no" frameborder="0" ></iframe>
+					{/notempty}
+				</div>
+
+			</div>   <!--  merchant_introduce 商家介绍  e -->
+			<div class='customer_review'>    <!-- customer_review  顾客留言  s -->
+				<div class='head'>{qb:tag name='pcbespeak_show_comment_head'}<span>在线评论</span>{/qb:tag}</div>
+				<div id="comment">{qb:comment name="commentbespeakpc01" rows='5' tpl="comment/pc01"}{/qb:comment}</div>
+			</div>    <!-- customer_review  顾客留言  e -->
+		</div>   
+
+
+		<div class='main_contentright'><!-- main_contentright  s -->
+			<div class='weixin_scan'> <!-- weixin_scan 微信预约  s -->
+				<div class='title'>微信预约</div>
+				<div class=img><img src="{:get_qrcode(urls('order/add',['id'=>$info.id]))}" width="172"></div>
+				<div class='explain'>扫一扫 轻松下单</div>
+			</div> <!-- weixin_scan 微信预约  e -->
+			<div class='online_subscribe'> <!-- online_subscribe 在线预约  s -->
+				<div class='title'>在线预约</div>
+				<form name="form1" method="post" action="{:urls('order/add')}" onSubmit="return checks();">
+				<ul class="postform">
+					{qb:form name="bespeak_order" field="title,picurl" mid="-1"}
+							<li>
+								<div>{$rs.title}</div>
+								{$rs.value}
+							</li>
+					{/qb:form}
+					<li><input type="hidden" name='fuwu_id' value="{:input('id')}"><input type="submit" name="submit" value="立即预约" class='buttonStyle'/></li>		
+				</ul>
+				<script>
+				function checks(){
+					check_login();
+					var linkman=$('#atc_order_linkman').val();
+					var time=$('#atc_order_bespeak_time').val();
+					var phone=$('#atc_order_telphone').val();
+					var address=$('#atc_order_address').val();
+					if(linkman==''){
+						layer.tips('联系人不能为空!', '#atc_order_linkman', {
+						  tips: [4, '#78BA32']
+						});
+						return false;
+					}
+					if(time==''){
+						layer.tips('时间不能为空!', '#atc_order_bespeak_time', {
+						  tips: [4, '#78BA32']
+						});
+						return false;
+					}
+					if(phone==''){
+						layer.tips('电话不能为空!', '#atc_order_telphone', {
+						  tips: [4, '#78BA32']
+						});
+						return false;
+					}
+					if(address==''){
+						layer.tips('服务地址不能为空!', '#atc_order_address', {
+						  tips: [4, '#78BA32']
+						});
+						return false;
+					}
+				}
+				function check_login(){
+					if("{$userdb.uid}"==""){
+						layer.confirm('你还没登录,不能预约,你要登录吗？', {
+							btn : [ '登录', '取消' ]
+							}, function(index) {
+								window.location.href = "{:get_url('login')}";
+						}); 
+						return false;
+					}
+					return true;
+				}
+
+				</script>
+				<input type="hidden" name="fid" value="4">
+				<input type="hidden" name="cid" value="47">
+				<input type="hidden" name="postdb[title]" id="atc_title" size="50" value="上门洗车">
+				</form>
+			</div> <!-- online_subscribe 在线预约  e -->
+		</div>    <!-- main_contentright  e -->			
+	</div>
+	<!-- main_content  e -->
+</div>
+<!-- main_box  主体内容 e -->
+
+</div>
+
+
+<script>
+// 没登陆则关闭弹框
+function cklogin(){
+	var login= {if $userdb.uid}{$userdb.uid}{else/}0{/if};
+	if(login==0){
+		check_login();
+		setTimeout("layer.closeAll('iframe')", 1000 );
+	}
+}
+function check_login(){
+	if("{$userdb.uid}"==""){
+		layer.confirm('你还没登录,不能预约,你要登录吗？', {
+			btn : [ '登录', '取消' ]
+			}, function(index) {
+				window.location.href = "{:get_url('login')}";
+		}); 
+		return false;
+	}
+	return true;
+}
+</script>
+
+
+{/block}

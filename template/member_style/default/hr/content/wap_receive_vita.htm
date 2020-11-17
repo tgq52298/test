@@ -1,0 +1,43 @@
+{extend name="$member_style_layout" /}
+
+{block name="title"}
+申请职位简历管理
+{/block}
+{block name="content"}
+
+
+<link rel="stylesheet" type="text/css" href="__STATIC__/hr/default/wap/article.css">
+
+<div class="MainContNa">
+	<!-- <div class="head"><div class="tag">我申请应聘的职位列表</div></div> -->
+    <div class="cont">
+
+{volist name="listdb" id="rs"}
+          <div class='ArticleList'>
+              <div class='title'><a href="{$rs.app_url}" >{$rs.app_title}</a></div>
+              <div class='time'><a href="{$rs.url}">{$rs.truename}</a> &nbsp;&nbsp;{$rs.sex}  &nbsp;&nbsp;{$rs.age}岁&nbsp;&nbsp;{$rs.alma_mater} 毕业</div>
+              <div class='operation'>
+                    <a href="{:urls('delapply',['ids'=>$rs['cid']])}" onclick="return confirm('你确认要踢除吗?不可恢复');" class="delate">踢除</a>
+                   <a href="{$rs.url}" >查看</a>
+              </div>
+          </div>
+{/volist}
+
+       {$pages}
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+			 
+{/block}

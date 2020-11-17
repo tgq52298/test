@@ -1,0 +1,103 @@
+
+<link rel="stylesheet" href="/public/static/index/default/pclist.css">
+<link type="text/css" rel="stylesheet" href="__STATIC__/mall/default/list.css" />
+<style>
+.qb_ui_listShop_type4 ul{margin:0 6px;}
+</style>
+<div class="ArticlMainContainer">
+	<!-- MainContainer 商品推荐 s -->
+	<div class='MainContainer'>
+		<div class='host'>    <!-- host  s -->
+			<div class='head'><span>推荐<br>商品</span></div>
+			<div class='content'>    
+				{qb:tag name="mall_pclist_recommend_001" type="mall" mid='1' rows="4" where="status>1&if_hide< 1"order="list"}
+				<div class="piclist">    <!-- piclist  s -->
+					<div class="img"><img onError="this.src='__STATIC__/images/nopic.png'" src="{$rs.picurl}" alt="{$rs.title}" height="120" width="120"></div>
+					<div class="info">
+						<span class="title"><a href="{$rs.url}">{:get_word($rs.title,40)}</a></span>
+						<span class="price">&yen;{$rs.price}</span>
+						<div>
+							<span class="buy"><a href="{$rs.url}">立即购买 &nbsp; &gt;</a></span>
+							<span class="tx"></span>
+						</div>
+					</div>
+					<div class="weixincode" onclick="window.open('{$rs.url}')">
+						<h3>微信扫码手机查看</h3>
+						<p><img src="{:get_qrcode(get_url($rs.url))}" width="80" height="80"></p>
+					</div>
+				</div>
+				{/qb:tag}
+			</div>    <!-- content  e -->
+		</div>   <!--  host  e -->
+	</div>
+	<!-- MainContainer 商品推荐 e -->
+
+
+
+<!-- MainContainer  s -->
+<div class='MainContainer'>
+	<div class='like'>   <!--  like  最新发布 s -->
+		<div class='title'>最新发布</div>
+		{qb:tag name="mall_pclist_newpost_001" type="mall" mid='1' rows="4" where="status>0&if_hide< 1" order="list"}
+			<div class='piclist'>   <!--  piclist  s -->
+				<div class='img'>
+					<img onError="this.src='__STATIC__/images/nopic.png'" src="{$rs.picurl}" />
+				</div>
+				<div class='shop_title'><a href="{$rs.url}">{:get_word($rs.title,46)}</a></div>
+				<div class='info'>
+					<span class='price'>&yen; {$rs[price]}</span>
+					<span class='sold'>库存：{$rs[num]}</span>
+				</div>
+				<div class="weixincode" onclick="window.open('{$rs.url}')">
+					<h3>微信扫码手机查看</h3>
+					<p><img src="{:get_qrcode(get_url($rs.url))}" width="90" height="90"/></p>
+				</div>
+			</div>   <!--   piclist  e -->
+		{/qb:tag}	
+	</div>    <!--  like  最新发布 e -->
+
+	<div class='content_right'>    <!-- content_right  s -->
+		<!--  filtrate 商品筛选  s -->
+		<div class='filtrate'>   
+			<div class='title'>
+				<span class='tag'>商品筛选</span>
+				<span class='number'></span>
+				<span class='tx'></span>
+			</div>
+			<div class='sort_box'>   <!--  sort_box  s -->
+				<div class='tag'>分类：</div>
+				<div class='content'>
+					<ul>
+						{volist name=":getArray(fun('Sort@son',intval($fid))?:fun('Sort@brother',$fid))" id="name"}
+						<li {eq name="$key" value="$fid"}class='ck'{/eq}><a href="{:urls('content/index',"fid=$key")}">{$name}</a></li>
+						{/volist}
+					</ul>
+				</div>
+			</div>     <!-- sort_box  e -->
+		</div>
+
+		<div class="shoplist_box">
+			<!--name是标签名，跟通用标签不能重名，rows取几条数据,order按什么方式排序，list代表可控排序，id即时间,view代表浏览量-->
+			{qb:listpage name="mall_list01" rows="12" where="if_hide< 1" order="list"}
+				{include file="content/pclistshop4" /}
+			{/qb:listpage}
+			<div style="clear: both;"></div>
+			{$pages}
+		</div>
+
+
+	</div>
+</div>
+
+
+</div>
+<script>
+$('.qb_ui_listShop_type4 img').hover(
+	function(){
+		$(this).animate({"width":"150%"},300);
+	},
+	function(){
+		$(this).animate({"width":"100%"},300);
+	}
+);
+</script>

@@ -1,0 +1,136 @@
+﻿ .UserInfo{
+    /*width:320px;*/
+}
+.AcitonBut{
+    padding:5px;
+    background:#EFEFEF;
+}
+.AcitonBut:after{
+    content:'';
+    display:block;
+    width:300px;
+    height:1px;
+    clear:both;
+}
+.AcitonBut li{
+    width:50%;
+    height:50px;
+    overflow:hidden;
+    padding-top:15px;
+    float:left;
+}
+.AcitonBut li a{
+    display:block;
+    background:#4FC7CE;
+    width:105px;
+    height:50px;
+    line-height:50px;
+    margin:auto;
+    border-radius:5px;
+    padding-left:25px;
+    text-align:center;
+    font-size:16px;
+    color:#FFF;
+}
+.AcitonBut li a.post{
+    background:#4FC7CE url(icon1.png) 10px 16px no-repeat;
+}
+.AcitonBut li a.post:hover{
+    background:#0C676C url(icon1.png) 10px 16px no-repeat;
+}
+.AcitonBut li a.mg{
+    background:#FF9999 url(icon2.png) 18px 16px no-repeat;
+}
+.AcitonBut li a.mg:hover{
+    background:#8D0F0F url(icon2.png) 18px 16px no-repeat;
+}
+.AcitonBut li a.edit{
+    background:#A8BE3F url(icon3.png) 10px 16px no-repeat;
+}
+.AcitonBut li a.edit:hover{
+    background:#637412 url(icon3.png) 10px 16px no-repeat;
+}
+.AcitonBut li a.rz{
+    background:#E39549 url(icon4.png) 18px 15px no-repeat;
+}
+.AcitonBut li a.rz:hover{
+    background:#704214 url(icon4.png) 18px 15px no-repeat;
+}
+.MemberCont{
+    padding:30px 0 10px 0;
+    background:#EFEFEF;
+    position:relative;
+}
+.MemberCont:before{
+    content:'';
+    display:block;
+    width:300px;
+    height:1px;
+    position:absolute;
+    left:10px;
+    top:15px;
+    background:#DDD;
+}
+.MemberCont dl{
+    display:table;
+    width:100%;
+}
+.MemberCont dl dt,.MemberCont dl dd{
+    display:table-cell;
+    padding:5px;
+    vertical-align:middle;
+    font-size:14px;
+}
+.MemberCont dl dt{
+    width:120px;
+    padding-left:20px;
+}
+.MemberCont dl dt input{
+    width:120px;
+    height:30px;
+    border:#DDD solid 1px;
+    border-radius:5px;
+    text-indent:5px;
+}
+.MemberCont dl dd{
+    line-height:25px;
+}
+.MemberCont dl dd input{
+    background:#BDCE6C url(line.png) center 2px no-repeat;
+    border:none;
+    width:60px;
+    height:30px;
+    margin-right:10px;
+    border-radius:3px;
+    color:#FFF;
+    position:relative;  
+}
+.MemberCont dl dd input:hover{
+    background:#6C7D18 url(line.png) center 2px no-repeat;
+}
+.MemberCont dl dt.headicon{
+    width:100px;
+}
+.MemberCont dl dt.headicon div{
+    width:100px;
+    height:100px;
+    overflow:hidden;
+    margin:auto;
+    text-align:center;
+    line-height:100px;
+    border-radius:50px;
+    background:#FFF;
+}
+.MemberCont dl dt.headicon div img{
+    max-width:100px;
+    max-height:100px;
+    vertical-align:middle;
+}
+.MemberCont dl dd ul.info li{
+    height:22px;
+    overflow:hidden;
+    line-height:22px;
+}
+.MemberCont dl dd ul.info{
+    margin-bottom:5px;
+} 

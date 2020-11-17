@@ -1,0 +1,264 @@
+{extend name="$member_style_layout" /}
+
+{block name="title"}客户购买的商品{/block}
+{block name="content"}
+{php}$type||$type=0; $house[$type]="class='red'";{/php}
+<ul class="qb_ui_page_menu">
+	<li><a href="{:urls('index')}?qid={$qid}" {$house[0]}>全部</a></li>	
+	<li><a href="?type=isfew&qid={$qid}&aid={$aid}&order_day={$order_day}&order_tid={$order_tid}" {$house['isfew']}>已付订</a></li>
+	<li><a href="?type=nofew&qid={$qid}&aid={$aid}&order_day={$order_day}&order_tid={$order_tid}" {$house['nofew']}>未付订</a></li>
+	<li><a href="?type=tui&qid={$qid}&aid={$aid}&order_day={$order_day}&order_tid={$order_tid}" {$house['tui']}>要退订</a></li>
+	<li><a href="?type=ispay&qid={$qid}&aid={$aid}&order_day={$order_day}&order_tid={$order_tid}" {$house['ispay']}>付全款</a></li>
+	<!--<li><a href="?type=nopay" {$house['nopay']}>未付清</a></li>-->
+	<li><a href="?type=ishexiao&qid={$qid}&aid={$aid}&order_day={$order_day}&order_tid={$order_tid}" {$house['ishexiao']}>已核销</a></li>
+	<li><a href="?type=nohexiao&qid={$qid}&aid={$aid}&order_day={$order_day}&order_tid={$order_tid}" {$house['nohexiao']}>未核销</a></li>
+</ul>
+<ul class="qb_ui_page_menu" style="border-top:#fff 5px solid;">
+<form method="post" class="layui-form" action="{:urls('index',['type'=>$type])}?qid={$qid}">
+	<div style="width:100px;float:left;margin-left:10px;">
+	  <select name="ktype">
+        <option value=""></option>
+        <option value="shopid" {if $ktype=='shopid'}selected{/if}>商品ID</option>
+        <option value="uid" {if $ktype=='uid'}selected{/if}>用户UID</option>
+        <option value="order_sn" {if $ktype=='order_sn'}selected{/if}>订单号</option>
+		<option value="linkman" {if $ktype=='linkman'}selected{/if}>联系人</option>
+      </select>
+	</div>
+	<input type="text" name="keyword" value="{$keyword}" placeholder="请输入关键字" style="width:120px;float:left;margin-left:10px;" class="layui-input">
+	<button class="layui-btn layui-btn-normal" style="float:left;margin-left:10px;" lay-submit>搜索</button>
+</form>
+</ul>
+
+
+<script type="text/javascript">
+var choose_day=-1;
+var order_time_array = new Array();
+{volist name=":get_order_time($shopinfo?:['uid'=>$shop_uid,'id'=>1],true)" id="rs"}
+{if $order_day==$rs['day']['key']}
+choose_day={$key};
+{/if}
+order_time_array[{$key}] = {:json_encode($rs.time,JSON_UNESCAPED_UNICODE)};
+{/volist}
+
+$(function(){
+
+	layui.use(['form'], function(){
+		  var form = layui.form;	 
+		  form.on('select(ytime)', function(data){
+		      $(data.elem).selectedIndex=data.elem.selectedIndex;
+		      $(data.elem).trigger('change');
+		  });
+		  form.on('select(shop_id)', function(data){
+		      $(data.elem).trigger('change');
+		  });
+	});
+
+	$("#shop_id").change(function(){
+		window.location.href="?type={$type}&qid={$qid}&aid="+$(this).val()
+	});
+
+	$("#ytime").change(function(){
+		var i = $(this).get(0).selectedIndex-1;
+		if(i==-1){
+			window.location.href="?type={$type}&qid={$qid}&aid={$aid}"
+			//$("#shoptype_time").html('');
+			return ;
+		}
+		set_time_html(order_time_array[i],$(this).val());
+	});
+
+	if(choose_day>-1){
+		set_time_html(order_time_array[choose_day],'{$order_day}','{$order_tid}');
+	}
+
+	function set_time_html(array,day,time){
+		var str = "";
+		array.forEach((rs)=>{
+			var ck = rs.id==time?'background:#D36A5C;color:#fff':'';
+			str += `<li><a style="${ck}" href="?qid={$qid}&aid={$aid}&type={$type}&order_day=${day}&order_tid=${rs.id}">${rs.name}</a></li>`;
+		});
+		$("#shoptype_time").html(str);
+	}
+});
+</script>
+
+{if count($shopdb)>1}
+<ul class="qb_ui_page_menu layui-form" style="border-top:#fff 5px solid;">
+	<div style="width:300px;float:left;margin-left:10px;margin-top:4px;">
+	   <select name="shop_id" id="shop_id" lay-filter='shop_id'>
+        <option value="">具体商品订单筛选</option>
+		{volist name="$shopdb" id="rs"}
+        <option value="{$rs.id}" {if $aid==$rs.id}selected{/if}>{$rs.title}</option>
+		{/volist}
+      </select>
+	</div> 
+</ul>
+{/if}
+
+{if $shop_info.stocktype==2}
+<ul class="qb_ui_page_menu layui-form" style="border-top:#fff 5px solid;">
+	<div style="width:100px;float:left;margin-left:10px;margin-top:4px;">
+	  <select name="ytime" id="ytime" lay-filter='ytime'>
+        <option value="">预约日期</option>
+		{volist name=":get_order_time($shopinfo?:['uid'=>$shop_uid,'id'=>1],true)" id="rs"}
+        <option value="{$rs['day']['key']}" {if $order_day==$rs['day']['key']}selected{/if}>{$rs['day']['title']}</option>
+		{/volist}
+      </select>
+	</div> 
+	<div style="float:left;margin-left:5px;" id="shoptype_time"></div>
+</ul>
+{/if}
+
+<link rel="stylesheet" href="__STATIC__/css/waporder.css">
+{volist name="listdb" id="rs"}
+<div class="ListOrder">
+	<ul class="topinfo">
+		<ol><a href="{:get_url('user',['uid'=>$rs['uid']])}"><img src="{$rs.uid|get_user_icon}" onerror="this.src='__STATIC__/images/nopic.png';"/><span>{$rs.linkman?:get_user_name($rs.uid)}</span></a></ol>
+		<li><i class="fa fa-clock-o"></i>{$rs.create_time}</li>		
+	</ul>	
+	{volist name="rs.shop_db" id="vs"}
+	<ul class="listshop">
+		<li class="img"><a href="{:iurl('content/show',['id'=>$vs['id']])}"><img src="{$vs.picurl}" onerror="this.src='__STATIC__/images/nopic.png';"/></a></li>
+		<li class="infos">
+			<div style="height:auto;">
+			<a href="{:iurl('content/show',['id'=>$vs['id']])}">{$rs.shoptitle?:$vs.title}</a>
+			{if $rs.order_day}<br> {:substr(format_order_time($rs),5)} {/if}
+			</div>
+			<p>
+				{notempty name="$vs._type1"}{$vs._type1} &nbsp; {/notempty}
+				{notempty name="$vs._type2"}{$vs._type2} &nbsp; {/notempty}
+				{notempty name="$vs._type3"}{$vs._type3}{/notempty}
+			</p>
+		</li>
+		<li class="price">{if $vs._price>0}<div>&yen; {$vs._price}</div>{/if}<p>X {$vs._num}</p></li>
+	</ul>
+	{/volist}
+	{if $about=get_user($rs.uid)['qun_group'][$vs['ext_id']]['about']}<div title="用户圈子里的备注" style="color:#666;font-size:13px;"><i class="fa fa-quote-left"></i>{$about}</div>{/if}
+	<ul class="otherinfo">
+	{if $vs.qun_money>0}
+		<ol>圈币:<span>{$rs.qun_money}</span>个</ol>
+	{elseif $vs._paytype>0}
+		<ol>金额:<span>&yen;{$rs.fewmoney}</span>元</ol>
+	{else /}
+		<ol>余款:<span>&yen;{$rs.totalmoney}</span>元</ol>
+		<ol style="margin-left:8px;">订金:<span>&yen;{$rs.fewmoney}</span>元</ol>
+	{/if}
+		<li>订单号:{$rs.order_sn}</li>
+	</ul>
+	<div class="actions">
+	{if (is_numeric($vs._paytype)&&$vs._paytype==0)||(is_numeric($vs.paytype)&&$vs.paytype==0)}
+
+		<!--分期付款-->
+		{if $rs.receive_status==1}
+			<span style="color:red;">交易完毕</span>
+		{else /}
+			{eq name="$rs.pay_status" value="1"}<span>已付余款</span>{else /}
+			<span>未付余款</span>
+			{/eq}
+			{eq name="$rs.few_ifpay" value="1"}
+			<a href="{:urls('rob_ding',['id'=>$rs.id])}" onclick="return confirm('你要没收用户的订金吗?');" title="没收订金">已付订金</a>
+			{else /}
+			<span>未付订金</span>
+			{/eq}
+		{/if}
+
+	{else /}
+		
+		<!--非分期付款-->
+		{if $rs.receive_status==1}
+			<span style="color:red;">交易完毕</span>
+		{else /}
+			{eq name="$rs.few_ifpay" value="1"}
+			<a href="{:urls('tui_order',['id'=>$rs.id])}" style="color:red;" onclick="return confirm('你确认要给用户退全款吗?');">已付全款</a>
+			{else /}
+			<span>未付款</span>
+			{/eq}
+		{/if}
+		
+	{/if}
+	<a href="{:urls('show',['id'=>$rs['id']])}">查看</a> 
+	{if !$vs.qun_money}<a href="{:urls('edit',['id'=>$rs['id']])}">修改</a>{/if}
+		
+	{if $rs.receive_status}
+		<a href="#" style="color:red;">已核销</a>
+	{else /}
+		<a href="javascript:" onclick="hexiao('{:urls('receive',['id'=>$rs.id])}',$(this))">核销</a>
+		{if $rs.pay_status==1&&$userdb.uid==$rs.shop_uid}<a href="javascript:" onclick="tui_order('{:urls('tui_order',['id'=>$rs.id])}',$(this))">退款</a>{/if}
+	{/if}
+
+	{if $rs.hexiao_uid}核销者:{$rs.hexiao_uid|get_user_name} {/if}
+	{if empty($rs.few_ifpay)&&empty($rs.pay_status)}<a href="{:urls('delete',['id'=>$rs['id']])}" class="del alert">删除</a>{/if}
+	<a href="javascript:" onclick="edit_about({$rs.id})">备注</a> 
+	<a href="javascript:" onclick="set_hexiao_uid({$rs.id},[ {volist name=":fun('qun@admin',$vs.ext_id)" id='auid'} { uid:'{$auid}',username:'{$auid|get_user_name}({:get_user($auid)['qun_group'][$vs['ext_id']]['nickname']})' } ,{/volist} ] )">指派</a><i style="font-size:12px;" class="hexiao-{$rs.id}"> {:get_user($rs.hx_uid)['qun_group'][$vs['ext_id']]['nickname']}</i>
+	</div>
+	<div style="color:#666;font-size:13px;line-height:150%;">备注:<span class="note-{$rs.id}">{$rs.admin_note}</span></div>
+</div>
+{/volist}
+{$pages}
+
+<script type="text/javascript">
+
+//指派任务
+function set_hexiao_uid(id,array){
+	var str = '';
+	array.forEach((rs)=>{
+		str += '<input type="radio" name="adminuid" class="list-admin" value="'+rs.uid+'" data-name="'+rs.username+'">'+rs.username+'<br>';
+	});
+	var obj = $(".hexiao-"+id);
+	layer.alert('<div style="line-height:190%;">' + str + '</div>',{title:'请指派一个负责人'},function(i){		
+		var value = $(".list-admin:checked").val();
+		var name = $(".list-admin:checked").data('name');
+		layer.close(i);
+		$.get("{:urls('set_hexiao_uid')}?id="+id+"&uid="+(value?value:0),function(res){
+			if(res.code==0){
+				layer.msg('设置成功');
+				obj.html( '指派人:'+(name?name:'') );
+			}else{
+				layer.alert(res.msg);
+			}
+		});
+	});
+}
+
+//修改备注
+function edit_about(id){
+	var obj = $(".note-"+id);
+	layer.alert('<textarea style="width:100%;height:80px" class="user_about">'+obj.text().replace(/(^\s*)|(\s*$)/g,"")+'</textarea>',{title:'请输入备注'},function(i){
+		var value = $(".user_about").last().val();
+		layer.close(i);
+		$.get("{:urls('edit_note')}?id="+id+"&content="+value,function(res){
+			if(res.code==0){
+				layer.msg('设置成功');
+				obj.html( value );
+			}else{
+				layer.alert(res.msg);
+			}
+		});
+	});
+}
+
+function tui_order(url,o){
+	layer.alert("你确认要退款吗?",{title:'重要提示!'},function(){
+		$.get(url,function(res){
+			if(res.code==0){
+				o.html('已退款');
+				layer.msg('退款成功!');			
+			}else{
+				layer.alert(res.msg);
+			}
+		});
+	});
+}
+
+function hexiao(url,o){
+	$.get(url,function(res){
+		if(res.code==0){
+			o.html('已核销');
+			layer.msg('核销成功!');			
+		}else{
+			layer.alert(res.msg);
+		}
+	});
+}
+</script>
+{/block}

@@ -1,0 +1,3 @@
+INSERT INTO `qb_qun_field` (`id`, `name`, `title`, `type`, `field_type`, `value`, `options`, `about`, `show`, `mid`, `ajax_url`, `next_items`, `param`, `format`, `table`, `level`, `key`, `option`, `pid`, `list`, `listshow`) VALUES(0, 'haibao', '海报模板', 'text', 'varchar(100) NOT NULL', '', '', '', 1, 1, '', '', '', '', '', 2, '', '', '', 0, 0);
+
+ALTER TABLE  `qb_qun_content1` ADD  `haibao` VARCHAR( 100 ) NOT NULL COMMENT  '海报模板';

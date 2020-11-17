@@ -1,0 +1,45 @@
+<!--圈子详情-->
+<style type="text/css">
+.SideBox .head .qun-title{
+	font-weight:bold;
+	font-size:17px;
+}
+.aboutcnt .cnt{
+	font-size:14px;
+	line-height:21px;
+}
+.aboutcnt .nav{
+	font-size:12px;
+}
+.aboutcnt .nav em{
+	font-size:15px;
+	font-weight:bold;
+	margin-left:10px;
+	margin-right:3px;
+}
+.aboutcnt .nav em.left{
+	margin-left:0;
+}
+.aboutcnt .nav span{
+	margin-left:8px;
+}
+</style>
+	<div class="SideBox">
+		<div class="head"><span class="tag qun-title">{$info.title}</span></div>
+		<div class="aboutcnt">			
+			<div class="cnt">{:fun('area@get',$info.city_id)} {:fun('area@get',$info.zone_id)} {:fun('area@get',$info.street_id)}<br>{$info.content}</div>
+			<div class="nav"><em class="left">{$info.view}</em>人气 <em>{:fun('qun@count','qun_member',$info.id)}</em>粉丝
+				<!--<span onclick="$('.MoreInfoBox').fadeIn();$('.MoreInfoBox').css({'display':'flex'});"><i class="fa fa-fw fa-qrcode"></i></span>-->
+				<span onclick="share_btn();"><i class="fa fa-fw fa-qrcode"></i></span>
+				{eq name="$info.uid" value="$userdb.uid"}<span onclick="window.location.href='{:murl('qun/content/edit',['id'=>$id])}'"><i class="fa fa-fw fa-gear"></i></span>{/eq}
+				<span onclick="window.location.href='{:urls('qun/map/index',['aid'=>$id])}'"><i class="fa fa-fw fa-flag-checkered"></i></span>
+				<span onclick="SharShowMsg()"><i class="fa fa-fw fa-share-square-o"></i></span>
+				{if plugins_config('signin')}<span onclick="window.location.href='{:purl('signin/index/index',['id'=>$id])}'"><i class="fa fa-calendar"></i></span>{/if}
+			</div>	
+		</div>
+		<!--
+		{if plugins_config('voicehb')}<div class="hongbaoBox" style="opacity: 0.4;"><a href="{:urls('qun/voicehb/index',['aid'=>$id])}"><img src="__STATIC__/plugins/voicehb/hongbao.png"></a></div>
+		{elseif(plugins_config('hongbao')) /}<div class="hongbaoBox" style="opacity: 0.4;"><a href="{:urls('qun/hongbao/index',['aid'=>$id])}"><img src="__STATIC__/plugins/hongbao/hongbao.png"></a></div>
+		{/if}
+		-->
+	</div>

@@ -1,0 +1,121 @@
+u{extend name="$index_style_layout" /}
+
+<!--SEO相关-->
+{block name="head_title"}{$info.title}{/block}
+{block name="head_keword"}{$info.title} {:get_sort($info.fid)}  {:M('name')}{/block}
+{block name="head_description"}{:get_word(del_html($info['content']),300)}{/block}
+
+
+{block name="body_content"}
+
+<link rel="stylesheet" type="text/css" href="__STATIC__/hr/default/pc/showmember.css">
+
+<div style="margin:15px auto; width:1200px;" id='div1'> <!-- wrap S -->
+
+
+<div style="width:1200px; overflow:hidden; margin:15px auto;">
+
+<div class="content_left">
+{include file="content/showvita" /}
+</div>
+  
+<div class="content_right">
+  <table style="width:99%;">
+    <tr class="rt">
+      <td class="head">
+        <div class="ht">
+          <b>会员资料</b>
+        </div>
+      </td>
+      <td class="data">
+        <div class="d_name" style="line-height:45px; border-bottom:1px dotted #d4d4d4;">
+          <div class="n_pic"><img src="{:get_user_icon($info.uid)}"></div>
+          <div class="n_taxt">
+            <span><b>{:get_user($info.uid)['nickname']}</b></span>
+            <span><a href="{:get_url('user',$info['uid'])}" class="blue"><b>{:getGroupByid(get_user($info.uid)['groupid'])}</b></a></span>
+          </div>
+        </div>
+        <div style="line-height:45px; border-bottom:1px dotted #d4d4d4;">
+          <em class="hui">更新时间</em>{if $info.update_time} {:format_time($info.update_time )} {else /} {:format_time($info.create_time )} {/if}
+        </div>
+        <div style="line-height:45px; border-bottom:1px dotted #d4d4d4;">
+          <em class="hui">发布者ID</em> {:get_user($info.uid)['username']}
+        </div>
+        <div style="line-height:45px; border-bottom:1px dotted #d4d4d4;">
+          <em class="hui">浏览量</em> &nbsp; &nbsp;<em class="orange">{$info.view}次</em>
+        </div>
+  <!--       
+        <div style="line-height:45px; border-bottom:1px dotted #d4d4d4;">
+          <em class="hui">所在分类</em> &nbsp;
+        </div> -->
+         {if is_dir(PLUGINS_PATH.'fav')} <!-- 如安装了收藏插件才显示该记录 -->
+        <span class="join">已有<em class="blue">{:fav_vita_num($info.id)}</em>家单位把本简历加入收藏库</span>
+        {/if}
+
+            {if $userdb['uid']==$info['uid']}
+            <div class="list"><a href="{:murl('edit',['id'=>$info.id])}" target="_blank" class='_pop'><font color="#0000FF">[修改一下]</font></a></div>
+            {/if}
+
+                            {if is_dir(PLUGINS_PATH.'fav')} <!-- 如安装了收藏插件即可进行收藏操作 -->
+                              <a href="javascript:;" class="jion_us" onclick="add_fav2({$id})" ><span>加入收藏库</span></a>   
+
+                            {/if}
+
+
+                 
+      </td>
+    </tr>
+    <tr class="rf">
+      <td class="head">
+        <div class="ht">
+          {qb:tag name="pchr_show2_newvita_head" type="text"}<b>最新人才</b>{/qb:tag}
+        </div>
+      </td>
+      <td class="newset" style="width:89%; float:left; padding:0 20px;">
+        <table style="width:100%;">
+          <tr class="h" style="font-weight:bold; font-size:16px;  border-bottom:1px dotted #d4d4d4;">
+            {qb:tag name="pchr_show2_newvita_title" type="text"}
+            <td><em class="blue">姓名</em></td>
+            <td><em class="orange">期望职业</em></td>
+            {/qb:tag}
+          </tr>
+ {qb:tag name="pchr_show1_otherjob_listdata1" field="title" type="hr" rows="10" order="id" mid="2" where="status>0"}
+          <tr>
+            <td><a href="{$rs.url}">{$rs.truename}({$rs.sex})</a></td>
+            <td>{$rs.title}</td>
+          </tr>
+{/qb:tag}
+       
+
+        </table>
+      </td>
+    </tr>
+  </table>
+</div>
+</div>
+
+
+
+<script>
+function add_fav2(id){
+  var url="{:purl('fav/api/add')}?type={:config('system_dirname')}&id="+id;
+  $.get(url,function(res){
+    if(res.code==0){
+      layer.msg('收藏成功');
+    }else{
+      layer.alert(res.msg);
+    }
+  })
+}
+</script>
+
+
+
+
+
+
+</div> <!-- wrap E -->
+
+
+
+{/block}

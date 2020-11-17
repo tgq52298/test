@@ -1,0 +1,412 @@
+/*试题列表*/
+.choice-type-con{
+	margin: 40px 15px 15px;
+	border: 1px solid #ddd;
+	color: #999;
+	padding-bottom: 25px;
+}
+.choice-type-con .choice-list{
+	margin-top: 25px;
+}
+.choice-type-con .choice-list .htit{
+	float: left;
+	width: 60px;
+	line-height: 26px;
+	text-align: center;
+}
+.choice-list .list{
+	float: left;
+	width: 715px;
+}
+.choice-list .list a{
+	float: left;
+	display:block;
+	line-height: 26px;
+	padding: 0px 15px;
+	margin-right: 5px;
+	color: #999;
+}
+.choice-list .list a.select,.choice-list .list a:hover{
+	background: #FFA64D;
+	color: #fff;
+	-webkit-border-radius:5px;
+ 	-moz-border-radius:5px;
+  -ms-border-radius:5px;
+ 	-o-border-radius:5px;
+	border-radius: 5px;
+}
+.text-state-con{
+	margin: 20px 15px;
+	border: 1px solid #ddd;
+}
+.state-tab-menu{
+	height: 45px;	
+	overflow: hidden;
+	position: relative;
+}
+.state-tab-menu:after{
+	content: '';
+	display: block;
+	height: 1px;
+	background: #ddd;
+	width: 100%;
+	position: absolute;
+	bottom: 0;
+	left: 0;
+}
+.state-tab-menu li{
+	float: left;
+	width: 115px;
+	text-align: center;
+	font-size: 16px;
+	height: 45px;
+	line-height: 45px;
+	border-right: 1px solid #ddd;
+	position: relative;
+	cursor: pointer;
+}
+.state-tab-menu li.cur{
+	position: relative;
+	color:#2273C0;
+	border-bottom-color: #fff; 
+}
+.state-tab-menu li.cur:after{
+	  content: '';
+    display: block;
+    height: 2px;
+    background: white;
+    position: absolute;
+    left: 0;
+    width: 100%;
+    bottom: -1px;
+    z-index: 2;
+}
+.state-tab-menu li.cur:before{
+	  content: '';
+    display: block;
+    height: 3px;
+    background:#2273C0;
+    position: absolute;
+    left: 0;
+    width: 100%;
+    top: -1px;
+    color: #2273C0;
+    z-index: 2;
+}
+.hide{
+	display: none;
+}
+.state-test-list .test-list li{
+	padding: 30px 10px;
+	border-bottom: 1px dotted #ccc;
+	overflow: hidden;
+}
+.state-test-list .test-list .icon-new{
+	float: left;
+	width: 40px;
+	height: 38px;
+	margin-top: 5px;
+	background: url(./test-icon01.png) no-repeat center center;
+}
+.state-test-list .test-list .text-info{
+	float: left;
+	width: 580px;
+	margin-left: 10px;
+}
+.state-test-list .test-list .text-name{
+	height: 25px;
+	line-height: 25px;
+	font-size: 15px;
+	overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.state-test-list .test-list .info{
+	padding-top: 10px;
+	color: #999;
+	overflow: hidden;
+}
+.state-test-list .test-list .info .type{
+	float: left;
+	height: 20px;
+	line-height: 20px;
+	padding: 0px 5px;
+	border: 1px solid #FF9326;
+	color: #FF9326;
+	display: block;
+	-webkit-border-radius:3px;
+ 	-moz-border-radius:3px;
+  -ms-border-radius:3px;
+ 	-o-border-radius:3px;
+	border-radius: 3px;
+}
+.state-test-list .test-list .info .time{
+	float: left;
+	display: block;
+	margin-left: 20px;
+}
+
+
+.state-test-list .test-list .button{
+	float: right;
+	margin-top: 15px;
+	display: block;
+	background: url(./bg02.png) no-repeat right 10px center;
+	width: 105px;
+	padding-left: 15px;
+	height: 32px;
+	line-height: 32px;
+	font-size: 16px;
+	color: #4CA5FF;
+	border: 1px solid  #4CA5FF;
+	-webkit-border-radius:5px;
+ 	-moz-border-radius:5px;
+  -ms-border-radius:5px;
+ 	-o-border-radius:5px;
+	border-radius: 5px;
+}
+.state-test-list .test-list .button:hover{
+	color: #2273C0;
+	border: 1px solid #2273C0;
+}
+.ShowMore2{
+	clear: both;
+	width: 100%;
+	padding-top: 10px;
+}
+.ShowMore2 span{
+	display: block;
+	text-align: center;
+	margin: 0px 20px;
+	line-height: 45px;
+	background: #DDD;
+	color: #AAA;
+	border-radius: 5px;
+}
+/*
+.test-pages{
+	padding: 50px 0px;
+	text-align: center;
+}
+.test-pages a{
+	display: inline-block;
+	height: 28px;
+	line-height: 28px;
+	border: 1px solid #ddd;
+	padding: 0px 12px;
+	margin: 0px 2px;
+}
+.test-pages a.current{
+	background: #578EDD;
+	color: #fff;
+	border-color: #578EDD;
+}
+
+.pagination-div{
+	padding:0;
+	margin:0;
+}
+.pagination.pagination-centered{
+	padding: 50px 0px;
+	text-align: center;
+	font-size:0;
+}
+.pagination.pagination-centered li{
+	display: inline-block;
+	margin: 0px 2px;
+}
+.pagination.pagination-centered li a{
+	font-size:14px;
+	display:block;
+	height: 28px;
+	line-height: 28px;
+	border: 1px solid #ddd;
+	padding: 0px 12px;
+}
+.pagination.pagination-centered li.active a{
+	background: #578EDD;
+	color: #fff;
+	border-color: #578EDD;
+}*/
+
+
+
+/*试题详情*/
+.text-introduc-con{
+	margin: 60px 15px 40px;
+	border: 1px solid #ddd;
+	padding: 25px 15px 40px 55px;
+}
+.text-introduc-con .text-name{
+	font-size: 18px;
+}
+.text-introduc-con .text-info{
+	padding: 20px 0px;
+}
+.text-introduc-con .text-info li{
+	height: 35px;
+	line-height: 35px;
+	color: #666;
+	overflow: hidden;
+}
+.text-introduc-con .text-info  span{
+	float: left;
+	width: 50%;
+	display: block;
+}
+.text-introduc-con .text-type .type{
+		font-size: 18px;
+		padding-left: 15px;
+}
+.text-introduc-con .text-tixing{
+	margin-top: 25px;
+}
+.text-tixing .titel{
+	font-size: 18px;
+}
+.text-tixing  .list{
+	padding-top: 15px;
+	color: #666；
+}
+.text-tixing  .list span{
+	display: inline-block;
+	padding-right: 40px;
+}
+.text-button{
+	margin-top: 45px;
+	text-align: center;
+}
+.text-button a{
+	display: inline-block;
+	min-width: 105px;
+	height: 30px;
+	line-height: 30px;
+	font-size: 16px;
+	color: #fff;
+	text-align: left;
+	padding-left: 18px;
+	-webkit-border-radius:5px;
+ 	-moz-border-radius:5px;
+  -ms-border-radius:5px;
+ 	-o-border-radius:5px;
+	border-radius: 5px;
+	margin: 0px 10px;
+}
+.text-button .btn-inter{
+	background:#42ABFB url(./bg05.png) no-repeat right 10px center;
+}
+.text-button .btn-inter.disabled{
+	background-color:#BFBFBF;
+	padding-right:40px;
+}
+.text-button .btn-inter:hover.disabled{
+	background-color:#BFBFBF;
+}
+.text-button .btn-collec{
+	background:#FFA64D url(./bg06.png) no-repeat right 10px center;
+}
+.text-button .btn-inter:hover{
+	background: #2273C0 url(./bg05.png) no-repeat right 10px center;
+}
+.text-button .btn-collec:hover{
+	background:#FF8B17 url(./bg06.png) no-repeat right 10px center;
+}
+.text-introduc-text{
+	color: #666;
+	line-height: 25px;
+	padding:0px 20px 50px;
+	margin-top: 100px;
+}
+.text-recommen-list{
+	margin-top: 45px;
+	padding: 0px 15px;
+}
+.text-recommen-list li{
+	padding: 12px 0px 12px 45px;
+	background: url(./bg07.png) no-repeat left center;
+	border-bottom: 1px dotted #ddd;
+}
+.text-recommen-list li .htitel{
+	height: 25px;
+	line-height: 25px;
+	overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.text-recommen-list li .info{
+	font-size: 12px;
+	color: #AAAAAA;
+}
+.text-recommen-list  .info span{
+	display: inline-block;
+	padding-left: 20px;
+}
+.text-recommen-list  .info span:first-child{
+	padding-left: 0px;
+}
+
+.text-input input{
+	display: inline-block;
+	width: 125px;
+	height: 35px;
+	line-height: 35px;
+	font-size: 16px;
+	color: #fff;
+	text-align: left;
+	padding-left: 18px;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	-ms-border-radius: 5px;
+	-o-border-radius: 5px;
+	border-radius: 5px;
+	margin: 0px 10px;
+	margin-top: 45px;
+	text-align: left;
+	text-indent: 10;
+}
+.text-input .btn-inter{
+	background:#42ABFB url(./bg05.png) no-repeat right 10px center;
+}
+.text-input .btn-inter:hover{
+	background: #2273C0 url(./bg05.png) no-repeat right 10px center;
+}
+.text-input .btn-more{ background: #BFBFBF}
+/*试题列表*/
+.subject-list{
+	padding:20px 15px;
+	overflow: hidden;
+}
+.subject-list li{
+	float: left;
+	width: 98%;
+	height: 45px;
+	line-height: 45px;
+	padding-left: 20px;
+	margin-right: 30px;
+	background: url(./bg03.png) no-repeat left center;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	border-bottom-width: 1px;
+	border-bottom-style: dotted;
+	border-bottom-color: #CCCCCC;
+}
+.subject-list li .tip{
+	font-style: normal;
+	float: left;
+	height: 20px;
+	line-height: 20px;
+	border: 1px solid #FF9326;
+	color: #FF9326;
+	display: block;
+	-webkit-border-radius:3px;
+ 	-moz-border-radius:3px;
+  -ms-border-radius:3px;
+ 	-o-border-radius:3px;
+	border-radius: 3px;
+	padding-top: 0px;
+	padding-right: 5px;
+	padding-bottom: 0px;
+	padding-left: 5px;
+	margin: 10px;
+}

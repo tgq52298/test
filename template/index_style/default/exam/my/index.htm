@@ -1,0 +1,71 @@
+{extend name="$index_style_layout" /}
+
+<!--SEO相关-->
+{block name="head_title"}{$info.title}{/block}
+{block name="head_keword"}{$info.keywords?:$info.title}  {$s_info.name} {/block}
+{block name="head_description"}{:get_word(del_html($info['content']),300)}{/block}
+
+{block name="body_content"}
+<link rel="stylesheet" href="__STATIC__/group/show.css">	
+<div class="MainContainer">
+	<ul class="TopCntBox">
+		<li class="home"><a href="{:urls('index/index')}"><i class="fa fa-reply"></i> 首页</a></li>
+		<li class="name">我的考试记录</li>
+		<li class="member"><a href="{:get_url('member')}"><i class="fa fa-user-o"></i></a></li>
+	</ul>
+	<div class="SideBox">
+		<div class="head"><span class="tag">我的试卷</span><!--<a href="{:urls('bbs/add',['aid'=>$id])}" class="more">发表</a>--></div>
+
+		<div class="listBbs qun_wapshow_bbs001">
+			{qb:tag name="qun_wapshow_bbs001" class="app\exam\model\Putin@LabelJoin" time="-1" order="id" where="A.uid=$userdb.uid" by="desc" rows="5" }
+			<div class="lists" style="margin-top:8px;border-bottom:1px dotted #efefef;"><!--
+				<ul>
+					<li class="img"><a href="{$rs.user_url}"><img src="/public/static/images/3.jpg" onerror="this.src='__STATIC__/images/nopic.png'"></a></li>
+					<li class="info"><span>{$rs.username}</span><em>{$rs.time}</em></li>
+					<li class="more"><span>{if ($rs.status>1)}精{elseif (time()-$rs.create_time<3600*24)}新{elseif ($rs.view>10)}热{/if}</span></li>
+				</ul>-->
+				<a href="{$rs.paper_url}">
+				<dl>
+					<dt>试卷：{$rs.name}</dt> 
+				</dl>
+				</a>
+				<div class="others">
+					<span> <i class="fa fa-thumbs-o-up">我的成绩：{$rs.fen}分</i> <i class="glyphicon glyphicon-user">参数人数：{:intval($rs.user_num)}人</i>  <i class="glyphicon glyphicon-stats">平均分：{$rs.ave_fen}分</i></span> 					 
+				</div>
+			</div>
+			{/qb:tag}
+		</div>
+		<div class="ShowMore2" onclick='showMoreBbs("{qb:url name="qun_wapshow_bbs001"/}")'><span>查看更多</span></div>
+<script type="text/javascript">
+
+function qun_wapshow_bbs001(res){ //处理异步加载进来的论坛数据
+	if(res.code==0){	//数据加载成功后
+	}
+}
+
+var shop_bbs_page=1;
+function showMoreBbs(url){
+	shop_bbs_page++;
+	$.get(url+shop_bbs_page,function(res){	
+		if(res.code==0){
+			if(res.data==''){
+				layer.msg("已经显示完了！",{time:500});
+				$('.ShowMore2').hide();
+			}else{
+				$('.qun_wapshow_bbs001').append(res.data);
+			}
+		}else{
+			layer.msg(res.msg,{time:2500});
+		}
+	});
+}
+</script>
+	</div>
+</div>	
+<div class="MoreInfoBox">
+	<div class="BackBox" onclick="$('.MoreInfoBox').fadeOut();"></div>
+	<div class="ShowinfoBox"><img src="{:get_qrcode(url('show',['id'=>$id]))}"></div>
+</div>
+
+
+{/block}

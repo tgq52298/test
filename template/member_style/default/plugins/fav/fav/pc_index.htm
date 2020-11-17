@@ -1,0 +1,40 @@
+{extend name="$member_style_layout" /}
+
+{block name="title"}我的收藏夹{/block}
+{block name="content"}
+ 
+<div class="MainCont mtop10">
+	<div class="head"><div class="tag">我的收藏夹</div></div>
+    <div class="cont">
+    	<table width="100%" border="0" cellspacing="0" cellpadding="0" class="ListTable">
+          <tr>
+            <th width="8%">id</th>
+            <th>内容标题</th>            
+            <th width="15%">收录时间</th>
+            <th width="10%">所属频道</th>
+			<th width="10%">所属栏目</th>
+            <th width="10%">删除</th>
+          </tr>
+{volist name="listdb" id="rs"}
+          <tr>
+            <td>{$rs.id}</td>
+            <td class="tL"><a href="{$rs.url}" target="_blank">{$rs.title}</a></td>
+           
+            <td>{$rs.create_time}</td>
+            <td>
+	<a href="{:iurl($rs[module_dir].'/index/index')}" target="_blank">{$rs.module_name}</a>
+			</td>
+			<td>
+	<a href="{$rs.sort_url}" target="_blank">{$rs.sort_name}</a>
+			</td>
+            <td>
+            	<a href="{:purl('delete',['id'=>$rs['id']])}" class="qb-del"></a> 
+            </td>
+          </tr>
+{/volist}
+        </table>
+        <div class="Showpage">{$pages}</div>
+    </div>
+</div>
+
+{/block}

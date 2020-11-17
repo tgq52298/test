@@ -1,0 +1,175 @@
+{extend name="$index_style_layout" /}
+
+<!--SEO相关-->
+{block name="head_title"}{$webdb.mseo_title?:$webdb.seo_title}{/block}
+{block name="head_keword"}{$webdb.mseo_keyword?:$webdb.seo_keyword}{/block}
+{block name="head_description"}{$webdb.mseo_description?:$webdb.seo_description}{/block}
+
+{block name="body_content"}
+<link rel="stylesheet" href="__STATIC__/group/show.css">	
+<div class="MainContainer">
+	<!--ul class="TopCntBox">
+		<li class="home"><a href="#"><i class="fa fa-reply"></i> 首页</a></li>
+		<li class="name">圈友排行版</li>
+		<li class="member"><a href="#"><i class="fa fa-user-o"></i></a></li>
+	</ul-->	
+	<style type="text/css">
+		.MainMenu li{
+			margin-bottom:10px;
+		}
+	</style>
+	<div class="MainMenu">
+		<ul>
+			<li>
+				{qb:tag name="wap_exam_index_link1" type="link"}
+					<!--<a href="{:urls('info/index')}"><span><i class="fa fa-mortar-board"></i></span><em>试卷考试</em></a>-->
+					<a href="{$url}"><span><i class="{$logo}"></i></span><em>{$title}</em></a>
+				{/qb:tag}
+			</li>
+			<li>
+				{qb:tag name="wap_exam_index_link2" type="link"}
+					<!--<a href="{:urls('content/index',['mid'=>1])}"><span><i class="glyphicon glyphicon-retweet"></i></span><em>试题练习</em></a>-->
+					<a href="{$url}"><span><i class="{$logo}"></i></span><em>{$title}</em></a>
+				{/qb:tag}
+			</li>
+			<li>
+				{qb:tag name="wap_exam_index_link3" type="link"}
+					<!--<a href="{:urls('my/index')}"><span><i class="fa fa-calendar-o"></i></span><em>我的考卷</em></a>-->
+					<a href="{$url}"><span><i class="{$logo}"></i></span><em>{$title}</em></a>
+				{/qb:tag}
+			</li>
+			<li>
+				{qb:tag name="wap_exam_index_link4" type="link"}
+					<!--<a href="{:urls('log/index')}"><span><i class="fa fa-newspaper-o"></i></span><em>错题汇总</em></a>-->
+					<a href="{$url}"><span><i class="{$logo}"></i></span><em>{$title}</em></a>
+				{/qb:tag}
+			</li>
+			<li>
+				{qb:tag name="wap_exam_index_link5" type="link"}
+					<!--<a href="{:urls('fav/index')}"><span><i class="fa fa-star"></i></span><em>试题收藏</em></a>-->
+					<a href="{$url}"><span><i class="{$logo}"></i></span><em>{$title}</em></a>
+				{/qb:tag}				
+			</li>
+			<li>
+				{qb:tag name="wap_exam_index_link6" type="link"}
+					<!--<a href="{:urls('favpaper/index')}"><span><i class="fa fa-file-text-o"></i></span><em>试卷收藏</em></a></li>-->
+					<a href="{$url}"><span><i class="{$logo}"></i></span><em>{$title}</em></a>
+				{/qb:tag}
+			</li>		
+			<li>
+				{qb:tag name="wap_exam_index_link7" type="link"}
+					<!--<a href="{:urls('rank/index')}"><span><i class="fa fa-fw fa-bar-chart-o"></i></span><em>战绩排名</em></a>-->
+					<a href="{$url}"><span><i class="{$logo}"></i></span><em>{$title}</em></a>
+				{/qb:tag}
+			</li>			
+		</ul>
+	</div>
+	<div class="SideBox">
+		<div class="head"><span class="tag">最近考生</span><a href="{:urls('recently/index')}" class="more">查看更多</a></div>
+		<ul class="listMember">
+			{qb:tag name="exam_member_wapshow" class="app\exam\model\Putin@label" rows="5"}
+			<li><a href="{$rs.url}"><span><img src="{$rs.picurl}" onerror="this.src='__STATIC__/images/nobody.gif'" title="{$rs.username}"></span><em>{$rs.fen}分</em></a></li>
+			{/qb:tag}
+		</ul>
+		<!--<div class="JoinBut"><a href="{:murl('putin/index')}" onclick="joinGroup({$id})">我的考试记录</a></div>-->
+	</div>
+
+
+
+
+	<div class="SideBox">
+		<div class="head"><span class="tag">最新试卷</span><!--<a href="{:urls('bbs/add',['aid'=>$id])}" class="more">发表</a>--></div>
+
+		<div class="listBbs exam_wapshow_001">
+			{qb:tag name="exam_wapshow_001" class="app\exam\model\Category@label" order="id" by="desc" rows="5" }
+			<div class="lists" style="margin-top:8px;border-bottom:1px dotted #efefef;"><!--
+				<ul>
+					<li class="img"><a href="{$rs.user_url}"><img src="/public/static/images/3.jpg" onerror="this.src='__STATIC__/images/nopic.png'"></a></li>
+					<li class="info"><span>{$rs.username}</span><em>{$rs.time}</em></li>
+					<li class="more"><span>{if ($rs.status>1)}精{elseif (time()-$rs.create_time<3600*24)}新{elseif ($rs.view>10)}热{/if}</span></li>
+				</ul>-->
+				<a href="{$rs.url}">
+				<dl>
+					<dt>试卷：{$rs.title}</dt> 
+				</dl>
+				</a>
+				<div class="others">
+					<span><i class="glyphicon glyphicon-hand-right" style="margin-right:10px;">{:fun('exam@title','grade',$rs.grade)}</i>  <i class="glyphicon glyphicon-user">考试：{:intval($rs.user_num)}人</i>  {if $rs.ave_fen}<i class="glyphicon glyphicon-stats">平均分：{$rs.ave_fen}分</i>{/if}
+					 <i class="fa fa-star fav-exam" data-id="{$rs.id}">收藏</i> </span> 					 
+				</div>
+			</div>
+			{/qb:tag}
+		</div>
+		<!--<div class="ShowMore2" onclick='showMoreList()'><span>查看更多</span></div>-->
+
+<script type="text/javascript">
+//收藏试卷
+function check_fav(){
+	$(".fav-exam").each(function(){
+		//console.log($(this).data('id'));
+		var that = $(this);
+		var id = $(this).data('id');
+		$.get("{:urls('favpaper/check')}?id="+id,function(res){
+			if(res.code==0){
+				that.html('已收藏');
+			}else{
+				that.click(function(){
+					var url="{:urls('favpaper/add')}?id="+id;
+					$.get(url,function(res){
+						if(res.code==0){
+							that.html('已收藏');
+							layer.msg('收藏成功');
+						}else{
+							layer.alert(res.msg);
+						}
+					})
+				});
+			}
+		});
+	});
+}
+check_fav();
+</script>
+
+<script type="text/javascript">
+var shop_bbs_page=1;
+function showMoreList(){
+	shop_bbs_page++;
+	var url = '{qb:url name="exam_wapshow_001" /}';
+	$.get(url+shop_bbs_page,function(res){	
+		if(res.code==0){
+			if(res.data==''){
+				layer.msg("已经显示完了！",{time:500});
+				//$('.ShowMore2').hide();
+			}else{
+				$('.exam_wapshow_001').append(res.data);
+				check_fav();
+				scroll_get = true;
+			}
+		}else{
+			layer.msg(res.msg,{time:2500});
+		}
+	});
+}
+
+
+//滚动显示更多
+var scroll_get = true;	//做个标志,不要反反复复的加载
+$(document).ready(function () {
+	$(window).scroll(function () {
+		if (scroll_get==true &&  (400 + $(window).scrollTop())>($(document).height() - $(window).height())) {
+			scroll_get = false;			
+			layer.msg('内容加截中,请稍候',{time:1500});
+			showMoreList();
+		}
+	});
+});
+
+
+</script>
+	</div>
+</div>	
+
+
+{include file="index@share"/}
+{/block}

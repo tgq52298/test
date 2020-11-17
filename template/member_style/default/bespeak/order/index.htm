@@ -1,0 +1,61 @@
+{extend name="$member_style_layout" /}
+{block name="title"}我的预约列表{/block}
+{block name="content"}
+{php}$type||$type=0; $house[$type]="class='red'";{/php}
+<ul class="qb_ui_page_menu">
+	<li><a href="{:urls('index')}" {$house[0]}>全部</a></li>
+	<li><a href="?type=ispay" {$house['ispay']}>已审核</a></li>
+	<li><a href="?type=nopay" {$house['nopay']}>待审核</a></li>
+</ul>
+<style>
+.ListOrders .company span{float:left;}
+.ListOrders .company span a{padding:0 20px 0 0; height:35px; line-height:35px; overflow:hidden;}
+.ListOrders ul{margin-bottom:0;}
+.ListOrders ul li .infos{padding-left:10px;}
+.ListOrders ul li .infos .m{line-height30px; height:30px;}
+.ListOrders ul li .infos .m span{color:#125784;}
+.ListOrders .ptime{text-align:right; background:#fff; font-size:12px; line-height:40px; height:30px; padding-right:10px;}
+</style>
+<div class="MainCont">
+	<div class="cont">	
+		{volist name='listdb' id='rs'}
+		<div class="ListOrders">
+			<div class="company"><span><a href="{:iurl('content/show',['id'=>$rs.shopid])}">{$rs.fuwu_name}</a></span></div>
+			<ul>
+				<li>
+					<div class="infos">
+						
+						<div class="m">联系人：<span>{$rs.order_linkman}</span> </div>
+						<div class="m">联系电话：<span><a href="tel:{$rs.order_telphone}">{$rs.order_telphone}</a></span> </div>
+						<div class="m">预约时间：<span>{:format_time($rs.order_bespeak_time)}</span> </div>
+						<div class="m">地址：<span>{$rs.order_address}</span> </div>
+						<div class="m">预约状态：<span>
+							{switch name="$rs.pay_status" }
+							{case value="1"} <span class='c_r'>预约成功</span>{/case}
+							{case value="2"}<span class='c_9'>预约失败</span>{/case}
+		                          			{case value="3"}用户已取消{/case}
+							{default /}<span class='c_g'>待审核</span>
+							{/switch}
+						</span> </div>
+						
+					</div>
+				</li>
+			</ul>
+			<div class="ptime"><span>{$rs.create_time}</span> </div>
+			<div class="ActOrder">
+				<a href="{:urls('show',['id'=>$rs['id']])}">详情</a>
+				{if $rs.pay_status <2 }
+					<a href="{:urls('cancel',['id'=>$rs.id])}" >取消预约</a>
+				{elseif $rs.pay_status >1 /} 
+					<a href="{:urls('del',['id'=>$rs.id])}" >删除</a>
+				{/if}
+			</div>
+		</div>
+		{/volist}
+		<div class='Showpage'>{$pages}</div>
+	</div>
+</div>
+
+
+
+{/block}

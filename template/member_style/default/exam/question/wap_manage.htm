@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>试卷题目管理</title>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <link rel="stylesheet" href="__STATIC__/layui/css/layui.css"  media="all">
+  <script type="text/javascript" src="__STATIC__/js/core/jquery.min.js"></script>
+  <script type="text/javascript" src="__STATIC__/layer/layer.js"></script>
+  <style>
+  .mui-content-padded{
+  	    font: 16px/26px 'Microsoft Yahei','Simsun';
+  }
+ .f_r{float:right;}
+.mui-pager {
+	padding-left: 0;
+	list-style: none;
+	text-align: center
+}
+
+.mui-pager:after,.mui-pager:before {
+	display: table;
+	content: ' '
+}
+
+.mui-pager:after {
+	clear: both
+}
+
+.mui-pager li {
+	display: inline
+}
+
+.mui-pager li>a,.mui-pager li>span {
+	display: inline-block;
+	padding: 5px 14px;
+	border: 1px solid #ddd;
+	border-radius: 6px;
+	background-color: #fff;
+	background-clip: padding-box
+}
+
+.mui-pager li.mui-active>a,.mui-pager li.mui-active>span,.mui-pager li:active>a,.mui-pager li:active>span {
+	cursor: default;
+	text-decoration: none;
+	color: #fff;
+	border-color: #007aff;
+	background-color: #007aff
+}
+
+.mui-pager .mui-next>a,.mui-pager .mui-next>span {
+	float: right
+}
+
+.mui-pager .mui-previous>a,.mui-pager .mui-previous>span {
+	float: left
+}
+
+.mui-pager .mui-disabled>a,.mui-pager .mui-disabled>a:active,.mui-pager .mui-disabled>span,.mui-pager .mui-disabled>span:active {
+	opacity: .6;
+	color: #777;
+	border: 1px solid #ddd;
+	background-color: #fff
+}
+</style>
+  <!-- 注意：如果你直接复制所有代码到本地，上述css路径需要改成你本地的 -->
+</head>
+<body>
+ <fieldset class="layui-elem-field layui-field-title">
+  <legend> 试卷：{$categorys['name']}</legend>
+</fieldset>
+
+
+<table class="layui-table" lay-even="" lay-skin="nob">
+	<tbody>
+		{volist name='listdb' id='rs'}
+			<tr>
+				<td>{$rs.id}、{:fun('Content@info',$rs['aid'],config('system_dirname'))['title']}
+					【{:fun('Content@info',$rs['aid'],config('system_dirname'))['mid_name']}】
+					<a href="javascript:;" onclick="delinfo('{:murl('paper/delete',['ids'=>$id,'aid'=>$rs['id']])}')" class='layui-btn  layui-btn-danger layui-btn-sm f_r'>移除</a>
+				</td>
+			</tr>
+		{/volist}
+	</tbody>
+</table> 
+
+{$pages}
+<script>
+function delinfo(url){
+	$.get(url,function(res){
+		if(res==true){
+			layer.msg('移除成功');
+			window.location.reload();
+		}else if(res==false){
+			layer.msg('操作失败');
+		}else{
+			layer.msg('操作失败');
+		}
+		
+	});
+}
+
+
+</script>
+
+</body>
+</html>

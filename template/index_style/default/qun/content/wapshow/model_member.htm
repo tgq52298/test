@@ -1,0 +1,9 @@
+<!--圈子会员-->
+	<div class="SideBox" >
+		<div class="head"><span class="tag">共有成员{$info.usernum}人</span><a href="{:urls('qun/member/index',['id'=>$id])}" class="more">查看更多</a></div>
+		<ul class="listMember qun_member_wapshow">
+			{qb:tag name="qun_member_wapshow" class="app\qun\model\Member@get_label" rows="5" where="aid=$id" js="qun_member_wapshow"}
+			<li><a href="{:get_url('user',$rs.uid)}"><span><img src="{$rs.icon}" onerror="this.src='__STATIC__/images/nobody.gif'"></span><em>{$rs.username}</em></a></li>
+			{/qb:tag}
+		</ul> 
+	</div>

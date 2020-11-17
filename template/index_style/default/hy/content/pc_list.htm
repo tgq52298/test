@@ -1,0 +1,160 @@
+﻿{extend name="$index_style_layout" /}
+
+<!--SEO相关-->
+{block name="head_title"}{$fid?($info['seo_title']?:$info['name']):$m_info['title']}{/block}
+{block name="head_keword"}{$fid?($info['seo_keywords']?:$info['name']):$m_info['title']}{/block}
+{block name="head_description"}{$info.seo_description}{/block}
+
+{block name="body_AllScorllSlide"}
+<!--通栏横幅图片__STATIC__/css/qb_ui.css中控制图片宽度百分百高度行内样式设置，如不设置不小于100px---->
+{qb:tag name="web_banner_pic01" type="image"}
+<!--
+<div class="qb_ui_AllscrollBanner" style="height:300px;">
+	<a href="#1"><img src="__STATIC__/images/s0.jpg"></a>
+</div>
+-->
+<div class="qb_ui_AllscrollBanner" style="height:300px;">
+	<a href="{$url}"><img src="{$picurl}"></a>
+</div>
+{/qb:tag}
+{/block}
+{block name="body_content"}
+<link href="__STATIC__/group/pclist/circle_list.css" rel="stylesheet" type="text/css" />
+<link href="__STATIC__/group/pclist/hover.css" rel="stylesheet" type="text/css" />
+<div class="contbox">
+	<div class="content">		
+		<div class="maincont2">
+			<div class="left">
+				<div class="main">
+					<div class="shead">
+						<div class="tag">
+							<div class="first" onclick="chagetype(0)"><a href="scriptjava:;" class="button pulse-shrink">推荐商家</a></div>
+							<div onclick="chagetype(1)"><a href="scriptjava:;" class="button pulse-shrink">热门商家</a></div>
+							
+						</div>
+					</div>
+
+					<div class="listbox">
+						<div class="cont qun_pclist_001">
+							{qb:listpage name="qun_pclist_001" rows="10" order="id" by="asc"}
+							<div class="list">
+								<div class="showpic"><a href="{$rs.url}" class="button buzz-out"><img src="{$rs.picurl}" onerror="this.src='__STATIC__/images/nopic.png'"></a></div>
+								<div class="mytext">
+									<div class="tag">
+										<a href="{$rs.url}" target="_blank">{$rs.title}</a>	 
+										 								 
+									</div>
+									
+									<div class="word" >
+										{$rs.content}
+									</div>
+									<div style="line-height:150%;">
+										电话: {$rs.telphone}<br>
+										地址: {$rs.address}<br>
+										加入时间: {$rs.create_time|format_time}
+									</div>
+								</div>
+							</div>
+							{/qb:listpage}
+						</div>
+						
+						<div class="cont">
+							{qb:listpage name="qun_pclist_002" rows="10" order="id" by="desc"}
+							<div class="list">
+								<div class="showpic"><a href="{$rs.url}" class="button buzz-out"><img src="{$rs.picurl}" onerror="this.src='__STATIC__/images/nopic.png'"></a></div>
+								<div class="mytext">
+									<div class="tag">
+										<a href="{$rs.url}">{$rs.title}</a>
+										
+									</div>
+									<div class="word">
+										{$rs.content}
+									</div>
+									<div style="line-height:150%;">
+										电话: {$rs.telphone}<br>
+										地址: {$rs.address}<br>
+										加入时间: {$rs.create_time|format_time}
+									</div>
+								</div>
+							</div>
+							{/qb:listpage}
+						</div>
+						
+						{$pages}
+
+					</div>
+				</div>
+<script type="text/javascript">
+ 
+
+function chagetype(num){
+	$('.shead .tag div').removeClass('first');
+	$('.shead .tag div').eq(num).addClass('first')
+	$('.listbox .cont').hide();
+	$('.listbox .cont').eq(num).show();
+}
+chagetype(0);
+</script>
+			</div><!--left end-->
+			
+			<div class="right">
+				<div class="main">
+					<div class="mycode">
+						<a href="{:murl('content/postnew')}" class="button pulse-shrink"><i class="fa fa-fw fa-paste"></i>创建商铺</a>
+						<span><img src="__STATIC__/group/pclist/code.jpg"></span>
+						<p>扫一扫 访问手机版</p>
+					</div>				
+				</div>
+				<div class="main">
+					<div class="myhead"><span>商家分类</span></div>
+					<div class="myproduct">
+						<ul>
+{volist name="''|sort_config" id="rs"}
+							<li><a href="{:urls('content/index',['fid'=>$rs['id']])}" {eq name="rs.id" value="$fid"} style="background:orange;color:#fff;" {/eq} class="button buzz-out">{$rs.name}</a></li>
+{/volist}
+						 
+						</ul>
+					</div>		
+				</div>
+				<div class="main">
+					<div class="myhead"><span>活跃会员</span></div>
+					<div class="myfriends">
+						<ul class="qun_pc_list002">
+							{qb:tag name="qun_pc_list002" class="app\hy\model\Member@get_label" rows="4" js="qun_pc_list002"}
+							<li>
+								<a href="#">
+									<span><img src="{$rs.icon}" onerror="this.src='__STATIC__/images/nobody.gif'"></span>
+									<p>{$rs.username}</p>
+								</a>
+							</li>
+							{/qb:tag}							
+						</ul>
+						<div class="more ShowMores"><a href="javascript:" onclick="showMoreShop('{qb:url name="qun_pc_list002"/}')" class="button pulse-shrink">查看更多</a></div>
+					</div>		
+				</div>
+			</div><!--right end-->
+		</div><!--maincont2 end-->
+		
+	</div><!--content end-->
+</div>
+<script type="text/javascript">
+var shoppage=1;
+function showMoreShop(url){	
+	shoppage++;
+	$.get(url+shoppage+'&'+Math.random(),function(res){
+		if(res.code==0){
+			if(res.data==''){
+				layer.msg("已经显示完了！",{time:500});
+				$('.ShowMores a').attr('onclick','');
+				$('.ShowMores a').html('显示完了');
+				$('.ShowMores a').css({'background':'#eee'});
+			}else{
+				$('.qun_pc_list002').append(res.data);
+			}
+		}else{
+			layer.msg(res.msg,{time:2500});
+		}
+	});
+}
+</script>
+{/block}

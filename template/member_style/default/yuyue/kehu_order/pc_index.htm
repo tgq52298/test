@@ -1,0 +1,277 @@
+{extend name="$member_style_layout" /}
+
+{block name="title"}客户购买的商品{/block}
+
+{block name="content"}
+<link rel="stylesheet" href="__STATIC__/layui/css/layui.css" media="all">
+<link rel="stylesheet" href="__STATIC__/css/pcorder.css">
+<style type="text/css">
+input[name="keyword"]{
+	width:100px;
+	float:left;
+	margin-right:10px;
+}
+@media (min-width: 1024px){
+	input.layui-input {
+		width: 100px;
+	}
+	input[name="keyword"]{
+		width:200px;
+		margin-right:10px;
+	}
+}
+</style>
+
+
+<script type="text/javascript">
+var choose_day=-1;
+var order_time_array = new Array();
+{volist name=":get_order_time($shop_info,true)" id="rs"}
+{if $order_day==$rs['day']['key']}
+choose_day={$key};
+{/if}
+order_time_array[{$key}] = {:json_encode($rs.time,JSON_UNESCAPED_UNICODE)};
+{/volist}
+
+$(function(){
+
+	layui.use(['form'], function(){
+		  var form = layui.form;	 
+		  form.on('select(ytime)', function(data){
+		      $(data.elem).selectedIndex=data.elem.selectedIndex;
+		      $(data.elem).trigger('change');
+		  });
+		  form.on('select(shop_id)', function(data){
+		      $(data.elem).trigger('change');
+		  });
+	});
+
+	$("#shop_id").change(function(){
+		window.location.href="?type={$type}&qid={$qid}&aid="+$(this).val()
+	});
+
+	$("#ytime").change(function(){
+		var i = $(this).get(0).selectedIndex-1;
+		if(i==-1){
+			window.location.href="?type={$type}&qid={$qid}&aid={$aid}"
+			//$("#shoptype_time").html('');
+			return ;
+		}
+		set_time_html(order_time_array[i],$(this).val());
+	});
+
+	if(choose_day>-1){
+		set_time_html(order_time_array[choose_day],'{$order_day}','{$order_tid}');
+	}
+
+	function set_time_html(array,day,time){
+		var str = "";
+		array.forEach((rs)=>{
+			var ck = rs.id==time?'layui-btn-normal':'layui-btn-primary';
+			str += `<a style="margin-bottom:8px;margin-left:0px;margin-right: 10px;" class="layui-btn  ${ck}" href="?qid={$qid}&type={$type}&aid={$aid}&order_day=${day}&order_tid=${rs.id}">${rs.name}</a>`;
+		});
+		$("#shoptype_time").html(str);
+	}
+});
+</script>
+
+<form method="get" action="{:urls('index',['type'=>$type,'qid'=>$qid])}">
+<div style="margin-bottom:10px;" class="layui-form"> 
+	 <a href="{:urls('index')}" class="layui-btn {if empty($type)}layui-btn-normal{else /}layui-btn-primary{/if}">全部</a> 
+	 <a href='{:urls("index","type=isfew&ktype=$ktype&keyword=$keyword&qid=$qid&aid=$aid")}' class="layui-btn {if $type=='isfew'}layui-btn-normal{else /}layui-btn-primary{/if}">已付订金</a> 
+	 <a href='{:urls("index","type=nofew&ktype=$ktype&keyword=$keyword&qid=$qid&aid=$aid")}' class="layui-btn {if $type=='nofew'}layui-btn-normal{else /}layui-btn-primary{/if}">未付订金</a> 
+	 <a href='{:urls("index","type=tui&ktype=$ktype&keyword=$keyword&qid=$qid&aid=$aid")}' class="layui-btn {if $type=='tui'}layui-btn-normal{else /}layui-btn-primary{/if}">申请退订金</a> 
+	 <a href='{:urls("index","type=ispay&ktype=$ktype&keyword=$keyword&qid=$qid&aid=$aid")}' class="layui-btn {if $type=='ispay'}layui-btn-normal{else /}layui-btn-primary{/if}">已付全款</a>
+	 <a href='{:urls("index","type=nopayall&ktype=$ktype&keyword=$keyword&qid=$qid&aid=$aid")}' class="layui-btn {if $type=='nopayall'}layui-btn-normal{else /}layui-btn-primary{/if}">仍差余款</a> 
+
+	<!-- <a href="?type=nopay" class="layui-btn">未付清</a> --> 
+	<a href='{:urls("index","type=ishexiao&ktype=$ktype&keyword=$keyword&qid=$qid&aid=$aid")}' class="layui-btn {if $type=='ishexiao'}layui-btn-normal{else /}layui-btn-primary{/if}">已核销</a> 
+	<a href='{:urls("index","type=nohexiao&ktype=$ktype&keyword=$keyword&qid=$qid&aid=$aid")}' class="layui-btn {if $type=='nohexiao'}layui-btn-normal{else /}layui-btn-primary{/if}">未核销</a> 
+</div>
+
+<div style="margin-bottom:10px;height:40px;" class="layui-form">
+	 <div style="width:110px;float:left;margin-right:10px;">
+	  <select name="ktype">
+        <option value=""></option>
+        <option value="shopid" {if $ktype=='shopid'}selected{/if}>商品ID</option>
+        <option value="uid" {if $ktype=='uid'}selected{/if}>订购用户UID</option>
+        <option value="order_sn" {if $ktype=='order_sn'}selected{/if}>订单号</option>
+		<option value="linkman" {if $ktype=='linkman'}selected{/if}>联系人</option>
+      </select>
+	</div>
+	<input type="text" name="keyword" value="{$keyword}" placeholder="请输入关键字" class="layui-input">
+	<button class="layui-btn" style="float:left;margin-right:10px;" lay-submit>搜索</button>
+	
+	<div style="width:270px;float:left;margin-left:25px;">
+	  <select name="shop_id" id="shop_id" lay-filter='shop_id'>
+        <option value="">具体商品订单筛选</option>
+		{volist name="$shopdb" id="rs"}
+        <option value="{$rs.id}" {if $aid==$rs.id}selected{/if}>{$rs.title}</option>
+		{/volist}
+      </select>
+	</div> 
+
+	{if $shop_info.stocktype==2}
+	<div style="width:120px;float:left;margin-left:25px;">
+	  <select name="ytime" id="ytime" lay-filter='ytime'>
+        <option value="">预约日期</option>
+		{volist name=":get_order_time($shop_info,true)" id="rs"}
+        <option value="{$rs['day']['key']}" {if $order_day==$rs['day']['key']}selected{/if}>{$rs['day']['title']}</option>
+		{/volist}
+      </select>
+	</div> 
+	{/if}
+
+	<a style="float:right;" href="{:strstr(get_url('location'),'?')?get_url('location').'&excel=1':get_url('location').'?excel=1'}" class="layui-btn">导出下面订单</a>
+</div>
+
+
+<div style="margin-bottom:10px;" class="layui-form">
+
+	<div style="float:left;" id="shoptype_time"></div>
+</div>
+
+</form>
+<div  style="clear: both;width:100%;height:8px;"></div>
+{empty name="listdb"}<div style="padding:50px;font-size:14px;">你还没有客户购买商品</div>{/empty}
+{volist name="listdb" id="rs"}
+<div class="ListOrder">
+  <div class="company">
+    <a target="_blank" href='{:get_url("user","uid=$rs[uid]")}'>客户: <em><img src="{$rs.uid|get_user_icon}" onerror="this.src='__STATIC__/index/base/noface.gif'"/></em>{$rs.linkman?:get_user_name($rs.uid)} 　{if $rs.hexiao_uid}核销者:{$rs.hexiao_uid|get_user_name}{/if}  <i style="font-size:12px;" class="hexiao-{$rs.id}">指派人: {:get_user($rs.hx_uid)['qun_group'][end($rs['shop_db'])['ext_id']]['nickname']}</i> </a> 
+ 
+	<span>{$rs.create_time}</span>
+  </div>
+  <ul class="orderinfo">
+    <li class="shops">
+{volist name="rs.shop_db" id="vs"}
+		<div class='list'>
+			<div class='listtable'>
+			  <div class='img'>
+				<a href="{:iurl('content/show',['id'=>$vs['id']])}" target="_blank"><img src="{$vs.picurl}" onerror="this.src='__STATIC__/images/nopic.png'"/></a>
+			  </div>
+			  <div class='t'>
+				<a href="{:iurl('content/show',['id'=>$vs['id']])}" target="_blank">{$rs.shoptitle?:$vs.title}</a>
+				{if $rs.order_day}<br> {:format_order_time($rs)} {/if}
+				{if $about=get_user($rs.uid)['qun_group'][$vs['ext_id']]['about']}<br><span title="用户圈子里的备注" style="color:#666;font-size:13px;"><i class="fa fa-quote-left"></i>{$about}</span>{/if}
+				<br>备注:<i class="note-{$rs.id}">{$rs.admin_note}</i>
+				</div>
+			  <div class='price'>
+				<!--<s>&yen;{$vs._price}</s>-->
+				<span>{if $vs.qun_money>0} {$vs.qun_money}币 {else /} &yen;{$vs._price} {/if}</span></div>
+			  <div class='num'>X {$vs._num}</div></div>
+		  </div>
+{/volist}
+    </li>
+    <li class="totalmoney" style="font-size:15px;">
+		{if $vs.qun_money>0}
+		{$vs.qun_money} 币
+		{elseif $vs._paytype>0}
+		金额:&yen;{$rs.fewmoney}
+		{else /}
+		余款:&yen;{$rs.pay_money}<br><br>订金:&yen;{$rs.fewmoney}
+		{/if}
+	</li>
+    <li class="state">
+      <div>
+	{if (is_numeric($vs._paytype)&&$vs._paytype==0)||(is_numeric($vs.paytype)&&$vs.paytype==0)}
+		<!--分期付款-->
+		{if $rs.receive_status==1}
+			<font color="red">交易完毕</font>
+		{else /}
+			{eq name="$rs.pay_status" value="1"}
+			  <span style="color:blue;">已付余款</span> <br> <br>
+			{else /}
+			未付余款 <br><br>
+			{/eq}
+
+			{eq name="$rs.few_ifpay" value="1"}
+			  <a style="border:1px solid #ddd;padding:5px;color:blue;" href="{:urls('rob_ding',['id'=>$rs.id])}" onclick="return confirm('你要没收用户的订金吗?');" title="没收订金">已付订金</a> 
+			{elseif $rs.few_ifpay==-1 /}
+			  <a style="border:1px solid #ddd;padding:5px;color:red;" class="tui_ding" data-id="{$rs.id}" href="#" title="点击操作">请求退订</a> 
+			{else /}
+			  未付订金 
+			{/eq}
+		{/if}
+
+	{else /}
+
+		<!--非分期付款-->
+		{if $rs.receive_status==1}
+			<font color="red">交易完毕</font>
+		{else /}
+			{eq name="$rs.pay_status" value="1"}
+			  <span style="border:1px solid #ddd;padding:5px;color:blue;" class="more-menu" url='<a href="{:urls('tui_order',['id'=>$rs.id])}" onclick="return confirm(`你确认要给用户退全款吗?`);">退全款</a>'>已付全款</span> 
+			{elseif $rs.pay_status==-1 /}
+			  <a style="border:1px solid #ddd;padding:5px;color:red;" href="#" title="点击退全款">同意退全款</a> 
+			{else /}
+			  未付款 
+			{/eq}
+		{/if}
+
+	{/if}
+	</div>
+      <div></div>
+    </li>
+    <li class="action">
+      <a href="{:urls('show',['id'=>$rs['id']])}">查看</a>
+      <span style='display:;'> <a href="{:urls('edit',['id'=>$rs['id']])}" class="_pop">修改</a></span>
+        {if empty($rs.few_ifpay)&&empty($rs.pay_status)}<a href="{:urls('delete',['id'=>$rs['id']])}" class="alert">删除</a>{/if}
+		<a href="#" class="more-menu" url='<a href="javascript:" onclick="edit_about({$rs.id})">备注信息</a><br><a href="javascript:" onclick="set_hexiao_uid({$rs.id},[ {volist name=":fun('qun@admin',$vs.ext_id)" id='auid'} { uid:{$auid},username:`{$auid|get_user_name}({:get_user($auid)['qun_group'][$vs['ext_id']]['nickname']})` } ,{/volist} ] )">指派任务</a>'>更多</a>
+    </li>
+  </ul>
+  <div class="otheraction">订单号：{$rs.order_sn}</span></div>
+</div>
+{/volist}
+<div class="OrderPage">{$pages}</div>
+<script type="text/javascript">
+
+//指派任务
+function set_hexiao_uid(id,array){
+	var str = '';
+	array.forEach((rs)=>{
+		str += '<input type="radio" name="adminuid" class="list-admin" value="'+rs.uid+'" data-name="'+rs.username+'">'+rs.username+'<br>';
+	});
+	var obj = $(".hexiao-"+id);
+	layer.alert('<div style="line-height:190%;">' + str + '</div>',{title:'请指派一个负责人'},function(i){		
+		var value = $(".list-admin:checked").val();
+		var name = $(".list-admin:checked").data('name');
+		layer.close(i);
+		$.get("{:urls('set_hexiao_uid')}?id="+id+"&uid="+(value?value:0),function(res){
+			if(res.code==0){
+				layer.msg('设置成功');
+				obj.html( '指派人:'+(name?name:'') );
+			}else{
+				layer.alert(res.msg);
+			}
+		});
+	});
+}
+
+//修改备注
+function edit_about(id){
+	var obj = $(".note-"+id);
+	layer.alert('<textarea style="width:100%;height:80px" class="user_about">'+obj.text().replace(/(^\s*)|(\s*$)/g,"")+'</textarea>',{title:'请输入备注'},function(i){
+		var value = $(".user_about").last().val();
+		layer.close(i);
+		$.get("{:urls('edit_note')}?id="+id+"&content="+value,function(res){
+			if(res.code==0){
+				layer.msg('设置成功');
+				obj.html( value );
+			}else{
+				layer.alert(res.msg);
+			}
+		});
+	});
+}
+
+$('.tui_ding').on('click', function() {
+	var url ="{:urls('tui_ding')}?id="+$(this).data('id')+"&type="
+   layer.tips('<a href="'+url+'agree" style="color:#fff;">同意退订</a><br><a href="'+url+'unagree" style="color:#fff;">拒绝退订</a>',$(this), {
+                 tips: [3, '#0FA6D8'],
+                 tipsMore: false,
+                 time:5000,
+       });
+});
+</script>
+
+{/block}

@@ -1,0 +1,18 @@
+<!--群聊-->
+<script type="text/javascript">
+function chat_init(){	//加载聊天框架成功时回调 
+	$("#iframe_msg")[0].contentWindow.$(".talk_window").css({background:'#fff'});
+}
+function change_win(type){	
+	if(type){
+		$(".Container,.scroll-sort,.qb_ui_Site_nav").css({width:'100%'});
+		$(".Container .RightCnt,.RightSide").css({width:'500px'});
+	}else{
+		$(".Container,.scroll-sort,.qb_ui_Site_nav").css({width:'1200px'});
+		$(".Container .RightCnt,.RightSide").css({width:'320px'});
+	}
+}
+</script>
+				<div class="SideMores chat_warp taglabel" style="margin-top:0;">		
+					<iframe name="iframe_msg" id="iframe_msg" src="about:blank" width="100%" style="height:500px;display:none;" frameborder="0" allowfullscreen="true"></iframe>
+				</div>

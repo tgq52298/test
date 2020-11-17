@@ -1,0 +1,159 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>在线预约</title>
+	<meta name="keywords" content="">
+	<meta name="description" content="">
+	<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+</head>
+<body>
+	
+
+<style>
+.PostOrder{
+	max-width: 640px;
+	margin:auto;
+	padding: 0 0 30px 0;
+}
+.PostOrder .tag{
+    /* width: 90%; */
+    height: 50px;
+    line-height: 25px;
+    margin: 0px auto 8px auto;
+    border-bottom: #DDD dotted 5px;
+    padding-bottom: 10px;
+    position: relative;
+    /* padding-left: 50px; */
+    font-size: 18px;
+}
+.PostOrder .tag a{display:block;}
+.PostOrder .tag i{
+	position: absolute;
+	font-size: 40px;
+	left: 5px;
+	top:5px;
+	color: #999;
+}
+.PostOrder ul{
+	display: table;
+	width: 90%;
+	margin: 0 auto 15px auto;
+	border-bottom: #DDD solid 1px;
+}
+.PostOrder ul ol,.PostOrder ul li{
+	display: table-cell;
+	padding: 5px;
+	vertical-align: middle;
+}
+.PostOrder ul ol{
+	width:50px;
+	text-align: center;
+	font-size: 20px;
+	color: #666;
+}
+.PostOrder ul li input{
+	border: 0px;
+	width: 100%;
+	outline: none;
+	background:none;
+}
+.PostOrder dl{
+	display: table;
+	width: 90%;
+	margin: 0 auto 15px auto;
+}
+.PostOrder dl dt,.PostOrder dl dd{
+	display: table-cell;
+	padding: 5px;
+	vertical-align: middle;
+}
+.PostOrder dl dt{
+	width:70px;
+}
+.PostOrder dl dd input[type="radio"]{
+	margin: 0 5px 0 10px;
+}
+.PostOrder div button{
+	display: block;
+	width:90%;
+	margin: 15px auto 0 auto;
+	border: 0px;
+	line-height: 50px;
+	background: #EBEEF0;
+	border-radius: 5px;
+	color: #888;
+	font-size: 20px;
+	cursor: pointer;
+}
+.PostOrder div button[type=submit]{
+	background: #257FED;
+	color: #FFF;
+}	
+</style>
+<div class="PostOrder">
+	<div class="tag"><i class="fa fa-wpforms"></i>预约服务{if input('id')} ：<a href="{:urls('content/show',['id'=>input('id')])}" class='c_b'>{:get_one_contents(input('id'))['title']}</a> {/if}</div>
+	<form action="{:urls('add')}" method="post"  onSubmit="return checks();">
+	
+
+	<ul>
+		<ol><i class="fa fa-angle-right"></i></ol>
+		<li> <input placeholder="请输入联系人" type="text" name="order_linkman" id="atc_order_linkman" style="" class="layui-input c_order_linkman " value="{$userdb.truename}"></li>
+	</ul>
+	<ul>
+		<ol><i class="fa fa-angle-right"></i></ol>
+		<li> <input placeholder="请输入联系电话" type="text" name="order_telphone" id="atc_order_telphone" style="" class="layui-input c_order_telphone " value="{$userdb.mobphone}"></li>
+	</ul>
+{qb:form name="xxx" field="title,picurl,order_linkman,order_telphone" mid="-1"}
+		<ul>
+			<ol><i class="{if $rs.name=='linkman'}si si-user{elseif $rs.name=='telphone' /}fa fa-volume-control-phone{elseif $rs.name=='address' /}glyphicon glyphicon-home{else /}fa fa-angle-right{/if}"></i></ol>
+			<li>{$rs.value}</li>
+		</ul>
+{/qb:form}
+		<div>
+			<input type="hidden" name='fuwu_id' value="{:input('id')}">
+			<button type="submit">提交</button>
+			<button type="button" onclick="javascript:history.back(-1);return false;">返回</button>
+		</div>
+	</form>
+</div>
+<script>
+function checks(){
+	var linkman=$('#atc_order_linkman').val();
+	var time=$('#atc_order_bespeak_time').val();
+	var phone=$('#atc_order_telphone').val();
+	var address=$('#atc_order_address').val();
+	if(linkman==''){
+		layer.msg('联系人不能为空!');
+		return false;
+	}
+	if(time==''){
+		layer.msg('时间不能为空!');
+		return false;
+	}
+	if(phone==''){
+		layer.msg('电话不能为空!');
+		return false;
+	}
+	if(address==''){
+		layer.msg('服务地址不能为空!');
+		return false;
+	}
+}
+function check_login(){
+	if("{$userdb.uid}"==""){
+		layer.confirm('你还没登录,不能预约,你要登录吗？', {
+			btn : [ '登录', '取消' ]
+			}, function(index) {
+				window.location.href = "{:get_url('login')}";
+		}); 
+		return false;
+	}
+	return true;
+}
+check_login();
+</script>
+</body>
+</html>

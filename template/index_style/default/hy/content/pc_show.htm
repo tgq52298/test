@@ -1,0 +1,296 @@
+﻿{extend name="$index_style_layout" /}
+
+<!--SEO相关-->
+{block name="head_title"}{$info.title}{/block}
+{block name="head_keword"}{$info.keywords?:$info.title}  {$s_info.name} {/block}
+{block name="head_description"}{:get_word(del_html($info['content']),300)}{/block}
+
+{block name="body_AllScorllSlide"}
+<!--通栏横幅图片__STATIC__/css/qb_ui.css中控制图片宽度百分百高度行内样式设置，如不设置不小于100px---->
+{qb:tag name="cms_pc_show001" type="image"}
+<div class="qb_ui_AllscrollBanner" style="height:300px;">
+	<a href="#1"><img src="__STATIC__/images/s2.jpg"></a>
+</div>
+{/qb:tag}
+{/block}
+{block name="body_content"}
+<link rel="stylesheet" href="__STATIC__/group/circle_list/circle_list.css">
+<div class="contbox">
+	<div class="content">
+<script type="text/javascript">
+function joinGroup(id){
+	$.get("{:urls('wxapp.member/join',['id'=>$id])}?"+Math.random(),function(res){
+		if(res.code==0){
+			layer.alert("加入成功！");
+		}else{
+			layer.alert("加入失败:"+res.msg);
+		}	
+	});
+}
+</script>	
+		<div class="maincont1">
+			<div class="main">
+				<div class="showimg">
+					<div class="img"><img src="{$info.picurl}" onerror="this.src='__STATIC__/images/nopic.png'" width="125" height="125" /></div>
+					<div class="word">
+						<div class="join"><a href="#">{$info.title}</a><!--<a href="#" class="a_nav">申请加入</a>--></div>
+						 <div class="who">电话：<em class="green">{$info.telphone}</em></div>
+						<div class="who">地址：<em class="green">{$info.address}</em></div>
+						<div class="who">访问量：<em class="green">{$info.view}</em></div>
+						<div class="who">入驻时间：<em class="green">{$info.create_time|format_time}</em></div>
+					</div>
+				</div>
+				<div class="how">
+					<div class="h_nav">
+					<a href="{:murl('shop/content/add',['mid'=>1,'ext_id'=>$id])}" class="R">发布商品</a>						
+						<div class="mores">
+							<a href="{:urls('cms/add',['aid'=>$id,'mid'=>1])}">发布资讯</a>
+							<a href="{:urls('cms/add',['aid'=>$id,'mid'=>2])}">发布图片动态</a>
+							<a href="{:urls('bbs/add',['aid'=>$id])}">发布话题</a>
+						</div>
+					</div>
+					<div class="h_nav"><a href="#" onclick="joinGroup({$id})" class="E">加入会员</a></div>
+					<div class="h_code">
+						<p><img src="{:get_qrcode()}" width="95" height="95" /></p>
+						<p>访问手机版</p>
+					</div>
+				</div>
+			</div>
+		</div><!--maincont1 end-->
+		
+		<div class="maincont2">
+			<div class="left">
+				<div class="main">
+					<div class="shead">
+						<div class="tag">
+							<div class="first" onclick="chagetype(0)"><a href="javascript::;">商品</a></div>
+							<div onclick="chagetype(1)"><a href="javascript::;">资讯</a></div>
+							<div onclick="chagetype(2)"><a href="javascript::;">图片</a></div> 
+							<div onclick="chagetype(3)"><a href="javascript::;">话题</a></div>
+						</div>
+						 
+					</div>
+					<div class="listbox">
+
+						<div class="cont hy_pcshow_shop001">
+							{qb:tag name="hy_pcshow_shop001" type="shop" union="ext_id=id" order="id" by="asc" rows="6" js="hy_pcshow_shop001"}
+							<div class="product">
+								<div class="img"><a href="{$rs.url}"><img src="{$rs.picurl}" onerror="this.src='__STATIC__/images/nopic.png'" width="240" height="180" /></a></div>
+								<div class="info">
+									<div class="w"><img src="{$rs.user_icon}" width="50" height="50" /></div>
+									<div class="t">
+										<div><a href="{:get_url('user',$rs['uid'])}" class="green">{$rs.username}</a></div>
+										<div><span style="color:#999999;">价格：</span><span>￥ {$rs.price} 元</span></div>
+									</div>
+								</div>
+							</div>
+							{/qb:tag}
+						</div>
+						
+						<div class="cont hy_pcshow_news001">
+								{qb:tag name="hy_pcshow_news001" type="cms" mid="1" union="ext_id=id" order="id" by="asc" rows="8" js="hy_pcshow_news001"}
+								<div class="list">
+									<div class="list_left">
+										<div class="title"><span style="color:orange;">{if ($rs.status>1)}精{elseif (time()-$rs.create_time<3600*24)}新{elseif ($rs.view>10)}热{/if}</span><a href="{$rs.url}">{$rs.title|get_word=50}</a></div>
+										<!--<div class="info" style="display:none"><p>这是介绍</p></div>-->
+										{if (count($rs.picurls)>2)}
+										<div class="pic" style="margin-bottom:0;">
+											{volist name="$rs.picurls" id="pic"}
+											{lt name="i" value="6"}
+											<a href="{$rs.url}" target="_blank"><img src="{$pic}"onerror="this.src='__STATIC__/images/nopic.png'" width="78" height="78" /></a>
+											{/lt}
+											{/volist}
+										</div>
+										{/if}
+									</div>
+									<div class="list_right">
+										<div class="o"><a href="{:get_url('user',$rs['uid'])}" class="orange" target="_blank">{$rs.username}</a> <span style="float:right;">{$rs.time}</span></div>
+									</div>
+								</div>
+							 {/qb:tag}
+						</div>
+
+						<div class="cont hy_pcshow_photo001">
+							{qb:tag name="hy_pcshow_photo001" type="cms" mid="2" union="ext_id=id" order="id" by="asc" rows="6" js="hy_pcshow_photo001"}
+							<div class="product">
+								<div class="img"><a href="{$rs.url}"><img src="{$rs.picurl}" onerror="this.src='__STATIC__/images/nopic.png'" width="240" height="180" /></a></div>
+								<div class="info">
+									<div class="w"><img src="{$rs.user_icon}" width="50" height="50" /></div>
+									<div class="t">
+										<div><a href="{:get_url('user',$rs['uid'])}" class="green" target="_blank">{$rs.username}</a></div>
+										<div><span style="color:#999999;">时间</span><span> {$rs.time}</span></div>
+									</div>
+								</div>
+							</div>
+							{/qb:tag}
+						</div>
+
+						<div class="cont hy_pcshow_bbs001">
+								{qb:tag name="hy_pcshow_bbs001" type="bbs" union="ext_id=id" order="id" by="asc" rows="8" js="hy_pcshow_bbs001"}
+								<div class="list">
+									<div class="list_left">
+										<div class="title"><span style="color:orange;">{if ($rs.status>1)}精{elseif (time()-$rs.create_time<3600*24)}新{elseif ($rs.view>10)}热{else /}{$rs.view}{/if}</span><a href="{$rs.url}" target="_blank">{$rs.title|get_word=50}</a></div>
+										<!--<div class="info" style="display:none"><p>这是介绍</p></div>-->
+										{if (count($rs.picurls)>2)}
+										<div class="pic" style="margin-bottom:0;">
+											{volist name="$rs.picurls" id="pic"}
+											{lt name="i" value="6"}
+											<a href="{$rs.url}"><img src="{$pic}"onerror="this.src='__STATIC__/images/nopic.png'" width="78" height="78" /></a>
+											{/lt}
+											{/volist}
+										</div>
+										{/if}
+									</div>
+									<div class="list_right">
+										<div class="n"><a href="{:get_url('user',$rs['uid'])}" target="_blank" class="orange">{$rs.username}</a></div>
+										<div class="o"><span style="background:url(__STATIC__/group/circle_list/what.png) no-repeat left center; padding-left:25px;">{$rs.replynum}</span><span style="float:right;">{$rs.time}</span></div>
+									</div>
+								</div>
+							 {/qb:tag}
+						</div>
+						
+										
+					</div>
+					<div class="ShowMores" style="background:#eee;text-align:center;padding:10px;">显示更多...</div>
+				</div>
+<script type="text/javascript">
+
+var ajax_url_db = ['{qb:url name="hy_pcshow_shop001"/}','{qb:url name="hy_pcshow_news001"/}','{qb:url name="hy_pcshow_photo001"/}','{qb:url name="hy_pcshow_bbs001"/}'];
+var content_div_db = ['hy_pcshow_shop001','hy_pcshow_news001','hy_pcshow_photo001','hy_pcshow_bbs001'];
+var choose_i = 0; //选中第几项
+var shoppage = 1;
+var haveshowpage = []; //每一项,作个标志,已经已显示到第几页
+//显示更多
+function showMoreContent(){	
+	var url = ajax_url_db[choose_i];	//第几项对应的网址
+	shoppage++;
+	haveshowpage[choose_i] = shoppage;
+	$.get(url+shoppage+'&'+Math.random(),function(res){	
+		if(res.code==0){
+			if(res.data==''){
+				layer.msg("已经显示完了！",{time:500});
+				$('.ShowMores').off("click");
+				$('.ShowMores').html('显示完了');
+				$('.ShowMores').css({'background':'#eee'});
+			}else{
+				$('.'+content_div_db[choose_i]).append(res.data);
+			}
+		}else{
+			layer.msg(res.msg,{time:2500});
+		}
+	});
+}
+
+
+function chagetype(num){
+	
+	$('.ShowMores').off("click"); //避免出现多次点击事件
+	$('.ShowMores').on("click",showMoreContent);
+	$('.ShowMores').html('显示更多');
+	choose_i = num;
+	shoppage = haveshowpage[choose_i]>1 ? haveshowpage[choose_i] : 1;
+
+	$('.shead .tag div').removeClass('first');
+	$('.shead .tag div').eq(num).addClass('first')
+	$('.listbox .cont').hide();
+	$('.listbox .cont').eq(num).show();
+}
+chagetype(0);
+</script>
+			</div><!--right end-->
+			
+			<div class="right">
+				<div class="main">
+					<div class="mhead">
+						<div class="third"><a href="#">商家介绍</a></div>
+						<div><a href="#">促销信息</a></div>
+					</div>
+					<div class="tbox">
+						<div class="text">
+							<p>{$info.content}</p>
+						</div>
+						<div class="text">
+							<p>暂无!!</p>
+						</div>
+					</div>
+<script>
+$('.tbox .text').eq(1).hide();;
+$(".mhead div").hover(function(){
+var thisindex = $(this).index();
+$(this).addClass("third").siblings().removeClass("third");
+$(".tbox .text").eq(thisindex).show().siblings().hide();
+})
+</script>					
+				</div>
+				<div class="main" style="margin-top:25px;">
+					<div class="mhead">
+						<div class="fourth"><a href="#">活跃会员</a></div>
+						<div><a href="#">最新加入</a></div>
+					</div>
+					<div class="listbox">
+						<div class="plist list_member_a">
+							 <!--
+							<div class="picshow">
+								<div class="img"><a href="#"><img src="__STATIC__/group/circle_list/head2.png" width="88" height="88" /></a></div>
+								<div class="info"><a href="#">番茄小王子</a></div>
+							</div>
+							 -->
+						</div>
+<script type="text/javascript">
+$(document).ready(function(){
+	$.get("{:urls('wxapp.member/get_member',['id'=>$id,'rows'=>10])}",function(res){
+		if(res.code==0){
+			show_member_a(res.data);
+		}
+	});
+});
+
+function show_member_a(ar){
+	var htmlcode = '';
+	ar.forEach(function(rs){
+		htmlcode += '<div class="picshow"><div class="img"><a href="{:get_url(\'user\')}?uid='+rs.uid+'"><img src="' + rs.icon + '" width="88" height="88" onerror="this.src=\'__STATIC__/images/nobody.gif\'"></a></div><div class="info"><a href="{:get_url(\'user\')}?uid='+rs.uid+'">' + rs.username + '</a></div></div>';
+	});
+	$(".list_member_a").html(htmlcode);
+}
+</script>
+						<div class="plist list_member_b">
+							<!--
+							<div class="picshow">
+								<div class="img"><a href="#"><img src="__STATIC__/group/circle_list/head1.png" width="88" height="88" /></a></div>
+								<div class="info"><a href="#">番茄小王子</a></div>
+							</div>
+							-->
+						</div>
+<script type="text/javascript">
+$(document).ready(function(){
+	$.get("{:urls('wxapp.member/get_member',['id'=>$id,'rows'=>15,'by'=>'asc'])}",function(res){
+		if(res.code==0){
+			show_member_b(res.data);
+		}
+	});
+});
+
+function show_member_b(ar){
+	var htmlcode = '';
+	ar.forEach(function(rs){
+		htmlcode += '<div class="picshow"><div class="img"><a href="{:get_url(\'user\')}?uid='+rs.uid+'"><img src="' + rs.icon + '" width="88" height="88" onerror="this.src=\'__STATIC__/images/nobody.gif\'"></a></div><div class="info"><a href="{:get_url(\'user\')}?uid='+rs.uid+'">' + rs.username + '</a></div></div>';
+	});
+	$(".list_member_b").html(htmlcode);
+}
+</script>
+					</div>
+<script>
+$('.listbox .plist').eq(1).hide();;
+$(".mhead div").hover(function(){
+var thisindex = $(this).index();
+$(this).addClass("fourth").siblings().removeClass("fourth");
+$(".listbox .plist").eq(thisindex).show().siblings().hide();
+})
+</script>					
+				</div>
+			</div><!--left end-->
+		</div><!--maincont2 end-->
+		
+	</div><!--content end-->
+</div>
+{/block}

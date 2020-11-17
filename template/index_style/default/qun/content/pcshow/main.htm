@@ -1,0 +1,462 @@
+<!--圈子内容列表及聊天-->
+{qb:hy name="pc_qun_show_main_set" type="myform" conf="index_style/default/qun/content/pcshow/main.php"}
+<script>
+$(function(){
+	setTimeout(function(){
+		$(".model-menu div[data-type='{$_cfg.showtype}']").trigger("click");
+	},500);
+
+	$(".model-menu div[data-type='warp_chat'] a").html("{$_cfg.title_warp_chat}");
+	$(".model-menu div[data-type='warp_about'] a").html("{$_cfg.title_warp_about}");
+	$(".model-menu div[data-type='qun_pcshow_video001'] a").html("{$_cfg.title_qun_pcshow_video001}");
+	$(".model-menu div[data-type='qun_pcshow_bbs001'] a").html("{$_cfg.title_qun_pcshow_bbs001}");
+	$(".model-menu div[data-type='qun_pcshow_photo001'] a").html("{$_cfg.title_qun_pcshow_photo001}");
+	$(".model-menu div[data-type='warp_member'] a").html("{$_cfg.title_warp_member}");
+	$(".model-menu div[data-type='qun_pcshow_shop001'] a").html("{$_cfg.title_qun_pcshow_shop001}");
+	$(".model-menu div[data-type='qun_pcshow_topic001'] a").html("{$_cfg.title_qun_pcshow_topic001}");
+});
+</script>
+{/qb:hy}
+<style type="text/css">
+.more-list .cont,.ShowMores{
+	display:none;
+}
+</style>
+<div class="main more-list">
+					<div class="shead">
+						<div class="tag model-menu">
+						    <div data-type="warp_chat" class="first">
+								<a href="javascript:">互动</a>
+							</div>
+							<div data-type="warp_about">
+								<a href="javascript:">介绍</a>
+							</div>
+							<div data-type="qun_pcshow_video001">
+								<a href="javascript:">往期</a> <i></i>
+							</div>
+							<div data-type="qun_pcshow_bbs001">
+								<a href="javascript:">话题</a> <i></i>
+							</div>
+							<div data-type="qun_pcshow_photo001">
+								<a href="javascript:">图片</a> <i></i>
+							</div>							
+							<div data-type="warp_member">
+								<a href="javascript:">成员</a> <i></i>
+							</div>
+							<div data-type="qun_pcshow_shop001">
+								<a href="javascript:">{:modules_config('appstore')?'应用':'商品'}</a> <i></i>
+							</div>
+							<div data-type="qun_pcshow_topic001">
+								<a href="javascript:">专题</a> <i></i>
+							</div>
+						</div>
+						<!--
+						<div class="more">
+							<div>贴子：<em class="green total_bbs">{//:fun('qun@count','bbs_content1',$info.id)}</em></div>
+							<div>成员：<em class="orange total_member">{//:fun('qun@count','qun_member',$info.id)}</em></div>
+						</div>
+						-->
+					</div>
+					<div class="listbox">
+						<!--互动聊天开始-->
+						<div class="cont warp_chat" style="display:block;height:680px;">
+							<iframe name="iframe_msg" id="iframe_msg" src="{:urls('index/msg/index')}?uid=-{$id}" style="width:100%;height:100%"  frameborder="0" allowfullscreen="true"></iframe>
+						</div>
+						<!--互动聊天结束-->
+
+						<div class="cont warp_about">
+							{$info.content}
+						</div>
+						<!--CMS视频开始-->
+						<div class="cont qun_pcshow_video001">
+							{qb:tag name="qun_pcshow_video001" type="cms" mid="3" union="uid=$info.uid" order="id" by="desc" rows="9" js="qun_pcshow_video001"}
+							<div class="product">
+								<div class="img"><a href="{$rs.url}" target="_blank"><img src="{$rs.picurl}" onerror="this.src='__STATIC__/images/nopic.png'" width="240" height="180" /></a></div>
+								<div class="info">
+									<!--<div class="w"><img src="{$rs.user_icon}" width="50" height="50" /></div>-->
+									<div class="t">
+										<div><a href="{:get_url('user',$rs['uid'])}" class="green" target="_blank">{$rs.title}</a></div>
+										<div><span style="color:#999999;" class="si si-clock"></span><span> {$rs.time}</span> <i class="glyphicon glyphicon-remove-sign act-delete" data-id="{$rs.id}" data-uid="{$rs.uid}" data-sys="cms"></i></div>
+									</div>
+								</div>
+							</div>
+							{/qb:tag}
+						</div>
+						<!--CMS视频结束-->
+
+						<!--论坛开始-->
+						<div class="cont qun_pcshow_bbs001">
+								{qb:tag name="qun_pcshow_bbs001" type="bbs" union="ext_id=id" order="id" by="desc" rows="10" js="qun_pcshow_bbs001"}
+								<div class="list">
+									<div class="list_left">
+										<div class="title"><span style="color:orange;">{if ($rs.status>1)}精{elseif (time()-$rs.create_time<3600*24)}新{elseif ($rs.view>10)}热{else /}{$rs.view}{/if}</span><a href="{$rs.url}" target="_blank">{$rs.title|get_word=50}</a> <i class="glyphicon glyphicon-remove-sign act-delete" data-id="{$rs.id}" data-uid="{$rs.uid}" data-sys="bbs"></i></div>
+										<!--<div class="info" style="display:none"><p>这是介绍</p></div>-->
+										{if (count($rs.picurls)>2)}
+										<div class="pic" style="margin-bottom:0;">
+											{volist name="$rs.picurls" id="pic"}
+											{lt name="i" value="6"}
+											<a href="{$rs.url}" target="_blank"><img src="{$pic.picurl}"onerror="this.src='__STATIC__/images/nopic.png'" width="78" height="78" /></a>
+											{/lt}
+											{/volist}
+										</div>
+										{/if}
+									</div>
+									<div class="list_right">
+										<div><a href="{$rs.user_url}" target="_blank" class="orange fa fa-user-o"> {$rs.username}</a></div>
+										<div class="o"><span class="fa fa-commenting-o"> {$rs.replynum}</span><span style="float:right;">{$rs.time}</span></div>
+									</div>
+								</div>
+							    {/qb:tag}
+						</div>
+						<!--论坛结束-->
+						<!--CMS图片开始-->
+						<div class="cont qun_pcshow_photo001">
+							{qb:tag name="qun_pcshow_photo001" type="cms" mid="2" union="ext_id=id" order="id" by="desc" rows="9" js="qun_pcshow_photo001"}
+							<div class="product">
+								<div class="img"><a href="{$rs.url}" target="_blank"><img src="{$rs.picurl}" onerror="this.src='__STATIC__/images/nopic.png'" width="240" height="180" /></a></div>
+								<div class="info">
+									<div class="w"><img src="{$rs.user_icon}" width="50" height="50" /></div>
+									<div class="t">
+										<div><a href="{:get_url('user',$rs['uid'])}" class="green" target="_blank">{$rs.username}</a></div>
+										<div><span style="color:#999999;">时间</span><span> {$rs.time}</span> <i class="glyphicon glyphicon-remove-sign act-delete" data-id="{$rs.id}" data-uid="{$rs.uid}" data-sys="cms"></i></div>
+									</div>
+								</div>
+							</div>
+							{/qb:tag}
+						</div>
+						<!--CMS图片结束-->
+						<!--圈子成员开始-->
+						<div class="cont warp_member">
+							<div class="master">
+								<div class="cont_t">管理员</div>
+								<div class="cont_show">
+									<div class="cont_show_list">
+										<div class="img"><a target="_blank" href="{:get_url('user',$info['uid'])}"><img src="{$info.uid|get_user_icon}" onerror="this.src='__STATIC__/images/nobody.gif'" width="88" height="88"/></a></div>
+										<div class="info"><a href="javascript:" onclick='KF.chat_win({uid:"{$info.uid}",username:"{$info.uid|get_user_name}",icon:"{$info.uid|get_user_icon}",});' class="green">{$info.uid|get_user_name}</a></div>
+									</div>
+								</div>
+							</div>
+							<div class="friends">
+								<div class="cont_t">成员</div>
+								<div class="cont_show qun_member_pcshow">
+									{qb:tag name="qun_member_pcshow" class="app\qun\model\Member@get_label" order="type" rows="20" union="aid=id" js="qun_member_pcshow"}
+									<div class="cont_show_list" style="position:relative;" title="加入时间:{:format_time($rs.create_time,'Y-m-d H:i')} 最后访问时间:{:format_time($rs.update_time,'Y-m-d H:i')} {if $rs.end_time>0}VIP到期时间:{:format_time($rs.end_time,'Y-m-d H:i')}{/if}">	
+									{if $rs.type==0}
+									<i data-id="{$rs.id}" class="fa fa-check-circle yz-member" title="等待审核" style="color:#aaa;position:absolute;left:0px;top:0px;"></i>
+									{elseif $rs.type==4}
+									<i data-id="{$rs.id}" class="fa fa-check-circle yz-member" title="VIP会员" style="color:#fff;background:orange;border-radius:2px;padding:3px 5px 3px 5px;position:absolute;left:0px;top:0px;"> vip</i>
+									{else /}
+									<i data-id="{$rs.id}" class="fa fa-check-circle" title="正式成员" style="color:green;position:absolute;left:0px;top:0px;"></i>
+									{/if}
+									<i data-id="{$rs.id}" class="fa fa-times-circle del-member" style="color:orange;position:absolute;right:0px;top:0px;"></i>
+										<div class="img"><a target="_blank" href="{:get_url('user',$rs.uid)}"><img src="{$rs.icon}" width="88" height="88" onerror="this.src='__STATIC__/images/nobody.gif'"/></a></div>
+										<div class="info"><a href="javascript:" onclick=' KF.chat_win({uid:"{$rs.uid}",username:"{$rs.username}",icon:"{$rs.icon}",});'>{$rs.username|get_word=10}</a></div>
+									</div>
+									{/qb:tag}							 
+								</div>
+							</div>
+						</div>	
+						<!--圈子成员结束-->
+						
+						<!--商城开始-->
+						<div class="cont qun_pcshow_shop001">
+						    {php}$sys_type=modules_config('appstore')?'appstore':(modules_config('booking')?'booking':'shop');{/php}
+							<!--这里是动态判断调用不同的频道数据-->
+							{qb:tag name="qun_pcshow_shop001" type="shop" union="sys_type" mid="-1" where="uid=$info[uid]" order="id" by="desc" rows="9" js="qun_pcshow_shop001"}
+							<div class="product">
+								<div class="img"><a href="{$rs.url}" target="_blank"><img src="{$rs.picurl}" onerror="this.src='__STATIC__/images/nopic.png'" width="240" height="180" /></a></div>
+								<div class="info">
+									<div class="w"><img src="{$rs.user_icon}" width="50" height="50" /></div>
+									<div class="t">										
+										<div><span style="color:#999999;">售价：</span><span style="color:red;">￥ {$rs.price} 元</span> <i class="glyphicon glyphicon-remove-sign act-delete" data-uid="{$rs.uid}" data-id="{$rs.id}" data-sys="appstore"></i></div>
+										<div>
+										{if $rs.vip_price>0}
+											<span style="color:#999999;">vip尊享价：</span><span style="color:orange;">￥ {$rs.vip_price} 元</span>
+										{elseif $rs.downs>0}
+											<span style="color:#999999;">安装次数：</span><span style="color:blue;"> {$rs.downs} 次</span>
+										{else /}
+											<a href="{:get_url('user',$rs['uid'])}" class="green">{$rs.username}</a>
+										{/if}
+										</div>
+									</div>
+								</div>
+							</div>
+							{/qb:tag}
+						</div>
+						<!--商城结束-->
+
+						<!--专题开始-->
+						<div class="cont qun_pcshow_topic001">
+								<!--加多一个 where="ext_sys=0&ext_mid=0" 参数可以指定某个频道及某个模型,比如 where="ext_sys=cms&ext_mid=1"代表只取CMS中的文章数据. 也可以根据权重取数据,加参数 status="2" 详情教程http://help.php168.com/1124057/ -->
+								{qb:tag name="qun_pcshow_topic001" class="app\qun\model\Topic@get_label" union="aid=id" rows="10" js="qun_pcshow_topic001"}
+								<div class="list">
+									<div class="list_left" style="width:620px;">
+										<div class="title"><span style="color:orange;">{if ($rs.status>1)}精{elseif (time()-$rs.create_time<3600*24)}新{elseif ($rs.view>100)}热{else /}{$rs.view}{/if}</span><a href="{$rs.url}" target="_blank">{$rs.title|get_word=70}</a></div>
+									</div>
+									<div class="list_right" style="width:150px;">
+										<div><a href="{:get_url('user',$rs.uid)}" target="_blank" class="orange fa fa-user-o"> {$rs.uid|get_user_name}</a></div>
+										<div class="o"><span class="glyphicon glyphicon-eye-open"> {$rs.view}</span><span style="float:right;">{$rs.create_time|format_time="Y-m-d"}</span></div>
+									</div>
+								</div>
+							    {/qb:tag}
+						</div>
+						<!--专题结束-->
+
+					</div>
+					<div class="ShowMores" style="background:#eee;text-align:center;padding:10px;">显示更多...</div>
+</div>
+
+<script type="text/javascript">
+var admin = {if ($userdb.uid==$info.uid)}true{else /}false{/if};
+//踢除会员
+function delete_member(){
+	$(".del-member").each(function(){
+		var that = $(this);
+		if(admin!=true){
+			that.hide();
+			return ;
+		}
+		that.click(function(){
+			var url = "{:urls('wxapp.member/act')}?type=del&id="+that.data('id');
+			$.get(url,function(res){
+				if(res.code==0){
+					that.parent().hide();
+					layer.msg('操作成功');
+				}else{
+					layer.alert('操作失败:'+res.msg);
+				}
+			});
+		})
+	});
+}
+
+//验证会员
+function yz_member(){
+	if(admin!=true){
+		return ;
+	}
+	$(".yz-member").each(function(){
+		var that = $(this);
+		that.click(function(){			
+			var url = "{:urls('wxapp.member/act')}?type=yz&id=" + that.data('id');
+			$.get(url,function(res){
+				if(res.code==0){
+					that.css('color','green');
+					layer.msg('操作成功');
+				}else{
+					layer.alert('操作失败:'+res.msg);
+				}
+			});
+		})
+	});
+}
+
+
+</script>
+
+
+<script type="text/javascript">
+//删除功能
+function act_delete(){
+	var power = {if $userdb.groupid==3||$gid==2} true {else /} false {/if};
+	$(".act-delete").each(function(){
+		var that = $(this);
+		if(power!=true && '{$userdb.uid}'!=that.data('uid')){
+			that.hide();
+		}
+		var url = "{:urls('wxapp.act/delete')}?sysname=" + that.data('sys') + '&id=' + that.data('id');
+		that.click(function(){
+			layer.confirm('你确认要删除吗?',{btn:['确认删除','取消'],},function(){			
+				$.get(url,function(res){
+					layer.closeAll();
+					if(res.code==0){					
+						layer.msg('删除成功');
+						setTimeout(function(){
+							window.location.reload();
+						},500);
+					}else{
+						layer.alert(res.msg);
+					}
+				});
+			});
+		});
+	});
+
+	/*
+	$(".act-delete").click(function(){
+		var that = $(this);
+		var url = "{:urls('wxapp.act/delete')}?sysname=" + that.data('sys') + '&id=' + that.data('id');
+		layer.confirm('你确认要删除吗?',{btn:['确认删除','取消'],},function(){			
+			$.get(url,function(res){
+				layer.closeAll();
+				if(res.code==0){					
+					layer.msg('删除成功');
+					setTimeout(function(){
+						window.location.reload();
+					},500);
+				}else{
+					layer.alert(res.msg);
+				}
+			});
+		});
+	});*/
+}
+//异步加载进来的回调函数
+function qun_pcshow_topic001(res){ //处理异步加载进来的专题数据
+	if(res.code==0){	//数据加载成功后	
+		var obj = $(".model-menu div[data-type='qun_pcshow_topic001']");
+		if(res.paginate.total==0){	//不存在,就把他们隐藏起来
+			obj.hide();		
+		}else{
+			obj.find("i").html(res.paginate.total);
+		}
+	}
+}
+function qun_pcshow_bbs001(res){ //处理异步加载进来的论坛数据
+	if(res.code==0){	//数据加载成功后
+		act_delete();
+		var obj = $(".model-menu div[data-type='qun_pcshow_bbs001']");
+		if(res.paginate.total==0){	//不存在,就把他们隐藏起来
+			obj.hide();		
+		}else{
+			obj.find("i").html(res.paginate.total);
+		}
+	}
+}
+function qun_member_pcshow(res){ //处理异步加载进来的圈子会员数据
+	if(res.code==0){	//数据加载成功后
+		delete_member();	//删除会员
+		yz_member();		//审核会员
+		var obj = $(".model-menu div[data-type='warp_member']");
+		if(res.paginate.total==0){	//不存在,就把他们隐藏起来
+			obj.hide();		
+		}else{
+			obj.find("i").html(res.paginate.total);
+		}
+	}
+}
+function qun_pcshow_photo001(res){
+	if(res.code==0){	//数据加载成功后
+		var obj = $(".model-menu div[data-type='qun_pcshow_photo001']");
+		if(res.paginate.total==0){	//不存在,就把他们隐藏起来
+			obj.hide();		
+		}else{
+			obj.find("i").html(res.paginate.total);
+		}
+	}
+}
+function qun_pcshow_video001(res){
+	if(res.code==0){	//数据加载成功后
+		var obj = $(".model-menu div[data-type='qun_pcshow_video001']");
+		if(res.paginate.total==0){	//不存在,就把他们隐藏起来
+			obj.hide();		
+		}else{
+			obj.find("i").html(res.paginate.total);
+		}
+	}
+}
+function qun_pcshow_shop001(res){
+	if(res.code==0){	//数据加载成功后
+		var obj = $(".model-menu div[data-type='qun_pcshow_shop001']");
+		if(res.paginate.total==0){	//不存在,就把他们隐藏起来
+			obj.hide();		
+		}else{
+			obj.find("i").html(res.paginate.total);
+		}
+	}
+}
+
+var ajax_url_db = {
+	'qun_pcshow_topic001':'{qb:url name="qun_pcshow_topic001"/}',
+	'qun_pcshow_bbs001':'{qb:url name="qun_pcshow_bbs001"/}',
+	'qun_pcshow_photo001':'{qb:url name="qun_pcshow_photo001"/}',
+	'warp_member':'{qb:url name="qun_member_pcshow"/}',
+	'qun_pcshow_shop001':'{qb:url name="qun_pcshow_shop001"/}',
+}
+var choose_type; //选中第几项
+var haveshowpage = {}; //每一项,作个标志,已经已显示到第几页
+//显示更多
+function showMoreContent(){	
+	var url = ajax_url_db[choose_type];	//第几项对应的网址
+	if(url==undefined){
+		return ;
+	}
+	if(haveshowpage[choose_type]==undefined){
+		haveshowpage[choose_type] = 2;
+	}else{
+		haveshowpage[choose_type]++;
+	}
+	$.get(url + haveshowpage[choose_type] ,function(res){	
+		if(res.code==0){
+			if(res.data==''){
+				layer.msg("已经显示完了！",{time:500});
+				$('.ShowMores').off("click");
+				$('.ShowMores').html('显示完了');
+				$('.ShowMores').css({'background':'#eee'});
+			}else{
+				scroll_get = true;
+				$('.listbox').find('.'+choose_type).append(res.data);
+				
+				act_delete();
+				delete_member();	//删除会员
+				yz_member();		//审核会员
+			}
+		}else{
+			layer.msg(res.msg,{time:2500});
+		}
+	});
+}
+
+$(function(type){
+	$(".model-menu div").click(function(){
+		$(".model-menu div").removeClass('first');		
+		$(this).addClass('first');
+		$('.listbox .cont').hide();
+		choose_type = $(this).data('type');
+		$('.listbox').find('.'+choose_type).show();
+		if(ajax_url_db[choose_type]!=undefined){
+			showMoreContent();
+			$('.ShowMores').show();
+			$('.ShowMores').off("click");
+			$('.ShowMores').click(function(){
+				showMoreContent();
+			});			
+		}else{
+			$('.ShowMores').hide();
+		}
+		if(choose_type=='warp_about'){
+			get_about(window.frames['iframe_msg'].mod_class.menu.vid);
+		}
+	});
+});
+
+//获取直播或者点播介绍
+function get_about(vid){
+	if(vid>0){
+		$(".warp_about").html("");
+		layer.msg('内容加载中',{time:1000});
+		$.get("/index.php/cms/wxapp.show/index.html?id="+vid,function(res){
+			if(res.code==0){
+				$(".warp_about").html(res.data.content);
+			}else{
+				layer.alert('内容不存在');
+			}
+		});		
+	}
+}
+
+//滚动显示更多
+var scroll_get = true;	//做个标志,不要反反复复的加载
+$(document).ready(function () {
+	$(window).scroll(function () {
+		if (scroll_get==true &&  (400 + $(window).scrollTop())>($(document).height() - $(window).height())) {
+			scroll_get = false;			
+			layer.msg('内容加截中,请稍候',{time:1000});
+			showMoreContent();
+		}
+	});
+});
+
+</script>
+
+<div style="display:none;" class="taglabel">目的是不给用户复制当前碎片</div>

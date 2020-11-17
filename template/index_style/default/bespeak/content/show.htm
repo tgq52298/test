@@ -1,0 +1,70 @@
+{extend name="$index_style_layout" /}
+
+<!--SEO相关-->
+{block name="head_title"}{$info.title}{/block}
+{block name="head_keword"}{$info.keywords?:$info.title}  {$s_info.name} {/block}
+{block name="head_description"}{:get_word(del_html($info['content']),300)}{/block}
+
+{block name="body_content"}
+<link rel="stylesheet" type="text/css" href="__STATIC__/bespeak/default/wap/showtg.css"/>
+
+<div class="BaseInfos">
+	<div class="pic"><img src={$info.picurl} onError="this.src='__STATIC__/images/nopic.png'"/></div>
+    <div class="title">{$info.title}</div>
+    <div class="join">
+        <a href="{:urls('order/add',['id'=>$info.id])}" class='_pop' onclick="cklogin();">我要预约</a>
+    </div>
+</div>
+<script>
+// 没登陆则关闭弹框
+function cklogin(){
+	var login= {if $userdb.uid}{$userdb.uid}{else/}0{/if};
+	if(login==0){
+		check_login();
+		setTimeout("layer.closeAll('iframe')", 600 );
+	}
+}
+function check_login(){
+	if("{$userdb.uid}"==""){
+		layer.confirm('你还没登录,不能预约,你要登录吗？', {
+			btn : [ '登录', '取消' ]
+			}, function(index) {
+				window.location.href = "{:get_url('login')}";
+		}); 
+		return false;
+	}
+	return true;
+}
+</script>
+<ul class="moreInfo">
+	<li>已有:<span>{:get_ordernum($info.id)}</span>人预约</li>
+	<li>发布时间:<a editurl="{$info.url}">{:format_time($info.create_time,'Y-m-d H:i:s')}</a></li>
+	<li>发布人:<span>{:get_user($info.uid)['username']}</span></li>
+	<li>关注度:<span>{$info.view}</span>人次</li>
+
+	<li>联系人：{$info.linkman} </li>
+
+	<li>联系电话：{$info.telphone} </li>
+
+	<li>收费标准：{$info.price} </li>
+
+	<li>服务时间：{$info.service_time} </li>
+
+</ul>
+<div class="ShowContent">
+	<h4>服务详情</h4>
+    <div class="cont">{$info.content}</div>
+</div>
+<div class="ShowContent">
+	<h4>地图位置</h4>
+    <div class='cont'>
+	{notempty name="$info.map"}
+		<iframe src="{:urls('index/map/index')}?xy={$info.map}&title={$info.title|urlencode}"  width="100%" height="350" scrolling="no" frameborder="0" ></iframe>
+	{/notempty}
+    </div>
+</div>
+
+<!-- 微信分享 -->
+{include file="index@share"/}
+
+{/block}

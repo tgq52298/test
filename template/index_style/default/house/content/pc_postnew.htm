@@ -1,0 +1,37 @@
+{extend name="$index_style_layout" /}
+
+<!--SEO相关-->
+{block name="head_title"}{$webdb.mseo_title?:$webdb.seo_title}{/block}
+{block name="head_keword"}{$webdb.mseo_keyword?:$webdb.seo_keyword}{/block}
+{block name="head_description"}{$webdb.mseo_description?:$webdb.seo_description}{/block}
+
+{block name="body_AllScorllSlide"}
+<!--通栏横幅图片__STATIC__/css/qb_ui.css中控制图片宽度百分百高度行内样式设置，如不设置不小于100px---->
+{qb:tag name="cmsindex_001" type="image"}
+<div class="qb_ui_AllscrollBanner" style="height:300px;">
+	<a href="#1"><img src="__STATIC__/images/s0.jpg"></a>
+</div>
+{/qb:tag}
+{/block}
+{block name="body_content"}
+<link type="text/css" rel="stylesheet" href="https://life8.php168.com/f/images/pc/index.css" />
+<div class="MiddleBanner"><a href="#"><img src="https://life8.php168.com/f/images/pc/ad1.jpg"/></a></div>
+
+<div class="FenlieSorts">
+
+{volist name=":get_sons(get_sort())" id="rs"}
+<dl>
+	<dt><a href="{:urls('content/add','fid='.$rs['id'])}">{$rs.name} &gt;</a></dt>
+	<dd>
+		<ul>
+		{volist name="$rs.sons" id="vs"}
+			<li><a href="{:urls('content/add','fid='.$vs['id'])}">{$vs.name}</a></li>
+		{/volist}
+		</ul>
+	</dd>
+</dl>
+{/volist}
+
+</div>
+
+{/block}

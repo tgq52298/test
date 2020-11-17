@@ -1,0 +1,38 @@
+{notempty name=":plugins_config('signin')"}
+<button class="layui-btn layui-btn-fluid layui-btn-normal sign_btn"><i class="fa fa-calendar"></i> 签到领积分</button>
+<script type="text/javascript">
+$(function(){
+	$(".sign_btn").each(function(){
+		var that = $(this);
+		that.one("click",function(){
+			var url="{:purl('signin/api/sign',[],'index')}";
+			$.get(url,function(res){
+				if(res.code==0){	//成功签到
+					layer.alert(res.msg,{icon: 1,title:false});
+					that.removeClass('layui-btn-normal');
+					that.addClass('layui-btn-disabled');
+					that.html('<i class="fa fa-calendar" style="color:red;">+' + res.data.money + '分</i>');
+				}else if(res.code==1){	//已经签过了		
+					layer.alert(res.msg);
+				}else{
+					layer.alert('未知错误');
+				}
+			}).fail(function(res){layer.alert('网页出错');});
+		});
+
+		var url="{:purl('signin/api/check',[],'index')}";
+		$.get(url,function(res){
+			if(res.code==0){
+				//已经签到过了
+				that.removeClass('layui-btn-normal');
+				//that.addClass('layui-btn-disabled');
+				that.unbind("click");
+				that.html('<i class="fa fa-calendar" style="color:#fff;"> 已签到,请明天再来</i>');
+			}else{				
+				//还没签到
+			}
+		});		
+	});
+});
+</script>
+{/notempty}

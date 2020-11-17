@@ -1,0 +1,53 @@
+{extend name="$member_style_layout" /}
+
+{block name="title"}__QUN__转让{/block}
+
+{block name="content"}
+<style>
+body{background:#F2F3F5;}
+.MoreLinks{margin-top:10px;background:#FFF;}
+.MoreLinks a{display:block;padding:8px 5px 8px 10px;line-height:25px; position:relative;}
+.MoreLinks a:after{content: '';display: block;position: absolute;top: 12px;right: 10px;width:0;height:0;border:8px solid transparent;border-left: 8px solid rgba(180,180,180,0.8);border-right:0;}
+
+dl.Header{display:table;background:#FFF;width:100%;}
+dl.Header dt,dl.Header dd{display:table-cell;padding:10px;line-height:30px; vertical-align:middle;}
+dl.Header dd{width:100px; text-align:right;color:#00C853;}
+dl.contents{padding:30px 10px 0 10px;}
+dl.contents dt{font-size:14px;color:#666;}
+dl.contents dt span{font-weight:bold;font-size:16px;color:#333;}
+.btn {display: block;text-align: center;height: 42px;border-radius: 3px;color: #ffffff;line-height: 42px;background-color: #00C853;width:100%; margin-top:20px;}
+.btn2 {;background-color: #295FB0;}
+.codeimg{text-align:center;padding:20px 0 20px 0;}
+.codeimg img{width:200px;height:200px;}
+</style>
+<dl class="MoreLinks">
+	<dt style="padding:10px; ">你打算将“{$info[title]}”转让给他人吗？</dt>
+	<dd></dd>
+</dl>
+<div class="MoreLinks" style="padding:10px;font-size:13px;line-height:18px;">
+	　请选择以下其中一种方法转让给别人，有效期为30分钟，请联系对方30分钟内领取，过期失效，需要重新转发。
+</div>
+ 
+<dl class="contents">
+	<dt><span>转移方法一：</span>点击一键转移给好友</dt>
+	<dd><div class="btn btn_primary" id="getLocation" onclick="SharShowMsg();">一键转移给好友</div></dd>
+</dl>
+<dl class="contents">
+	<dt><span>转移方法二：</span>按住下面的二维码，选择转发给好友</dt>
+	<dd>
+		<div class="codeimg"><img src="{:get_qrcode($cod_url)}"></div>
+	</dd>
+	<div class="btn btn2 btn_primary" onclick="window.location.href='{:iurl('content/show',['id'=>$info.id])}'">进入 __QUN__</div>
+</dl>
+{php}
+$info['title']=$userdb['username'].' 欲将 “'.$info['title'].'” 转让给你,请尽快点击链接进行接收!';
+$info['link'] = $cod_url;
+{/php}
+{include file="index@share" /}
+<style>
+.Share_Message div{
+	background:url(__STATIC__/qun/default/text_gave.png) no-repeat right center; 
+	height:472px;
+}
+</style>
+{/block}

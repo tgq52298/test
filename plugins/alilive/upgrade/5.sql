@@ -1,0 +1,1 @@
+ALTER TABLE  `qb_alilive_log` ADD  `title` VARCHAR( 256 ) NOT NULL COMMENT  '标题简介',ADD  `about` TEXT NOT NULL COMMENT  '内容介绍',ADD  `picurl` VARCHAR( 150 ) NOT NULL COMMENT  '缩略图';

@@ -1,0 +1,40 @@
+.user_sign{
+	border:1px dashed #ddd;
+	border-left:3px solid #27BBBF;
+	background:#F5F5F5 url(../haibao_style/default/haibao_hua.png);
+	background-size:200px 100px;
+	margin:20px 0;
+	padding:10px;
+	max-height:50px;
+	overflow: hidden;
+}
+.user_sign a{
+	color:#bbb;
+}
+
+
+/*相关主题开始*/
+.ListMoreTitle{
+	display:table;
+	width:100%;
+	min-height:50px;
+}
+.ListMoreTitle .ltile{
+	display:table;	
+	width:47%;
+	padding-right:15px;
+	float:left;
+	height:23px;
+	margin-top:13px;
+	text-overflow: -o-ellipsis-lastline;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	display: -webkit-box;
+	-webkit-line-clamp: 1;
+	line-clamp: 1;
+	-webkit-box-orient: vertical;
+}
+.tag_more a{
+	font-size:13px;
+	margin-left:10px;
+}

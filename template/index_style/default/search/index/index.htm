@@ -1,0 +1,174 @@
+{extend name="$index_style_layout" /}
+{block name="head_keword"}{$webdb.mseo_keyword}{/block}
+{block name="head_description"}{$webdb.mseo_description}{/block}
+{block name="head_title"}{$webdb.mseo_title}{/block}
+ {block name="body_ContactSearch"}{/block}
+{block name="nav"}{/block}
+{block name="body_content"}
+<style>
+	input,button,select,textarea{outline:0}
+ .searchbox{height:36px;margin:10px 10px;clear:both;border:1px solid #fc8c1d;position:relative;overflow:hidden}
+.searchbox form{height:38px}
+.searchbox .q{display:block;background:#FFF;width:auto;width:95%;height:38px;font-size:16px;color:#CCC;margin:0;padding:0 0 0 10px;border:0;line-height:38px;border:0;border-right:0;margin-right:20px}
+.searchbox .btn{width:55px;height:38px;line-height:38px;border:0;background-color:#fc8c1d;cursor:pointer;display:block;color:#FFF;text-align:center;font-size:16px;position:absolute;top:0;right:0;-webkit-appearance:none;border-radius:0}
+.searchbox .btn:hover{background-color:#fc9f38;-webkit-appearance:none;border-radius:0}
+.hotsearch{clear:both;width:100%;margin:10px 10px}
+.hotsearch h2{color:#666;font-size:16px;line-height:30px;text-align:center}
+.ranklist li{height:20px;margin:5px 5px 5px 0;padding-bottom:5px;clear:both;overflow:hidden;border-bottom:1px solid #f3f3f3}
+.ranklist li .num{display:inline-block;float:left;width:16px;height:16px;margin-top:2px;background-color:#8eb9f5;line-height:16px;text-align:center;color:#FFF;font-size:12px}
+.ranklist li .top1{background-color:#f97a0b}
+.ranklist li .top2{background-color:#fa9a43}
+.ranklist li .top3{background-color:#fcb574}
+.ranklist li a{font-size:14px;display:inline-block;float:left;height:20px;margin-left:5px;padding:0 5px}
+.ranklist li a:hover{background-color:#f2f1ee;text-decoration:none;padding:0 5px}
+.bdsug_copy{display:none}
+</style>
+<div class="searchbox">
+  <form action="{:url('search/index/lists')}" method="get">
+     {if plugins_config('image_search')}
+  <div class="bui-bar-left">
+      <div class="head-searchImg"> 
+        <i class="si si-camera soimg"></i>
+        <input type="file" name="imgfiles" class="file-input" id="shituimg" multiple="multiple" accept="image/*">
+      </div>
+    </div>
+    {/if} 
+    <input align="middle" name="keyword" class="q" id="kw" value="请输入关键字搜索" onfocus="javascript:if(this.value=='请输入关键字搜索'){this.value='';this.style.color='#333'}" onblur="javascript:if(this.value==''){this.value='请输入关键字搜索';this.style.color='#CCC'}" maxlength="1000" size="50" autocomplete="off" baiduSug="1" x-webkit-speech />
+    <input id="btn" class="btn" align="middle" value="搜索" type="submit" />
+     {if plugins_config('image_search')}
+     <!--纳沃纳插件图片搜索开始-->  
+<style>
+.soimg{
+  color: #fc8c1d;
+  font-size: 32px;
+}
+.searchbox .q {
+    padding-left: 40px;
+}
+.bui-bar .bui-bar-left {
+    text-align: left;
+}
+.head-searchImg {
+    position: absolute;
+    left: 0;
+    top: 0;
+    margin: .14rem .2rem;
+    cursor: pointer;
+}
+
+.head-searchImg .file-input {
+    -moz-opacity: 0;
+    -khtml-opacity: 0;
+    opacity: 0;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    right: 0;
+    top: 0;
+    cursor: pointer;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+</style> 
+<script type="text/javascript">
+ {if plugins_config('image_search')}
+ $('.opt_cls_imgsearchtips_close_btn,.imgSearchBox').click(function() {
+    $('.opt_cls_imgsearchtips_block').hide();
+});
+$(document.body).on('change', "#shituimg", function() {
+    var filepath = $(this).val();
+    var extStart = filepath.lastIndexOf(".");
+    var ext = filepath.substring(extStart, filepath.length).toUpperCase();
+    if (ext != ".PNG" && ext != ".JPG" && ext != ".BMP" && ext != ".JPEG") {
+        layer.msg('仅支持JPG、JPEG、PNG、BMP格式图片');
+        $(this).attr('value', '');
+        return false;
+    }
+    gen_base64();
+});
+
+function gen_base64() {
+    if (typeof(FileReader) === 'undefined') {
+        layer.msg('抱歉，你的浏览器不支持 FileReader，不能将图片转换为Base64，请使用现代浏览器操作');
+        return false;
+    } else {
+        var file = $('#shituimg')[0].files[0];
+        reader = new FileReader(); //本地预览
+        reader.onload = function() {
+            dealImage(reader.result, {
+                width: 500,
+                height: 500
+            }, function(base) {
+                var jsonimg = {
+                    'imgs': base
+                };
+                postCurrent('{:url('search/soimg/imgurl')}', jsonimg);
+            })
+        }
+        reader.readAsDataURL(file);
+    }
+}
+
+function postCurrent(url, params) {
+    var form = $("<form method='post'></form>");
+    var input;
+    form.attr({
+        "action": url
+    });
+    $.each(params, function(key, value) {
+        input = $("<input type='hidden'>");
+        input.attr({
+            "name": key
+        });
+        input.val(value);
+        form.append(input);
+    });
+    $(document.body).append(form);
+    form.submit();
+}
+
+function dealImage(base64Str, obj, callback) {
+    var img = new Image();
+    img.src = base64Str;
+    img.onload = function() {
+        var that = this;
+        var w = that.width,
+            h = that.height,
+            scale = w / h;
+        w = obj.width || w;
+        h = obj.height || (w / scale);
+        var quality = 0.7; 
+        var canvas = document.createElement('canvas');
+        var ctx = canvas.getContext('2d');
+        var anw = document.createAttribute("width");
+        anw.nodeValue = w;
+        var anh = document.createAttribute("height");
+        anh.nodeValue = h;
+        canvas.setAttributeNode(anw);
+        canvas.setAttributeNode(anh);
+        ctx.drawImage(that, 0, 0, w, h);
+        if (obj.quality && obj.quality <= 1 && obj.quality > 0) {
+            quality = obj.quality;
+        }
+        var base64 = canvas.toDataURL('image/jpeg', quality);
+        callback(base64, w, h);
+    }
+}
+{/if}
+</script> 
+      <!--结束-->
+    {/if} 
+  </form>
+ 
+</div>
+<div class="hotsearch">
+  <h2>热门搜索</h2>
+  <div class="cl10"></div>
+  <ul class="ranklist">
+      {volist name="resou" id="rs" key="k"}
+    <li><span class="num {lt name="k" value="4"}top1{else/}top2{/lt}">{$k}</span><a href="{:url('search/index/lists','html',true)}?keyword={$rs.keyword}">{$rs.keyword}</a></li>
+    {/volist}
+  </ul>
+</div>
+<script charset="gbk" src="http://www.baidu.com/js/opensug.js"></script>
+{/block}

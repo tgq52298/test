@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>{$fid_db.name}</title>
+<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<link rel="stylesheet" href="__STATIC__/css/base.css">
+<link rel="stylesheet" href="__STATIC__/css/qb_ui.css">
+<link rel="stylesheet" href="__STATIC__/icon/icon.css">
+<link rel="stylesheet" href="__STATIC__/mui/css/mui.min.css">
+<script type="text/javascript" src="__STATIC__/js/core/jquery.min.js"></script>
+<script type="text/javascript" src="__STATIC__/layer/layer.js"></script>
+<style>
+body{
+	background: #F5F5F5;
+}
+.OverContent{
+	max-width: 640px;
+	position: relative;
+	margin: auto;
+}
+.OverContent:before{
+	content: '';
+	display: block;
+	position: absolute;
+	width: 100%;
+	padding-top: 60%;
+	background: #00C454;
+	left: 0;
+	top:0;
+}
+.usericon{
+	position: relative;
+	width: 15%;
+	margin: auto;
+	padding: 2% 0;
+}
+.usericon img{
+	width:100%;
+	max-height: 120px;
+	border-radius: 50%;
+}
+.OverContent .title{
+	position: relative;
+	text-align: center;
+	padding: 10px;
+}
+.OverContent .title span{
+	display: inline-block;
+	background: #FFAD01;
+	color: #FFF;
+	padding: 5px 20px;
+	line-height: 30px;
+	font-size:20px;
+	border-radius: 5px;
+}
+.OverContent .MoreInfo{
+	position: relative;
+	width: 80%;
+	margin: 5% auto 0 auto;
+	background: #FFF;
+	box-shadow: 3px 3px 3px #AAA;
+	border-radius: 5px;
+	padding: 20px 0;
+}
+.OverContent .MoreInfo div{
+	padding: 5px 15px;
+	line-height: 25px;
+	text-align: center;
+	color: #666;
+}
+.OverContent .MoreInfo div span{
+	display: inline-block;
+	padding: 0 5px;
+	color: #F30;
+}
+.OverContent .MoreInfo div em{
+	display: inline-block;
+	padding: 0 5px;
+	color: blue;
+}
+.OverContent .MoreInfo p{
+	text-align: center;
+	padding: 15px;
+}
+.OverContent .MoreInfo p span{
+	font-size:30px;
+	color: #F30;
+}
+.OverContent .MoreInfo a{
+	display: block;
+	width: 80%;
+	text-align: center;
+	line-height: 50px;
+	background: #00C454;
+	color: #FFF;
+	height: 50px;
+	overflow: hidden;
+	margin: auto;
+	border-radius: 25px;
+	font-size: 20px;
+}
+.OverContent .MoreInfo a:hover{
+	background: #F60;
+}
+#show_diploma{
+	position:relative;
+	margin:10px auto;
+	width:100%;
+}
+#show_diploma img{max-width:100%;}
+</style>
+</head>
+<body>
+
+<i class="si si-action-undo" onclick="window.location.href='{:urls('index/index')}'" style="position:absolute;z-index:10;left:15px;top:15px;color:#fff;font-size:20px;"></i>
+
+
+<i class="fa fa-star fav-exam" style="position:fixed;z-index:10;right:19px;top:15px;color:#fff;"> 收藏</i>
+<script type="text/javascript">
+$.get("{:urls('favpaper/check')}?id={$fid}",function(res){
+	if(res.code==0){
+		$(".fav-exam").html(' 已收藏');
+	}else{
+		$(".fav-exam").click(function(){
+			var url="{:urls('favpaper/add')}?id={$fid}";
+			$.get(url,function(res){
+				if(res.code==0){
+					$(".fav-exam").html(' 已收藏');
+					layer.msg('收藏成功');
+				}else{
+					layer.alert(res.msg);
+				}
+			})
+		});
+	}
+});
+</script>
+
+
+<div class="OverContent">
+	<div class="usericon">
+		<a href="{:get_url('user',"uid=$userdb[uid]")}" target="_blank">
+			<img src="{$userdb.icon|tempdir}" onerror="this.src='__STATIC__/images/nobody.gif'"/>
+		</a>
+	</div>
+	<div class="title"><span>{$s_info.name}</span></div>
+	<div class="MoreInfo">
+		<div>当前试卷共<span>{$numbers}</span>题，每题<em>{$fenone}</em>分</div>
+		<div>您总共答了<span>{$answers}</span>题，答对<em>{$answerok}</em>题</div>
+		<p>当次考试得分是：<span>{$total_fen}</span> 分</p>
+		<a href="{:auto_url('checkshow',['fid'=>$fid,'aid'=>$aid0])}">对比考试答案</a>
+	</div>
+
+	{if $diploma_url} 
+	<div id='show_diploma'><a href="{$diploma_url}"><img src="{$diploma_url}" alt=""></a></div>	
+	{/if}
+	
+	{if $haobao_info}<br>
+	<div onclick="share_btn();$('.add_tt').show();" style="display: block;width: 80%;text-align: center;line-height: 50px;background: orange;color: #FFF;height: 50px;margin: auto;border-radius: 25px;font-size: 20px;">点击生成奖状海报</div>
+		{include file="info/haibao" /}		
+	{/if}
+	<div style="padding:8px;background:#bbb;color:#fff;">提示:你可以把证书保存分享到朋友圈或微信群,推荐他人进来,会有积分奖励</div>
+</div>
+
+{include file="index@footmenu" /}
+
+</body>
+</html>

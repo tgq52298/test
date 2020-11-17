@@ -1,0 +1,22 @@
+﻿/*
+*公告 
+*/
+.NoticeTable{height:50px; border:1px solid #dfdfdf;}
+.NoticeTable td{vertical-align:middle;}
+.NoticeTable td.head{width:30px; background:#1aa4ed;}
+.NoticeTable td.head span{display:block; color:#fff; width:15px; margin:0 auto;}
+.NoticeTable td.cont{padding-right:10px;}
+.NoticeTable td.cont .list{line-height:30px; height:30px; overflow:hidden; padding-left:20px; position:relative;}
+.NoticeTable td.cont .list:before{content:''; display:block; width:5px; height:5px; position:absolute; left:10px; top:12px; background:#cbcac6;}
+/*
+*活动专区 
+*/
+.sidecontainer{padding-bottom:5px;}
+.sidecontainer .head{height:40px; background:#ececec; line-height:40px; position:relative; border:1px solid #dfdfdf;}
+.sidecontainer .head:before{content:''; display:block; width:3px; height:18px; position:absolute; top:11px; left:10px; background:#767676;}
+.sidecontainer .head span{float:left; padding:0 0 0 20px; font-size:15px; color:#333;}
+.sidecontainer .cont{border:#dfdfdf solid 1px; border-top:0; background:#FFF; padding:20px 20px 10px 20px;}
+.sidecontainer .cont #side_adinfo div{height:22px; line-height:22px; overflow:hidden; margin-left:5px;}
+.sidecontainer .cont #side_adinfo div a{color:#1D50A1;}
+.sidecontainer .cont .list_rad{text-align:center; padding-bottom:10px;}
+.sidecontainer .cont .list_rad img{width:100%;}

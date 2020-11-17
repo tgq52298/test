@@ -1,0 +1,37 @@
+<!--论坛今日昨日发贴统计-->
+		<dl class="BaseInfo taglabel">
+				<dt>今日<span id="div_today_post">0</span>帖 昨日<span id="div_yesterday_post">0</span>帖  最高日<span id="div_max_post">0</span>帖 </dt>
+{if modules_config('appstore')}
+				<dd class="count_setup">今日<span id="div_today_setup">0</span>次 昨日<span id="div_yesterday_setup">0</span>次  本周<span id="div_week1_setup">0</span>次 上周<span id="div_week2_setup">0</span>次  安装统计<i class="fa fa-hand-o-left"></i></dd>
+<style type="text/css">
+	.count_setup span{color:blue;padding-left:2px;padding-right:2px;}
+</style>
+<script type="text/javascript">
+$(function(){
+	var url = "{:urls('appstore/wxapp.api/total')}?type=";
+	$.get(url+"day1",function(res){
+		if(res.code==0){
+			$("#div_today_setup").html(res.data);
+		}
+	});
+	$.get(url+"day2",function(res){
+		if(res.code==0){
+			$("#div_yesterday_setup").html(res.data);
+		}
+	});
+	$.get(url+"week1",function(res){
+		if(res.code==0){
+			$("#div_week1_setup").html(res.data);
+		}
+	});
+	$.get(url+"week2",function(res){
+		if(res.code==0){
+			$("#div_week2_setup").html(res.data);
+		}
+	});
+})
+</script> 
+{else /}
+<dd>社区主页<i class="fa fa-pagelines"></i></dd>
+{/if}
+			</dl>  

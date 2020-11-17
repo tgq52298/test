@@ -1,0 +1,90 @@
+{extend name="$member_style_layout" /}
+
+{block name="title"}用户预约单详情{/block}
+
+{block name="content"}
+<style type="text/css">
+<!--
+.FormTable,.FormTable td{
+  border:#DDD solid 1px;
+}
+.FormTable td.tdL{
+  font-weight:bold;
+}
+.FormTable td.tdR{
+  padding:5px;
+  vertical-align:middle;
+  line-height:20px;
+}
+-->
+</style>
+<div class="MainCont">
+  <div class="head"><div class="tag">用户预约单详情如下</div></div>
+    <div class="cont">
+
+      <table width="100%" border="0" cellspacing="0" cellpadding="0" class="FormTable mtop10">
+          <tr>
+            <td class="tdL">服务名称:</td>
+            <td class="tdR"><a href="{:iurl('content/show',['id'=>$info.shopid])}"  target="_blank">{$info.fuwu_db.title}</a></td>
+          </tr>
+
+    <tr>
+            <td class="tdL">预约号:</td>
+            <td class="tdR">{$info.order_sn}</td>
+          </tr>
+      <tr>
+            <td class="tdL">预约时间:</td>
+            <td class="tdR">{:format_time($info.order_bespeak_time)}</td>
+          </tr>
+          <tr>
+            <td class="tdL">预约账号:</td>
+            <td class="tdR"><a href="{:get_url('user',['uid'=>$info['uid']])}" target="_blank">{$info.uid|get_user_name}</a></td>
+          </tr>
+          <tr>
+            <td class="tdL">联系人:</td>
+            <td class="tdR">{$info.order_linkman}</td>
+          </tr>
+          <tr>
+            <td class="tdL">联系电话:</td>
+            <td class="tdR">{$info.order_telphone}</td>
+          </tr>
+
+          <tr>
+            <td class="tdL">预约状态:</td>
+            <td class="tdR" style='color:red'>
+              {switch name="$info.pay_status" }
+              {case value="1"}预约成功{/case}
+              {case value="2"}预约失败{/case}
+              {case value="3"}用户已取消预约{/case}
+              {default /}待审核
+              {/switch}
+            </td>
+          </tr>
+
+
+<!--自定义字段开始-->
+{qb:showpage field="picurl,title,order_bespeak_time,order_telphone,order_linkman"}
+          <tr>
+            <td class="tdL">{$rs.title}:</td>
+            <td class="tdR">{$rs.value}</td>
+          </tr>
+{/qb:showpage}
+<!--自定义字段结束-->
+
+
+          <tr>
+            <td class="tdL">提交时间:</td>
+            <td class="tdR">{$info.create_time}</td>
+          </tr>
+
+           
+
+
+      <tr>
+            <td class="tdL"><br/></td>
+            <td class="tdR"><a href="{:urls('index')}">返回</a> </td>
+          </tr>
+        </table>
+    </div>
+</div>
+{/block}

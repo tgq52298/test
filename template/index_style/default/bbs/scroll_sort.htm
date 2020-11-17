@@ -1,0 +1,58 @@
+<style type="text/css">
+.scroll-sort{
+	width:1200px;
+	margin:auto;
+	margin-bottom:10px;
+	background:#FFF;
+	height:65px;
+}
+.scroll-sort span a{
+	color:#666;
+}
+.scroll-sort span{
+	border-radius:4px;
+	margin-left:15px;
+	padding-left:13px;
+	padding-right:13px;
+	font-size:16px;
+	line-height:35px;
+	margin-top:15px;
+	height:35px;
+	background:#efefef;
+	display:block;
+	float:left;
+}
+.scroll-sort span:hover{
+	background:orange;
+}
+.scroll-sort span:hover a{
+	color:#fff;
+}
+.scroll-sort .choose{
+	background:orange;
+}
+.scroll-sort .choose a{
+	color:#fff;
+}
+.swiper-slide{width: auto!important;}
+</style>
+<link href="__STATIC__/libs/swiper/swiper.min.css" rel="stylesheet">
+	<div class="scroll-sort">
+		<div class="swiper-container">
+			<div class="swiper-wrapper">
+			{volist name="0|sort_config" id="rs"}
+				<span class='swiper-slide {eq name="$fid" value="$rs.id"}choose{/eq}'><a href="{:urls('content/index',['fid'=>$rs['id']])}">{$rs.name}</a></span>
+			{/volist}
+			</div>
+		</div>
+	</div>
+<script src="__STATIC__/libs/swiper/swiper.min.js"></script>
+<script>
+    $(function () {
+        var swiper = new Swiper('.swiper-container', {
+            spaceBetween: 0,
+            slidesPerView:'auto',
+            freeMode: true
+        });
+    })
+</script>

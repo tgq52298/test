@@ -1,0 +1,59 @@
+{extend name="$member_style_layout" /}
+
+{block name="title"}图片管理{/block}
+{block name="content"}
+<ul class="qb_ui_page_menu">
+	<li><a href="{:urls('content/index')}" class="blue fa fa-fw fa-mail-reply-all"style="width:60px;"> 返回</a></li>
+	<li class="right"><a href="{:iurl('cms/add',['aid'=>$id])}" class="red fa fa-fw fa-plus-square" style="width:60px;"> 发布</a></li>
+</ul>
+<link rel="stylesheet" href="__STATIC__/css/waplistshop.css">
+<div class="MyshopBox">
+{qb:tag name="hy_cms_member_wapshow01" type="cms" union="ext_id=id" mid="2" rows="5"}
+	<div class="ListShop">
+		<dl>
+			<dt><a href="{$rs.url}"><img src="{$rs.picurl}" onerror="this.src='__STATIC__/images/nopic.png';"/></a></dt>
+			<dd>
+				<div class="t"><a href="{$rs.url}" target="_blank">{$rs.title}</a></div>
+				<div class="f">分类: <a href="{$rs.sort_url}" target="_blank">{$rs.sort_name}</a></div>
+				<div class="time">{$rs.time}</div>
+			</dd>
+		</dl>
+		<div class="submit">
+			<a href="javascript::" onclick="del('{$rs.id}',this)">移除</a> 
+		</div>
+	</div>
+{/qb:tag}	
+</div>
+<div class="ShowMores" onclick="showMoreContent()" style="background:orange;color:#fff;padding:5px;border:1px solid #fff;text-align:center;">查看更多</div>
+<script type="text/javascript">
+var page = 1;
+//显示更多
+function showMoreContent(){
+	page++;
+	$.get('{qb:url name="hy_cms_member_wapshow01"/}' + page,function(res){
+		if(res.code==0){
+			if(res.data==''){
+				layer.msg("已经显示完了！",{time:500});
+				$('.ShowMores').hide();
+			}else{
+				$('.MyshopBox').append(res.data);
+			}
+		}else{
+			layer.msg(res.msg,{time:2500});
+		}
+	});
+}
+
+function del(id,opt){
+	$.get("{:iurl('wxapp.cms/remove')}?id="+id,function(res){
+		if(res.code==0){
+			layer.msg("操作成功" ,{time:500});
+			$(opt).parent().parent().hide();
+			//location.reload();
+		}else{
+			layer.msg("操作失败:" + res.msg ,{time:2500});
+		}
+	});
+}
+</script>
+{/block}

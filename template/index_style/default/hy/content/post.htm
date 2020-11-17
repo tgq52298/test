@@ -1,0 +1,184 @@
+﻿{extend name="$index_style_layout" /}
+{block name="head_title"}创建{:M('name')}{/block}
+
+{block name="body_content"}
+<link rel="stylesheet" href="__STATIC__/group/add.css">	
+<form class="ajax-post" action="" method="post">
+<div class="addBox">
+<!--
+	<ul class="topBoxs">
+		<li class="logo"><a href="/"><img src="__STATIC__/bbs/logo1.png"></a></li>
+		<li class="info"><span>{:M('name')}</span></li>
+		<li class="atten"><a href="{:get_url('member')}"><i class="si si-user"></i></a></li>
+	</ul>
+-->
+	<div class="type1">
+		<dl>
+			<dt>所属分类</dt>
+			<dd>
+				<select name="fid">
+					<option value="0">请选择栏目</option>
+					{volist name="''|sort_config" id="rs"}
+					{eq name="$rs.mid" value="1"}
+					<option value="{$rs.id}" {eq name="$fid" value="$rs.id"}selected{/eq}>{$rs.title_prefix}{$rs.name}</option>
+					{/eq}
+					{/volist}
+				</select>
+			</dd>
+		</dl>	
+	</div>
+	<ul class="types">
+		<ol>{:M('name')}名称</ol>
+		<li class="input1"><input type="text" value="{$rsdb.title}" name="title" placeholder="请输入名称" required/></li>
+	</ul>
+	<ul class="types">
+		<ol>地址</ol>
+		<li class="input1"><input type="text" id="address" value="{$rsdb.address}" name="address"/></li>
+		<input type="hidden" id="mapid" value="{$rsdb.map}" name="map"/>
+	</ul>
+	<ul class="types">
+		<ol>介绍</ol>
+		<li>
+			<link rel="stylesheet" href="__STATIC__/libs/summernote/bootstrap.min.css" />
+			<script type="text/javascript" src="__STATIC__/libs/summernote/bootstrap.min.js"></script>
+			<link rel="stylesheet" href="__STATIC__/libs/summernote/summernote.css">
+			<script type="text/javascript" src="__STATIC__/libs/summernote/summernote.js"></script>
+			<script type="text/javascript">
+				//$(function() {
+				  //$('.summernote').summernote({
+					//height: 100,
+					//toolbar: false
+				  //});
+				//});
+			</script>
+			<textarea name="content" class="summernote" placeholder="请输入内容">{$rsdb.content}</textarea>
+		</li>
+	</ul>
+	<ul class="types">
+		<ol>封面图</ol>
+		<li class="ShowPicBox">
+			<span class="ListImgs"></span>
+			<div onclick='$("#fileToUpload").click()'><span><i class="si si-camera"></i></span></div>
+			<div style="display:none;">
+				<input type="file" name="fileToUpload" id="fileToUpload" accept="image/*" multiple/>
+				{eq name="mid" value="2"}
+				<input type="text" name="pics" value="{$rsdb.pics}" id="picsValue"  style="width:100%;" /> 
+				{/eq}
+				<input type="text" name="picurl" value="{$rsdb.picurl}" id="compressValue"  style="width:100%;" /> 
+			</div>
+		</li>
+	</ul>
+	<div class="button"><button type="submit">{empty name='id'}确认创建{else /}确认修改{/empty}</button></div>
+</div>	
+</form>
+
+<script type="text/javascript" src="https://api.map.baidu.com/api?v=2.0&ak=MGdbmO6pP5Eg1hiPhpYB0IVd"></script>
+<script type="text/javascript" src="http://developer.baidu.com/map/jsdemo/demo/convertor.js"></script>
+<script type="text/javascript">
+//获取当前坐标位置
+function reload_map(){
+	var geolocation = new BMap.Geolocation();
+	geolocation.getCurrentPosition(function(result){
+		if(this.getStatus() == window.BMAP_STATUS_SUCCESS){
+		  map_x = result.point.lng;
+		  map_y = result.point.lat;
+		  $("#mapid").val(map_x+','+map_y)
+
+		  //显示当前位置的街道名
+			var geoc = new BMap.Geocoder();
+			geoc.getLocation(result.point, function(rs){
+				var addComp = rs.addressComponents;
+				$("#address").val(addComp.district + addComp.street + addComp.streetNumber);
+			});
+
+			//gg = GPS.bd_decrypt(result.point.lat, result.point.lng);	//百度转谷歌
+			//wgs = GPS.gcj_decrypt(gg.lat, gg.lon); //谷歌转GPS
+		    //showMapPosition(wgs.lon,wgs.lat);
+		} else {
+			alert('failed:'+this.getStatus());
+		}        
+	},{enableHighAccuracy: true})
+}
+reload_map();
+</script>
+
+<script type="text/javascript" src="__STATIC__/js/base64uppic.js"></script>
+<script type="text/javascript">
+		var severUrl = "{:urls('index/attachment/upload','dir=images&from=base64&module=qun')}";
+		var pics = [];
+        //图片上传change事件
+        $('#fileToUpload').change(function(){			
+            uploadBtnChange($(this).attr("id"),'compressValue',pics,viewpics);
+        });
+
+		function viewpics(url,pic_array){
+			var html = '';
+			pic_array.forEach(function(f){
+				html += '<div><span><img src="/public/'+f+'"></span><em>X</em></div>';
+			});
+			$(".ListImgs").html(html);
+			addclick();
+		}
+
+		if($("#compressValue").val()!='')pics = $("#compressValue").val().split(',');
+		viewpics('',pics);		
+		
+
+		function addclick(){
+			$(".ListImgs em").click(function(e){
+				//这里删除的图片没有真正从服务器删除
+				$(this).parent().remove();
+				pics = [];
+				var obj = $(".ListImgs img");
+				obj.each(function(e){
+					var img = $(this).attr("src");
+					img = img.replace('/public/','');
+					pics.push(img);
+					$("#compressValue").val( pics.join(',') );
+				});
+				if(obj.length==0){
+					$("#compressValue").val('');
+				}			
+			});
+		}
+		addclick();
+
+//图片模型特别处理
+function photo_model(post){
+	var mid = {$mid};
+	if(mid!=2){
+		return ;
+	}
+	if(post==true){
+		var picArray = [];
+		ar = $("#compressValue").val().split(',');
+		ar.forEach(function(picurl){
+			picArray.push({"picurl":picurl});
+		});		
+		$("#picsValue").val( JSON.stringify(picArray) )
+	}
+}
+
+var url = "{empty name='id'}{:urls('wxapp.post/add')}{else /}{:urls('wxapp.post/edit',['id'=>$id])}{/empty}?mid={$mid}&ext_id={$aid}";
+	
+	$(document).ready(function(){
+        $('.ajax-post').submit(function () {
+			photo_model(true);	//图片模型特别处理
+            var form_data = $(this).serialize(form_data);
+            $.post(url, form_data).success(function (res) {
+                if (res.code==0) {
+					layer.open({title: '提示',content: '创建成功'});
+                    setTimeout(function () {
+                        location.href = "{:urls('show')}?id=" + res.data.id;
+                    }, 500);
+                } else {
+					layer.open({title: '提示',content: res.msg});
+                }
+            }).fail(function () {
+				layer.open({title: '提示',content: '服务器发生错误'});
+            });
+            return false;
+        });
+    });
+</script>
+{/block}

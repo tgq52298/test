@@ -1,0 +1,313 @@
+{extend name="$index_style_layout" /}
+
+<!--SEO相关-->
+{block name="head_title"}{$webdb.mseo_title?:$webdb.seo_title}{/block}
+{block name="head_keword"}{$webdb.mseo_keyword?:$webdb.seo_keyword}{/block}
+{block name="head_description"}{$webdb.mseo_description?:$webdb.seo_description}{/block}
+
+
+{block name="body_content"}
+<link type="text/css" rel="stylesheet" href="__STATIC__/hr/default/pc/index.css" />
+
+
+<div style="margin:15px auto; width:1200px;"><!-- main_wrap S-->
+
+
+	{qb:tag name='pchr_index_banner_ad1' type='image'}
+	<!-- <div class="content_ad" style="width:1200px; overflow:hidden; margin:auto;"><a href='#' target=_blank><img src="__STATIC__/hr/default/demo/ad1.jpg"  width='980'  height='65' border='0' /></a></div> --> 
+	<div class="content_ad" style="width:1200px; overflow:hidden; margin:auto;"><a href={$url} target=_blank><img src="{$picurl}"  width='980'  height='65' border='0' /></a></div>
+	{/qb:tag}
+
+
+	<div class="content_text" style="width:1200px; overflow:hidden; margin:auto;">
+		<div class="text_left" style="width:24%; float:left;">
+			<table style="width:100%; border:1px solid #1aa4ed;">
+				<tr>
+					<td class="jc_head"><div class="jc">职位分类</div></td>
+				</tr>
+				<tr>
+					<td class="middle">
+
+						{volist name=":get_sons(get_sort())" id="rs"}
+							{if get_sort($rs['id'],mid)!=2}
+							<div class="big"><a href="{:urls('content/index','fid='.$rs['id'])}" {if input('fid')==$rs[id]} style="color:red;"{/if}>{$rs.name}</a></div>
+							<div class="small">
+								{volist name="$rs.sons" id="vs"}
+								<a href="{:urls('content/index','fid='.$vs['id'])}" {if input('fid')==$vs[id]} style="color:red;"{/if}>{$vs.name}</a>&nbsp;
+								{/volist}
+							</div>	
+							{/if}
+						{/volist}
+
+						<div class="hj">{qb:tag name='pchr_index_hot_title' type="text"}热门职位{/qb:tag}</div>
+						<div class="hjc">
+							{qb:tag name="pchr_index_hot_listdata1" field="title" type="hr" rows="9" order="view" where="status>0"}
+							<a href="{$rs.url}" target="_blank">{$rs.title}</a>
+							{/qb:tag}
+						</div>
+					</td>
+				</tr>
+			</table> 
+			{qb:tag name='pchr_index_banner_ad2' type='image'}
+			<!-- <div class="side_ad"><a href="{$url}" target=_blank><img src='__STATIC__/hr/default/demo/ad2.gif'  width='250'  height='100' border='0' /></a></div> -->
+			<div class="side_ad"><a href="{$url}" target=_blank><img src='{$picurl}'  width='250'  height='100' border='0' /></a></div>
+			{/qb:tag}
+	     
+			<table style="width:100%; border:1px solid #dfdfdf;">
+				<tr> 
+					<td class="lf_head">{qb:tag name="pchr_index_experience_head" type="text"}求职经验{/qb:tag}</td>
+				</tr>
+				<tr> 
+				<td class="lf_news">
+					{qb:tag name="pchr_index_experience_data" field="title" type="cms" rows="9" order="view" where="status>0"}
+					{if $rs.title}
+					·<a href="{$rs.url}" target="_blank">{:get_word($rs.title,33)}</a><br>
+					{/if}
+					{/qb:tag}
+				</td>
+				</tr>
+			</table>								
+		</div>
+
+	<div class="text_right" style="width:76%; float:left; margin-bottom:75px;">
+			<table class="text_right_top" style="width:100%;">
+				<tr>
+					<td class="top_po" style="width:60%; padding-left:25px; height:240px;">
+						<table style="width:100%;border:1px solid #dfdfdf; height:240px;">
+							<tr> 
+								<td class="rt_head">
+								{qb:tag name='pchr_index_recommend_head' type="text"}
+								  <div id="tj" class="tag1" onmouseover="chose_titletype('1')">推荐职位</div>
+								  <div id="tp" class="tag2" onmouseover="chose_titletype('2')">推荐人才</div>
+								{/qb:tag}
+								</td>
+							</tr>
+							<tr> 
+								<td class="cb"> 
+									<div id="show_job">			
+										{qb:tag name="pchr_index_recommend_job" field="title" type="hr" rows="5" order="list" mid="1" where="status=2"}
+										<div class="lt"> 
+											<span class="t1"><a href="{$rs.url}" target="_blank">{$rs.title}</a></span>
+											<span class="t2">{$rs.workplace}</span> 
+											<span class="t3"><a href="{:get_hy_url($info.uid,$info.ext_id,$info.ext_sys)}" target="_blank">{:get_hy_name($rs.uid,$rs.ext_id,$rs.ext_sys)}</a></span>													
+										</div>
+										{/qb:tag}
+									</div>
+									<div id="show_member" style="display:none;">			
+										{qb:tag name="pchr_index_recommend_personnel" field="title" type="hr" rows="5" order="list" mid="2" where="status=2"}
+											<div class="lt"> 
+												<span class="t1"><a href="{$rs.url}" target="_blank">{$rs.truename}</a></span> 
+												<span class="t5">{$rs.alma_mater}</span>
+												<span class="t2">{$rs.school_age}</span> 
+												<span class="t4">{$rs.speciality}</span>
+											</div>
+										{/qb:tag}
+									</div>									
+								</td>
+							</tr>
+						</table>
+						<SCRIPT LANGUAGE="JavaScript">
+						function chose_titletype(a){
+							if(a=='1'){
+								document.getElementById("tj").className='tag1';
+								document.getElementById("tp").className='tag2';
+								document.getElementById("show_job").style.display='';
+								document.getElementById("show_member").style.display='none';
+							}else if(a=='2'){
+								document.getElementById("tj").className='tag3';
+								document.getElementById("tp").className='tag4';
+								document.getElementById("show_job").style.display='none';
+								document.getElementById("show_member").style.display='';
+							}
+						}
+						</SCRIPT>
+					</td>
+					<td class="top_bo" style="width:40%; padding-left:25px; height:240px;">
+						<table  style="width:100%;border:1px solid #dfdfdf; height:240px;">
+							<tr> 
+								<td class="rt_head">
+									{qb:tag name='pchr_index_action_head' type="text"}
+									<div id="BB1" class="tag1" onmouseover="chose_Type('1')">企业服务{$userdb.uid}</div>
+									<div id="BB2" class="tag2" onmouseover="chose_Type('2')">个人服务</div>
+									{/qb:tag}
+								</td>
+							</tr>
+							<tr> 
+								<td class="cb"> 
+									{if $userdb}
+										<div id="compayn_form" class="tb_f">
+											{qb:tag name='pchr_index_companyaction_content' type="text"}
+											<div class="tbf1"><a href="{:murl('content/postnew')}" target="_blank" class='_pop' onclick="cklog();">发布职位</a></div>
+											<div class="tbf2"><a href="{:murl('content/index',['mid'=>1])}" target="_blank" class='_pop'>职位管理</a></div>
+											<div class="tbf3"><a href="{:murl('content/jobvita',['mid'=>2])}" target="_blank" class='_pop'>求职信</a></div>
+											<div class="tbf4"><a href="{:urls('content/index',['mid'=>2])}" target="_blank">找人才</a></div>
+											{/qb:tag}
+										</div>
+										<div id="member_form" class="tb_f" style="display:none;"> 
+											{qb:tag name='pchr_index_personalaction_content' type="text"}
+											<div class="tbf2"><a href="{:murl('content/checkvita',['mid'=>2])}" target="_blank" class='_pop'>更新简历</a></div>
+											<div class="tbf1"><a href="{:murl('content/checkvita',['mid'=>2,'type'=>2])}" target="_blank">查看简历</a></div>
+											<div class="tbf4"><a href="{:murl('content/jobvita',['mid'=>1])}" target="_blank" class='_pop'>申请的职位</a></div>
+											{/qb:tag}
+										</div>
+									{else /}
+										<div id="compayn_form" class="tb_f">
+											<div class="tbf1"><a href="javascript:;"  onclick="tip_log();">发布职位</a></div>
+											<div class="tbf2"><a href="javascript:;" onclick="tip_log();">职位管理</a></div>
+											<div class="tbf3"><a href="javascript:;" onclick="tip_log();">求职信</a></div>
+											<div class="tbf4"><a href="javascript:;" onclick="tip_log();">找人才</a></div>
+										</div>
+										<div id="member_form" class="tb_f" style="display:none;"> 
+											<div class="tbf2"><a href="javascript:;"  onclick="tip_log();">更新简历</a></div>
+											<div class="tbf1"><a href="javascript:;"  onclick="tip_log();">查看简历</a></div>
+											<div class="tbf4"><a href="javascript:;"  onclick="tip_log();">申请的职位</a></div>
+										</div>									
+									{/if}
+
+
+								</td>
+							</tr>
+						</table>
+						<SCRIPT LANGUAGE="JavaScript">
+						function tip_log(){
+							layer.msg('登陆后才可进行相关操作！');
+						}
+						function chose_Type(a){
+							if(a=='1'){
+								document.getElementById("BB1").className='tag1';
+								document.getElementById("BB2").className='tag2';
+								document.getElementById("compayn_form").style.display='';
+								document.getElementById("member_form").style.display='none';
+							}else if(a=='2'){
+								document.getElementById("BB1").className='tag3';
+								document.getElementById("BB2").className='tag4';
+								document.getElementById("compayn_form").style.display='none';
+								document.getElementById("member_form").style.display='';
+							}
+						}
+						</SCRIPT>				
+					</td>
+				</tr>
+			</table>
+
+			<!--table class="search_job" style="width:97%; height:66px; margin-left:25px;display:none;" >
+				<tr> 
+					<td>
+						<form class="form1" name="form1" method="post" action="search.php?action=search" target="_blank">
+							<div class="title">搜索人才/职位</div>
+							<div class="type">找工作： 
+								<input type="radio" name="mid" value="1" checked>
+								找人才： 
+								<input type="radio" name="mid" value="2">
+							</div>
+							<div class="mian_submit_box"> 
+								<input type="text" name="keyword" id="s_input" class="mian_input_box" placeholder="输入关键字">
+								<input type="submit" name="Submit" value="搜索" class="mian_button_box">
+							</div>
+						</form>
+					</td>
+				</tr>
+			</table-->
+
+
+			<table class="dragcity" style="width:97%; height:340px; margin:0 0 25px 25px; border:1px solid #dfdfdf;">
+				<tr> 
+					<td class="dr_head">{qb:tag name='pchr_index_areabanner_head' type="text"} 地区招聘 {/qb:tag}</td>
+				</tr>
+				<tr> 
+					<td> 
+						<table style="width:100%;" class="ad_pir">
+							<tr>
+								<td>{qb:tag name='pchr_index_banner_adb1' type='image'}<!-- <a href="#" target='_blank'><img src="__STATIC__/hr/default/demo/adb1.jpg"   border='0' /></a> --><a href="{$url}" target='_blank'><img src="{$picurl}"   border='0' /></a>{/qb:tag}</td>
+								<td align="center">{qb:tag name='pchr_index_banner_adb2' type='image'}<!-- <a href="#" target='_blank'><img src="__STATIC__/hr/default/demo/adb2.gif"   border='0' /></a> --><a href="{$url}" target='_blank'><img src="{$picurl}"   border='0' /></a>{/qb:tag}</td>
+							</tr>
+							<tr>
+								<td>{qb:tag name='pchr_index_banner_adb3' type='image'}<!-- <a href="#" target='_blank'><img src="__STATIC__/hr/default/demo/adb3.gif"   border='0' /></a> --><a href="{$url}" target='_blank'><img src="{$picurl}"   border='0' /></a>{/qb:tag}</td>
+								<td align="center">{qb:tag name='pchr_index_banner_adb4' type='image'}<!-- <a href="#" target='_blank'><img src="__STATIC__/hr/default/demo/adb4.gif"   border='0' /></a> --><a href="{$url}" target='_blank'><img src="{$picurl}"   border='0' /></a>{/qb:tag}</td>
+							</tr>
+							<tr>
+								<td>{qb:tag name='pchr_index_banner_adb5' type='image'}<!-- <a href="#" target='_blank'><img src="__STATIC__/hr/default/demo/adb1.jpg"   border='0' /></a> --><a href="{$url}" target='_blank'><img src="{$picurl}"   border='0' /></a>{/qb:tag}</td>
+								<td align="center">{qb:tag name='pchr_index_banner_ad6' type='image'}<!-- <a href="#" target='_blank'><img src="__STATIC__/hr/default/demo/adb6.gif"   border='0' /></a> --><a href="{$url}" target='_blank'><img src="{$picurl}"   border='0' /></a>{/qb:tag}</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+			</table>
+				
+			<table class="drag" style="width:97%; margin-left:25px; border:1px solid #dfdfdf;">
+				<tr> 
+				  <td class="dr_head">{qb:tag name='pchr_index_newjob_head' type="text"}最新职位{/qb:tag}</td>
+				</tr>
+				<tr> 
+				  <td class="text_mar">
+					<table class="newset">
+					  <tr class="pos_head"> 
+					  	{qb:tag name='pchr_index_newjob_title' type="text"}
+						<td>职位名称</td>
+						<td>企业名称</td>
+						<td>地区</td>
+						<td>月薪</td>
+						{/qb:tag}
+					  </tr>
+					{qb:tag name="pchr_index_newjob_data" field="title" type="hr" rows="6" order="id" mid="1" where="status>0"}
+					  <tr class="pos_w"> 
+					    <td class="pos"><a href="{$rs.url}" target="_blank" ><b>{$rs.title}</b></a></td>
+					    <td class="company"><a href="{:get_hy_url($rs.uid,$rs.ext_id,$rs.ext_sys)}" target="_blank">{:get_hy_name($rs.uid,$rs.ext_id,$rs.ext_sys)}</a></td>
+					    <td>{$rs.workplace}</td>
+					    <td>{$rs.wage}</td>
+					  </tr>
+					{/qb:tag}
+
+					</table>
+				  </td>
+				</tr>
+			</table>
+
+			{qb:tag name='pchr_index_banner_ad3' type='image'}
+			<!-- <div class="mian_ad"><a href="{$rs.url}" target=_blank><img src="__STATIC__/hr/default/demo/ad3.jpg"  width='715'  height='88' border='0' /></a></div> --> 
+			<div class="mian_ad"><a href="{$rs.url}" target=_blank><img src="{$rs.picurl}"  width='715'  height='88' border='0' /></a></div>
+			{/qb:tag}
+
+			<table class="find_box" style="width:97%; margin-left:25px; border:1px solid #dfdfdf;" >
+				<tr> 
+				  <td class="dr_head">{qb:tag name='pchr_index_newperson_head' type="text"}最新人才{/qb:tag}</td>
+				</tr>
+				<tr> 
+				  <td class="text_mar"> 
+					<table class="find_job" id="list_zh">
+					  <tr class="pos_head"> 
+					  	{qb:tag name='pchr_index_newperson_title' type="text"}
+						<td>姓名</td>
+						<td>所学专业</td>
+						<td>工作年限</td>
+						<td>性别</td>
+						<td>月薪要求</td>
+						{/qb:tag}
+					  </tr>
+					{qb:tag name="pchr_index_newperson_data" field="title" type="hr" rows="6" order="id" mid="2" where="status>0"}
+					  <tr> 
+						<td class="p_name"><a href="{$rs.url}" target="_blank">{$rs.truename}</a></td>
+						<td>{$rs.speciality}</td>
+						<td>{$rs.workyear}</td>
+						<td>{$rs.sex}</td>
+						<td>{$rs.wage}</td>
+					  </tr>
+					 {/qb:tag}
+					</table>
+				  </td>
+				</tr>
+			</table>				  				
+		</div>			
+	</div>
+
+
+
+
+
+
+</div><!-- main_wrap E-->
+
+
+
+
+{/block}

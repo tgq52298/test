@@ -1,0 +1,50 @@
+<!--直播与点播-->
+<div class="miaodian"><!--锚点--></div>
+<ul class="warp_play">
+	<li class="a">
+		<!--播放器框架,可以放在当前页面的任何位置 关键元素name="iframe_play" class="iframe_play" id="iframe_play" -->
+		<iframe name="iframe_play" class="iframe_play" id="iframe_play" src="about:blank" style="height:400px;width:100%;display:none;" scrolling="no" frameborder="0"  allowfullscreen="true"></iframe>
+	</li>
+	<li class="b">
+	</li>
+</ul>
+<script type="text/javascript">
+function change_win(type){	//改变窗口大小
+	if(type){
+		$(".warp_play").css({width:'100%'});
+	}else{
+		$(".warp_play").css({width:'1200px'});
+	}
+}
+function open_play(url){	//打开播放器回调函数
+	if(url.indexOf('/vod_mv/')>-1 || url.indexOf('/zhibo/')>-1){
+		$(".warp_play").addClass('video_warp');
+		$(".warp_play").css('display','flex');
+		if( $(".warp_play .b iframe").length==0 ){		 
+			$(".warp_play .b").height( $(".warp_play .a").height() );
+			$(".warp_play .b").html($(".warp_chat").html());
+			$(".warp_chat").html('');
+		}
+		setTimeout(function(){	//延时处理,避免menu模块,还没加载进来.
+			$(".model-menu div[data-type='warp_about']").trigger("click");
+		},2000)
+	}else{
+		$(".warp_play").removeClass('video_warp');
+		$(".warp_play").show();
+	}
+	$("html,body").animate({scrollTop:$('.miaodian ').offset().top},500);
+}
+function chat_init(){	//加载聊天框架成功时回调 
+	$("#iframe_msg")[0].contentWindow.$(".talk_window").css({background:'#fff'});
+}
+
+function close_play(){	//关闭播放器回调函数
+	$(".warp_play").css('display','none');
+	if($(".warp_chat").html()==''){
+		$(".warp_chat").html( $(".warp_play .b").html() );
+		$(".warp_play .b").html('');
+		$(".model-menu div[data-type='warp_chat']").trigger("click");
+	}	
+}
+</script>
+<div style="display:none;" class="taglabel">目的是不给用户复制当前碎片</div>

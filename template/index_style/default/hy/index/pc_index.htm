@@ -1,0 +1,365 @@
+{extend name="$index_style_layout" /}
+
+<!--SEO相关-->
+{block name="head_title"}{$webdb.mseo_title?:$webdb.seo_title}{/block}
+{block name="head_keword"}{$webdb.mseo_keyword?:$webdb.seo_keyword}{/block}
+{block name="head_description"}{$webdb.mseo_description?:$webdb.seo_description}{/block}
+
+{block name="body_AllScorllSlide"}
+<!--通栏横幅图片__STATIC__/css/qb_ui.css中控制图片宽度百分百高度行内样式设置，如不设置不小于100px---->
+{qb:tag name="hy_index_001" type="image"}
+<div class="qb_ui_AllscrollBanner" style="height:300px;">
+	<a href="#1"><img src="__STATIC__/group/circle/banner.jpg"></a>
+</div>
+{/qb:tag}
+{/block}
+{block name="body_content"}
+<link rel="stylesheet" href="__STATIC__/group/circle/circle.css">
+<div class="contbox">
+	<div class="content">
+		<div class="maincont1">
+			<div class="cont_banner">
+				<div class="images">
+{qb:tag name="pc_hy_banner_001" type="image"}
+				<a href="#"><img src="__STATIC__/group/circle/banner.png" width="790" height="385" /></a>
+{/qb:tag}</div>
+				<div class="title">{qb:tag name="pc_hy_002" type="text"}<a href="#">共同建设美丽新农村</a>{/qb:tag}</div>
+			</div>
+			<div class="cont_mylist">
+				<div class="cont">
+					<div class="myinfo">
+						<div class="img"><img src="{:get_qrcode()}" width="84" height="84" /></div>
+						<div class="word">
+							<div class="w">扫一扫,手机访问 <em class="green">附近商家</em></div>
+							<div class="g">
+								<a href="{:murl('content/postnew')}" class="g_a1 _pop">创建商铺</a>
+								<a href="{:murl('content/index')}" class="g_a2 _pop">我的商铺</a>
+							</div>
+						</div>
+					</div>
+					<div class="cont_list">
+						<ul>
+{qb:tag name="hy_pc_index_001" mid="1" type="bbs" order="view" by="desc" rows="6"}
+							<li><span style="{lt name='i' value='4'}background:#1bb76d;{/lt}">{$i}</span><a href="{$rs.url}" target="_blank">{$rs.title|get_word=50}</a></li>
+{/qb:tag}
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div><!--maincont1 end-->
+
+
+		<div class="maincont2">
+			<div class="cont_search">
+				<div class="mysearch">
+					<form class="search_box" action="{:url('search/index/lists')}" method="post">
+						<select class="select_box">
+							<option value="0">商家</option>
+							<option value="1">商品</option>
+						</select>
+						<div class="text_box"><input type="text" name="keyword" value="请输入搜索关键词"></div>
+						<input type="submit" value="" class="button_box">
+					</form>
+				</div>
+				<div class="write_box"><a href="{:murl('content/postnew')}" target="_blank" class="_pop">创建商铺</a></div>
+			</div>
+		</div>
+
+<link rel="stylesheet" href="__STATIC__/group/circle/swiper.min.css">
+		<div class="maincont3">
+			<div class="sub_head">
+				<div class="tag"><span style="background:url(__STATIC__/group/circle/cont_hot.png) no-repeat left center;">推荐商家</span></div>
+			</div>
+			<div class="myvillage">
+<!-- Swiper -->
+			  <div class="swiper-container">
+			    <div class="swiper-wrapper">
+
+			      <div class="swiper-slide">
+					<ul class="pc_index_showqun001_1">
+{qb:tag name="pc_index_showhy001" type="hy" rows="6" status="2" order="id" by="desc"}
+						<li class="list">
+							<div class="mylist">
+								<dl>
+									<dt>
+										<a href="{$rs.url}" target="_blank"><img onerror="this.src='__STATIC__/images/nopic.png'" src="{$rs.picurl}" alt="tupian"></a>
+									</dt>
+									<dd>
+										<h2><a href="{$rs.url}" target="_blank">{$rs.title}</a></h2>
+										<div>
+											<span><i class="fa fa-fw fa-user-o"></i>电话: <em>{$rs.telphone}</em> </span>
+											<span><i class="fa fa-fw fa-file-text-o"></i>地址: {$rs.address}</span>
+											 
+										</div>
+									</dd>
+								</dl>
+								<div class="mytopic">
+									<h3>商家介绍</h3>
+									<ul>
+										<li style="height:40px;"><a href="{$rs.url}">{$rs.content|get_word=110}</a></li>
+										 
+									</ul>
+								</div>
+							</div>
+						</li>
+{/qb:tag}
+					</ul>
+			      </div>
+			     <!--swiper-slide-->
+
+			      <div class="swiper-slide">
+					<ul class="pc_index_showqun001_2">
+					</ul>
+			      </div>
+			     <!--swiper-slide-->
+
+			      <div class="swiper-slide">
+					<ul class="pc_index_showqun001_3">
+					</ul>
+			      </div>
+			     <!--swiper-slide-->
+
+			    </div>
+<!-- Add Pagination -->
+			    <div class="swiper-button-next"></div>
+    			<div class="swiper-button-prev"></div>
+			  </div>
+<script type="text/javascript">
+function show_qun_index(typeurl,divcode){
+	$.get('{qb:url name="pc_index_showhy001" /}1&'+typeurl+'&'+Math.random(),function(res){
+		if(res.code==0){
+			if(res.data==''){
+				layer.msg("内容不存在！",{time:500});
+			}else{
+				$('.'+divcode).html(res.data);
+			}
+		}else{
+			layer.msg(res.msg,{time:2500});
+		}
+	});
+}
+show_qun_index("union=order,by&order=replynum&by=desc",'pc_index_showqun001_2');
+show_qun_index("union=order,by&order=view&by=desc",'pc_index_showqun001_3');
+</script>
+<!-- Swiper JS -->
+<script type="text/javascript" src="__STATIC__/group/circle/swiper.min.js"></script>
+
+<!-- Initialize Swiper -->
+<script>
+var swiper = new Swiper('.swiper-container', {
+  slidesPerView: 1,
+  pagination: {
+    el: '.swiper-pagination',
+    clickable: true,
+  },
+  navigation: {
+        nextEl: '.swiper-button-next',
+        prevEl: '.swiper-button-prev',
+   },
+});
+</script>
+			</div>
+<!-- Swiper end -->
+
+		</div>
+
+		
+		
+		<div class="maincont4">
+			<div class="sub_head">
+				<div class="tag"><span style="background:url(__STATIC__/group/circle/cont_good.png) no-repeat left center;">商家动态</span></div>
+				<div class="more">
+					 
+					<div><a href="javascript:;">餐饮</a></div>
+					<div><a href="javascript:;">休闲</a></div>
+					<div><a href="javascript:;">服务</a></div>
+				</div>
+			</div>
+			<div class="cont">
+				<div class="cont_good">
+						<div class="prev"><span>上一个</span></div>
+						<div class="next"><span>下一个</span></div>
+						<div class="piclistbox">
+							<ul class="piclist">
+{qb:tag name="hy_pc_index_003" mid="2" type="cms" rows="10"}
+								<li class="list"><a href="{$rs.url}"><img onerror="this.src='__STATIC__/images/nopic.png'" src="{$rs.picurl}" height="104" /></a></li>
+{/qb:tag}
+							</ul>
+						</div>
+				</div>
+<script>
+//////////幻灯片控制开始////////////
+var box_width=220;
+var slide_length=$('.piclist .list').length;
+var max_list=slide_length-4;
+var nowList=1;
+function next_slide(){
+nowList++;
+if(nowList>max_list){
+	nowList=1;
+}
+change_slide(nowList);
+}
+function prev_slide(){
+nowList--;
+if(nowList<1){
+	nowList=max_list;
+}
+change_slide(nowList);
+}
+function change_slide(num){
+var thisnum=(num-1);
+var left_width=box_width*thisnum;
+$('.piclistbox .piclist').animate({'left':'-'+left_width+'px'},500);
+}
+$('.cont_good .prev').click(function(){
+prev_slide();
+});
+$('.cont_good .next').click(function(){
+next_slide();
+});
+//////////幻灯片控制结束////////
+</script>
+			</div>
+		</div><!--maincont4 end-->
+		
+		<div class="maincont5">
+			<div class="side_left">
+				<div class="side_mhead">
+					<div class="tit"><span>推荐商品</span></div>
+				</div>
+				<div class="cont shoptopic">
+					{qb:tag name="hy_pc_index_shop_003" js="shoptopic" rows="6" type="shop"}
+					<div class="topics_list">  
+						<div class="topics">          
+							<div><a href="{$rs.url}"><img onerror="this.src='__STATIC__/images/nopic.png'" src="{$rs.picurl}" width="225" height="170" /></a></div>
+							<div class="title"><span>{$rs.title}</span></div>
+						</div>
+						<div><span>价格: <em class="green">￥ {$rs.price} 元</em></span></div>
+					</div>					
+					{/qb:tag}
+				</div>
+			</div>
+			<div class="side_right">
+				<div class="side_mhead">
+					<div class="tit"><span>最新加入</span></div>
+				</div>
+				<div class="cont quntopic01">
+					{qb:tag name="hy_pc_index_qun_004" js="quntopic01" rows="4" type="qun"}
+					<dl class="peolist" style="margin-bottom:10px;clear:both;">
+						<dt style="margin-bottom:20px;float:left; "><a href="{$rs.url}"><img onerror="this.src='__STATIC__/images/nopic.png'" src="{$rs.picurl}" width="90" height="90" /></a></dt>
+						<dd style="margin-left:10px;float:left;">
+							<div style="padding-bottom:10px;"><a href="{$rs.url}" class="orange">{$rs.title}</a></div>
+							<div><span>介绍：</span>{$rs.content|get_word=100}</div>
+						</dd>
+					</dl>
+					{/qb:tag}
+
+				</div>
+			</div>
+		</div><!--maincont5 end-->
+		
+		<div class="maincont6" style="display:none;">
+			<div class="side_mhead">
+				<div class="tit"><span>人气村庄</span></div>
+			</div>
+			<div class="share_left">
+				<div class="cont">
+					<dl class="peolist">
+						<dt><a href="{$rs.url}"><img src="{$rs.picurl}" onerror="this.src='__STATIC__/images/nopic.png'" width="90" height="90" /></a></dt>
+						<dd>
+							<div>
+								<p>{$rs.content|get_word=200}
+								</p>
+							</div>
+							<div class="come_from"><span><a href="{$rs.url}"><em class="orange">{$rs.title}</em></a>创建于<em class="green">{$rs.time}</em></span></div>
+						</dd>
+					</dl>
+					<dl class="peolist">
+						<dt><a href="{$rs.url}"><img src="{$rs.picurl}" onerror="this.src='__STATIC__/images/nopic.png'" width="90" height="90" /></a></dt>
+						<dd>
+							<div>
+								<p>{$rs.content|get_word=200}
+								</p>
+							</div>
+							<div class="come_from"><span><a href="{$rs.url}"><em class="orange">{$rs.title}</em></a>创建于<em class="green">{$rs.time}</em></span></div>
+						</dd>
+					</dl>
+					<dl class="peolist">
+						<dt><a href="{$rs.url}"><img src="{$rs.picurl}" onerror="this.src='__STATIC__/images/nopic.png'" width="90" height="90" /></a></dt>
+						<dd>
+							<div>
+								<p>{$rs.content|get_word=200}
+								</p>
+							</div>
+							<div class="come_from"><span><a href="{$rs.url}"><em class="orange">{$rs.title}</em></a>创建于<em class="green">{$rs.time}</em></span></div>
+						</dd>
+					</dl>
+				</div>
+			</div>
+			<div class="share_right">
+				<div class="cont">
+					<div class="share_head">
+						<div class="share_nav" onclick="chagetype(0)"><a href="javascript:;">乡村话题</a></div>
+						<div onclick="chagetype(1)"><a href="javascript:;">最新话题</a></div>
+						<div onclick="chagetype(2)" style="border:none;"><a href="javascript:;">乡村资讯</a></div>
+					</div>
+					<div>
+						<div class="share_right_cont">
+							<div class="share_cont_list">
+								<ul>
+									<li><a href="#">推荐几款性价比高的微单相机</a><span class="green">创意摄影</span></li>
+									<li><a href="#">推荐几款性价比高的微单相机</a><span class="green">创意摄影</span></li>
+									<li><a href="#">推荐几款性价比高的微单相机</a><span class="green">创意摄影</span></li>
+									<li><a href="#">推荐几款性价比高的微单相机</a><span class="green">创意摄影</span></li>
+									<li><a href="#">推荐几款性价比高的微单相机</a><span class="green">创意摄影</span></li>
+									<li><a href="#">推荐几款性价比高的微单相机</a><span class="green">创意摄影</span></li>
+									<li><a href="#">推荐几款性价比高的微单相机</a><span class="green">创意摄影</span></li>
+									<li><a href="#">推荐几款性价比高的微单相机</a><span class="green">创意摄影</span></li>
+									<li><a href="#">推荐几款性价比高的微单相机</a><span class="green">创意摄影</span></li>
+								</ul>
+							</div>
+							<div class="share_cont_list">
+								<ul>
+									<li><a href="#">中国平安积极应对南方洪涝灾害</a><span class="green">创意摄影</span></li>
+									<li><a href="#">中国平安积极应对南方洪涝灾害</a><span class="green">创意摄影</span></li>
+									<li><a href="#">中国平安积极应对南方洪涝灾害</a><span class="green">创意摄影</span></li>
+									<li><a href="#">中国平安积极应对南方洪涝灾害</a><span class="green">创意摄影</span></li>
+									<li><a href="#">推荐几款性价比高的微单相机</a><span class="green">创意摄影</span></li>
+									<li><a href="#">推荐几款性价比高的微单相机</a><span class="green">创意摄影</span></li>
+									<li><a href="#">推荐几款性价比高的微单相机</a><span class="green">创意摄影</span></li>
+									<li><a href="#">推荐几款性价比高的微单相机</a><span class="green">创意摄影</span></li>
+									<li><a href="#">推荐几款性价比高的微单相机</a><span class="green">创意摄影</span></li>
+								</ul>
+							</div>
+							<div class="share_cont_list">
+								<ul>
+									<li><a href="#">中国平安积极应对南方洪涝灾害</a><span class="green">创意摄影</span></li>
+									<li><a href="#">推荐几款性价比高的微单相机</a><span class="green">创意摄影</span></li>
+									<li><a href="#">中国平安积极应对南方洪涝灾害</a><span class="green">创意摄影</span></li>
+									<li><a href="#">推荐几款性价比高的微单相机</a><span class="green">创意摄影</span></li>
+									<li><a href="#">中国平安积极应对南方洪涝灾害</a><span class="green">创意摄影</span></li>
+									<li><a href="#">中国平安积极应对南方洪涝灾害</a><span class="green">创意摄影</span></li>
+									<li><a href="#">推荐几款性价比高的微单相机</a><span class="green">创意摄影</span></li>
+									<li><a href="#">中国平安积极应对南方洪涝灾害</a><span class="green">创意摄影</span></li>
+									<li><a href="#">推荐几款性价比高的微单相机</a><span class="green">创意摄影</span></li>
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+<script>
+function chagetype(num){
+$('.share_head div').removeClass('share_nav');
+$('.share_head div').eq(num).addClass('share_nav');
+$('.share_right_cont .share_cont_list').hide();
+$('.share_right_cont .share_cont_list').eq(num).show();
+}
+chagetype(0);
+</script>
+			</div>
+		</div><!--maincont6 end-->
+		
+	</div><!--content end-->
+</div>
+{/block}

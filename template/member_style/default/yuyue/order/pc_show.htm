@@ -1,0 +1,226 @@
+{extend name="$member_style_layout" /}
+
+{block name="title"}订单资料详情{/block}
+
+{block name="content"}
+<style type="text/css">
+<!--
+.FormTable,.FormTable td{
+	border:#DDD solid 1px;
+}
+.FormTable td.tdL{
+	font-weight:bold;
+}
+.FormTable td.tdR{
+	padding:5px;
+	vertical-align:middle;
+	line-height:20px;
+}
+-->
+</style>
+<div class="MainCont">
+	<div class="head"><div class="tag">用户订单资料详情如下</div></div>
+    <div class="cont">
+     	<table width="100%" border="0" cellspacing="0" cellpadding="0" class="FormTable">
+          <tr><th>订购产品</th></tr>
+        </table>
+        <table width="100%" border="0" cellspacing="0" cellpadding="0" class="ListTable mtop10">
+          <tr>
+            <th width="60%">名称</th>
+            <th width="20%">订购数量</th>
+            <th width="20%">单价</th>
+          </tr>
+{volist name="info.shop_db" id="rs"}
+          <tr>
+            <td class="tL"><a href="{:iurl('content/show',['id'=>$rs['id']])}" target="_blank">{$info.shoptitle?:$rs.title}</a> 
+			{if empty($info.shoptitle)&&($rs._type1||$rs._type2||$rs._type3)} <font color="red"> {$rs._type1} {$rs._type2} {$rs._type3} </font>{/if}
+			
+			</td>
+            <td>X{$rs._num}</td>
+            <td>&yen;{$rs._price}</td>
+          </tr>
+{/volist}
+        </table>
+    	<table width="100%" border="0" cellspacing="0" cellpadding="0" class="FormTable mtop10">
+		<tr>
+            <td class="tdL">订单号:</td>
+            <td class="tdR">{$info.order_sn}</td>
+          </tr>
+{if $info.shipping_code}
+		  <tr>
+            <td class="tdL">序列号:</td>
+            <td class="tdR">{$info.shipping_name}{$info.shipping_code}{if $info.shipping_code}<font color="#999"><br>(这是消费码或快递号,注意保密)</font>{/if}</td>
+          </tr>
+{/if}
+		  <tr>
+            <td class="tdL">核销码:</td>
+            <td class="tdR">
+{if $rs._paytype==0&&$info.few_ifpay==0}
+			请支付订金后,才能生成核销码
+{else /}
+			<img src="{$code_img}" width="100">
+			{eq name="$info.receive_status" value="1"}<div style="color:red;">交易完成,已消费</div>{/eq}
+{/if}
+
+			</td>
+          </tr>
+{if $info.order_day}
+		  <tr>
+            <td class="tdL">预约日期:</td>
+            <td class="tdR">{:format_order_time($info)} </td>
+          </tr>
+          <tr>
+{/if}
+          <tr>
+            <td class="tdL">订购者ID:</td>
+            <td class="tdR"><a href="{:get_url('user',['uid'=>$info['uid']])}" target="_blank">{$info.uid|get_user_name}</a></td>
+          </tr>
+          <tr>
+            <td class="tdL">订购时间:</td>
+            <td class="tdR">{$info.create_time}</td>
+          </tr>
+
+{if $info.qun_money>0}
+
+		<tr>
+            <td class="tdL">应付圈币:</td>
+            <td class="tdR"> {$info.qun_money} 币</td>
+         </tr>
+		 <tr>
+            <td class="tdL">支付与否:</td>
+            <td class="tdR">
+			{if $info.receive_status==1}
+				<font color="red">已消费,交易完毕</font>
+			{else /}
+				{eq name="$info.pay_status" value="1"}
+					已支付
+				{else /}
+					<a style="color:red;border:1px solid #ddd;padding:5px;" class="more-menu" url='<a href="{:urls('pay_few',['id'=>$info['id']])}">立即付款</a>'>未支付(立即支付)</a> 
+				{/eq}
+			{/if}
+           </td>
+         </tr>
+
+{elseif (is_numeric($rs._paytype)&&$rs._paytype==0)||(is_numeric($rs.paytype)&&$rs.paytype==0)}
+
+		<!--分期付款-->
+		  <tr>
+            <td class="tdL">应付订金:</td>
+            <td class="tdR">&yen;{$info.fewmoney}</td>
+          </tr>
+		  <tr>
+			<td class="tdL">付订金与否:</td>
+			<td class="tdR">
+			{if $info.few_ifpay==1}
+				{if $info.receive_status==0&&$info['shop_db'][0]['fewnum']<$info['shop_db'][0]['min_user']}
+					<a style="color:blue;border:1px solid #ddd;padding:5px;" href="javascript:tui_ding('{:urls('tui_ding',['id'=>$info['id']])}');" title="点击退订金"> 已付订金(点击申请退订)</a> 
+				{else /}
+					<font color="red">已付订金</font>
+				{/if}
+			{elseif $info.few_ifpay==-1 /}
+				退订受理中 
+			{else /}
+				{if $info.receive_status==1}
+					交易完毕
+				{else /}
+					<a style="color:red;border:1px solid #ddd;padding:5px;" href="{:urls('pay_few',['id'=>$info['id']])}" title="点击在线支付">未付订金(立即支付)</a>
+				{/if}
+			{/if}
+			</td>
+          </tr>
+
+          <tr>
+            <td class="tdL">应付余款:</td>
+            <td class="tdR">&yen;{$info.pay_money}</td>
+          </tr>		  
+		  <tr>
+            <td class="tdL">付余款与否:</td>
+            <td class="tdR">
+			{if $info.receive_status==1}
+				{eq name="$info.pay_status" value="1"}
+					<font color="red">交易完毕,线上付余款({$info.pay_money}元)</font>
+				{else /}
+					<font color="red">交易完毕,线下付余款({$info.pay_money}元)</font>
+				{/eq}
+			{else /}
+				{eq name="$info.pay_status" value="1"}
+					<font color="red">已付余款</font>
+				{else /}
+					<a style="color:red;border:1px solid #ddd;padding:5px;" href="{:urls('pay',['id'=>$info['id']])}" title="点击在线支付">未付余款(立即支付)</a>
+				{/eq}
+			{/if}
+			</td>
+		  </tr>		  
+
+{else /}
+		<!--非分期付款-->
+		  <tr>
+            <td class="tdL">应付金额:</td>
+            <td class="tdR">&yen;{$info.fewmoney}</td>
+          </tr>		  
+		  <tr>
+			<td class="tdL">付款与否:</td>
+			<td class="tdR">
+			{if $info.receive_status==1}
+				{if $info.few_ifpay==1}
+					<font color="red">交易完毕,线上付款({$info.fewmoney}元)</font>
+				{else /}
+					<font color="red">交易完毕,线下付款({$info.fewmoney}元)</font>
+				{/if}
+			{else /}
+				{if $info.few_ifpay==1}
+					{if $info['shop_db'][0]['fewnum']<$info['shop_db'][0]['min_user']}
+						<a style="color:blue;border:1px solid #ddd;padding:5px;" href="{:urls('tui_order',['id'=>$info['id']])}" title="还没成团,我要退款"> 已付全款</a> 
+					{else /}
+						<font color="red" title="已成团,不可退款">已付款</font>
+					{/if}
+				{elseif $info.few_ifpay==-1 /}
+					退款受理中 
+				{else /}
+					<a style="color:red;border:1px solid #ddd;padding:5px;" class="more-menu" url='<a href="{:urls('pay_few',['id'=>$info['id']])}">立即付款</a>'>未付款(立即支付)</a>
+				{/if}
+			{/if}
+			</td>
+          </tr>
+
+{/if}
+
+
+
+ 
+         <!-- <tr>
+            <td class="tdL">支付方式:</td>
+            <td class="tdR">{$info.pay_name}</td>
+          </tr> -->
+{qb:showpage field="picurl,title"}
+          <tr>
+            <td class="tdL">{$rs.title}:</td>
+            <td class="tdR">{$rs.value}</td>
+          </tr>
+{/qb:showpage}
+
+{volist name=":json_decode($info.order_field,true)" id="rs"}
+          <tr>
+            <td class="tdL">{$rs.title}:</td>
+            <td class="tdR">{$rs.value}</td>
+          </tr>
+{/volist}
+
+		  <tr>
+            <td class="tdL"><br/></td>
+            <td class="tdR"><a href="javascript:history.go(-1);">返回</a> </td>
+          </tr>
+        </table>
+    </div>
+</div>
+<script type="text/javascript">
+function tui_ding(url){
+	layer.confirm('你确认要退订金吗？', {
+            btn : [ '确认', '取消' ]//按钮
+        }, function(index) {
+            layer.close(index);
+            location.href = url;
+        });
+}
+</script>
+{/block}

@@ -1,0 +1,18 @@
+<div id="style_wap" style="display:none;">
+<input type="radio" name="haibao" value="" title="默认"/>
+{volist name=":fun('haibao@get_haibao_style',$mid,$fid)" id="rs"}
+<input type="radio" name="haibao" value="{$rs.path}" title="{$rs.name}"/>
+{/volist}
+</div>
+
+<script type="text/javascript">
+$(function(){
+	var style_value = $("#atc_haibao").val();
+	$("#atc_haibao").get(0).outerHTML= '<div id="wapstyle">' + $("#style_wap").html() +'</div>';
+	$("#wapstyle input").each(function(){
+		if($(this).val()==style_value){
+			$(this).attr('checked',true);
+		}
+	});
+});
+</script>

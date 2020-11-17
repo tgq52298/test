@@ -1,0 +1,1 @@
+INSERT INTO `qb_hook_plugin` (`id`, `hook_key`, `plugin_key`, `hook_class`, `about`, `ifopen`, `list`, `author`, `author_url`, `version`, `version_id`) VALUES(0, 'user_leave', 'alilive', 'plugins\\alilive\\index\\Api', '自建服务器处理圈子停播', 1, 0, '', '', '', 0);

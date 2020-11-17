@@ -1,0 +1,128 @@
+﻿{extend name="$index_style_layout" /}
+
+<!--SEO相关-->
+{block name="head_title"}{$fid?($info['seo_title']?:$info['name']):$m_info['title']}{/block}
+{block name="head_keword"}{$fid?($info['seo_keywords']?:$info['name']):$m_info['title']}{/block}
+{block name="head_description"}{$info.seo_description}{/block}
+
+{block name="body_content"}
+<link rel="stylesheet" type="text/css" href="__STATIC__/hr/default/wap/hr.css">
+<script src='__STATIC__/js/iscroll.js'></script>
+<style>
+.ShowMoreInfos{
+	text-align:center;
+	margin:15px auto;
+}
+.ShowMoreInfos button{
+    border: 0;
+    background: #FFA800;
+    padding: 8px 20px;
+    color: #FFF;
+    border-radius: 5px;
+    cursor: pointer;
+    box-shadow: 1px 1px 1px #666;
+    outline: none;
+}
+</style>
+<div class="m-main">
+
+
+	<ul class="SelectType">
+		<!-- 筛选 -->
+		{volist name=":get_filter_fields($mid)" id="rs"}
+			<li>
+				<span>{$rs.title}:</span>
+				<a href='{:urls("index","mid=$mid&$rs[opt_url]")}' {if input($rs['name'])==''}style="color:red;"{/if} class="ck">不限</a>  
+				{volist name="$rs.opt" id="vs"}
+				<a href='{:urls("index","mid=$mid&$vs[url]")}' {if input($rs['name'])==$vs['key']}style="color:red;"{/if}>{$vs.title}</a>
+				{/volist}
+			</li>
+		{/volist}
+	</ul>
+
+
+
+<div class="ListPerson">
+	{qb:listpage name="waphr_list2_page_lisvita" rows="13" order="list" union="fid" where="status>0"}
+		<dl>
+			<dt>
+				<a href="{$rs.url}"><img src="{$rs.picurl}" onError="this.src='__STATIC__/images/noface.png'"></a>
+			</dt>
+			<dd>
+				<div><span>姓名：</span>{$rs.truename}</div>
+				<div><span>性别：</span>{$rs.sex}</div>
+				<div><span>年龄：</span>{$rs.age}</div>
+				<div><span>年龄：</span>{$rs.workyear}</div>
+			</dd>
+		</dl>
+	{/qb:listpage}
+</div>
+<div class="ShowMoreInfos"><button type="butter" onclick="ShowMoreInfo()">查看更多</button></div>
+<div class="fullbg" id="fullbg1"></div>
+<script>
+
+var morepage=1;
+function ShowMoreInfo(){	
+	morepage++;
+	$.get('{qb:list_url name="waphr_list2_page_lisvita" /}'+morepage+'&'+Math.random(),function(res){
+		if(res.code==0){
+			if(res.data==''){
+				layer.msg("已经显示完了！",{time:500});
+				$('.ShowMoreInfos button').attr('onclick','');
+				$('.ShowMoreInfos button').html('显示完了');
+				$('.ShowMoreInfos button').css({'background':'#CCC'});
+			}else{
+				// res.data = "<span class='pages" + morepage + "'>" + res.data + "</span>";			
+				$('.ListPerson').append(res.data);
+				// $('.ListCont .pages'+morepage).hide();
+				// $('.ListCont .pages'+morepage).show(500);
+			}			
+		}else{
+			layer.msg(res.msg,{time:2500});
+		}
+	});
+}
+
+$(".SelectSort h3 span").click(function(){
+	if ($(window).height() > $("body").height()) {
+		$('#fullbg1').height($(window).height());
+	} else {
+		$('#fullbg1').height($("body").height());
+	}
+	$('#fullbg1').css({'display':'block'}).stop().animate({'opacity':.6},500,function(){
+		$(".SelectSort ul").css({'display':'block'}).stop().animate({'opacity':1},300);
+	});
+});
+$('#fullbg1').click(function(){
+	$(".SelectSort ul").animate({'opacity':0},300,function(){
+		$(this).css({'display':'none'});});
+	setTimeout(function(){
+		$('#fullbg1').stop().animate({'opacity':0},300);
+		$('#fullbg1').css({'display':'none'});
+	}, 500)
+});
+
+
+</script> 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{/block}

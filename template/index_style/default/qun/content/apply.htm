@@ -1,0 +1,84 @@
+﻿{extend name="$index_style_layout" /}
+{block name="head_title"}申请加入{:M('name')}{/block}
+
+{block name="body_content"}
+<link rel="stylesheet" href="__STATIC__/group/add.css">	
+ 
+<div class="addBox">
+<!--
+	<ul class="topBoxs">
+		<li class="logo"><a href="/"><img src="__STATIC__/bbs/logo1.png"></a></li>
+		<li class="info"><span>{:M('name')}</span></li>
+		<li class="atten"><a href="{:get_url('member')}"><i class="si si-user"></i></a></li>
+	</ul>
+-->
+	<ul class="types">
+		<ol>__QUN__名称</ol>
+		<li>{$info.title}
+		</li>
+	</ul>
+	<ul class="types">
+		<ol>__QUN__介绍</ol>
+		<li>{$info.content}
+		</li>
+	</ul>
+	
+	<div class="button"><button type="button"  onclick="joinGroup({$id})">申请加入</button></div>
+</div>	
+ <script type="text/javascript">
+function check_login(){
+	if("{$userdb.uid}"==""){
+		layer.confirm('你还没登录,不能加入,你要登录吗？', {
+			btn : [ '登录', '取消' ]
+			}, function(index) {
+				window.location.href = "{:get_url('login')}";
+		}); 
+		return false;
+	}
+	return true;
+}
+function joinGroup(id){
+	if(check_login()!==true)return ;
+	var url = "{:urls('wxapp.member/join',['id'=>$id])}?"+Math.random();
+	$.get(url,function(res){
+		if(res.code==0){			
+			if(res.data.type==1){
+				layer.msg(res.msg);
+				setTimeout(function(){
+					window.location.href = "{:urls('content/show')}?id="+res.data.aid;
+				},800);
+			}else{
+				layer.alert(res.msg);
+			}
+		}else if(res.code==2){
+			join_need_sn(url);
+		}else{
+			layer.confirm("加入失败:"+res.msg, {
+				btn : [ '返回__QUN__', '取消' ]
+				}, function(index) {
+				window.location.href = "{:urls('content/show',['id'=>$id])}";
+			});
+		}	
+	});
+}
+
+
+function join_need_sn(url){
+	var index = layer.prompt({
+		   title : '请输入正确的授权码,才能加入',
+		   formType:0,
+	},function(val, index){
+		$.post(url,{'sncode':val},function(res){
+			if(res.code==0){
+				layer.msg('加入成功');
+				setTimeout(function(){
+					window.location.href = "{:urls('content/show',['id'=>$id])}";
+				},800);
+			}else{
+				layer.msg('加入失败,'+res.msg,{time:1000});
+			}
+		});		
+	});
+}
+</script>	
+{/block}

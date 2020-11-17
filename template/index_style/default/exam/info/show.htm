@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>考试进行中</title>
+<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<link rel="stylesheet" href="__STATIC__/css/base.css">
+<link rel="stylesheet" href="__STATIC__/css/qb_ui.css">
+<link rel="stylesheet" href="__STATIC__/icon/icon.css">
+<link rel="stylesheet" href="__STATIC__/mui/css/mui.min.css">
+<script type="text/javascript" src="__STATIC__/js/core/jquery.min.js"></script>
+<script type="text/javascript" src="__STATIC__/layer/layer.js"></script>
+<style>
+body{
+	background: #F5F5F5;
+}
+.ExamAnswer{
+	max-width: 640px;
+	margin: auto;
+}
+.ExamAnswer .topBox{
+	height: 50px;
+	text-align: center;
+	background: #00C454;
+	line-height: 50px;
+	overflow: hidden;
+	padding: 0 50px;
+	color: #FFF;
+	font-size: 18px;
+	position: relative;
+}
+.ExamAnswer .topBox a{
+	color: #FFF;
+}
+.ExamAnswer .topBox i{
+	position: absolute;
+	left: 10px;
+	top:0;
+	line-height: 50px;
+	font-size:26px;
+}
+.ExamAnswer .content{
+	padding: 10px;
+}
+.ExamAnswer .content .title{
+	line-height: 25px;
+	padding: 10px 0;
+	border-bottom: #DDD solid 1px;
+}
+.ExamAnswer .content .title .stitle{
+	display: inline-block;
+	border: #00C454 solid 1px;
+	color: #00C454;
+	padding: 0 5px;
+	border-radius: 5px;
+	margin-right: 8px;
+}
+.ExamAnswer .content .imgs{
+	padding: 10px 0;
+	border-bottom: #DDD solid 1px;
+}
+.ExamAnswer .content .imgs img{
+	width: 100%;
+}
+.mui-input-row{
+	border-bottom: #DDD solid 1px;
+}
+.ExamAnswer .Others{
+	padding: 15px 0;
+	height: 40px;
+	line-height: 38px;
+}
+.ExamAnswer .Others ol{
+	float: left;
+}
+.ExamAnswer .Others li{
+	float: right;
+}
+.ExamAnswer .Others a{
+	display: inline-block;
+	border: #DDD solid 1px;
+	background: #FFF;
+	color: #888;
+	padding: 0 10px;
+}
+</style>
+</head>
+<body>
+<link rel="stylesheet" href="__STATIC__/exam/default/math.css?ef">
+<i class="fa fa-star fav-exam" style="position:absolute;z-index:10;right:19px;top:15px;color:#fff;"> 收藏</i>
+<script type="text/javascript">
+$.get("{:purl('fav/api/check')}?type={:config('system_dirname')}&id={$info.id}",function(res){
+	if(res.code==0){
+		$(".fav-exam").html(' 已收藏');
+	}else{
+		$(".fav-exam").click(function(){
+			var url="{:purl('fav/api/add')}?type={:config('system_dirname')}&id={$info.id}";
+			$.get(url,function(res){
+				if(res.code==0){
+					$(".fav-exam").html(' 已收藏');
+					layer.msg('收藏成功');
+				}else{
+					layer.alert(res.msg);
+				}
+			})
+		});
+	}
+});
+</script>
+
+<div class="ExamAnswer">
+	<div class="topBox">
+		<i onclick="history.go(-1);" class="fa fa-angle-left"></i><a href="#">{$have_num} / {:fun('exam@paper_num',$fid)}</a>
+		{if $limit_time}
+		<!-- <span>（时间：{$limit_time}分钟）</span> -->
+		<em style='display:none;' id='remainder'>{$remainder_time}</em>
+		【剩余时间：<span id='show_remainder' style='color:red'>{$show_remainder_time}</span>】
+		{/if}
+	</div>
+{if $limit_time}
+<script>
+var checktime=0;
+function show_time(){
+	checktime++;
+	var thetime=parseInt($('#remainder').html())-checktime;
+	if(thetime>0){
+		var show_time = format_time(thetime);
+		console.log(show_time);
+		$('#show_remainder').html(show_time);
+	}else{
+		$('#show_remainder').html('考试结束！');
+		window.location.href="{:urls('info/putin',['fid'=>$fid])}";
+	}
+}
+setInterval("show_time()",1000);
+
+function format_time(time){
+	var show_time='';
+	if(time>0){
+		// if(Math.floor(time%31536000/86400)>0){
+		// 	show_time+=Math.floor(time%31536000/86400)+"天"
+		// }
+		if(Math.floor(time%31536000%86400/3600)>0){
+			var thishour=Math.floor(time%31536000%86400/3600);
+			if(thishour<10){
+				thishour="0"+thishour;
+			}
+			show_time+=" <em>"+thishour+"</em> : "
+		}else{
+			show_time+=" <em>00</em> : "
+		}
+		if(Math.floor(time%31536000%86400%3600/60)>0){
+			var thismis=Math.floor(time%31536000%86400%3600/60);
+			if(thismis<10){
+				thismis="0"+thismis;
+			}
+			show_time+=" <em>"+thismis+"</em> : "
+		}else{
+			show_time+=" <em>00</em> : "
+		}
+		var thissend=Math.floor(time%60);
+		if(thissend<10){
+			thissend="0"+thissend;
+		}
+		show_time+="<em>"+thissend+"</em>"
+	}else{
+		show_time="<p>考试结束</p>";
+		window.location.href="{:urls('info/putin',['fid'=>$fid])}";
+	}
+	return show_time;
+}
+</script>
+{/if}
+
+	<div class="content">
+		<div class="title">
+			<span class="block stitle">{:model_config($info.mid)['title']}</span>
+			{$info.title}
+		</div>
+		{notempty name="info.picurl"}
+		<div class="imgs"><img src="{$info.picurl|tempdir}"/></div>
+		{/notempty}
+		<div class="Answers">
+			{if ($info.mid == 1)}
+				<div class="mui-input-row mui-radio mui-left">
+					<label><em class="block">A、</em>{$info.answer_a}</label>
+					<input name="radio1" type="radio" {in name="1" value="$info.user_answer"}checked="checked"{/in}>
+				</div>
+				<div class="mui-input-row mui-radio mui-left">
+					<label><em class="block">B、</em>{$info.answer_b}</label>
+					<input name="radio1" type="radio" {in name="2" value="$info.user_answer"}checked="checked"{/in}>
+				</div>
+				{if $info.answer_c!=''}
+				<div class="mui-input-row mui-radio mui-left">
+					<label><em class="block">C、</em>{$info.answer_c}</label>
+					<input name="radio1" type="radio" {in name="3" value="$info.user_answer"}checked="checked"{/in}>
+				</div>
+				{/if} 
+				{if $info.answer_d!=''}
+				<div class="mui-input-row mui-radio mui-left">
+					<label><em class="block">D、</em>{$info.answer_d}</label>
+					<input name="radio1" type="radio" {in name="4" value="$info.user_answer"}checked="checked"{/in}>
+				</div>
+				{/if} 
+			{elseif ($info.mid == 2) /}
+				<div class="mui-input-row mui-checkbox mui-left">
+					<label><em class="block">A、</em>{$info.answer_a}</label>
+					<input name="checkbox" value="Item 1" type="checkbox" {in name="1" value="$info.user_answer"}checked="checked"{/in}>
+				</div>
+				<div class="mui-input-row mui-checkbox mui-left">
+					<label><em class="block">B、</em>{$info.answer_b}</label>
+					<input name="checkbox" value="Item 1" type="checkbox" {in name="2" value="$info.user_answer"}checked="checked"{/in}>
+				</div>
+				{if $info.answer_c!=''}
+				<div class="mui-input-row mui-checkbox mui-left">
+					<label><em class="block">C、</em>{$info.answer_c}</label>
+					<input name="checkbox" value="Item 1" type="checkbox" {in name="3" value="$info.user_answer"}checked="checked"{/in}>
+				</div>
+				{/if} 
+				{if $info.answer_d!=''}
+				<div class="mui-input-row mui-checkbox mui-left">
+					<label><em class="block">D、</em>{$info.answer_d}</label>
+					<input name="checkbox" value="Item 1" type="checkbox" {in name="4" value="$info.user_answer"}checked="checked"{/in}>
+				</div> 
+				{/if} 
+			{elseif ($info.mid == 3) /}
+				<div class="mui-input-row mui-radio mui-left">
+					<label>A、正确</label>
+					<input name="radio1" type="radio" {in name="1" value="$info.user_answer"}checked="checked"{/in}>
+				</div>
+				<div class="mui-input-row mui-radio mui-left">
+					<label>B、错误</label>
+					<input name="radio1" type="radio" {in name="2" value="$info.user_answer"}checked="checked"{/in}>
+				</div>
+			{elseif ($info.mid == 4) /}
+				<div class="mui-input-row mui-left" style="width:100%;" >
+					<input style="border-bottom:1px solid #324052;width:100%;background:#e3e6f3;color:#000;" name="text" placeholder="点击输入答案" value="{$info.user_answer}" type="text">						
+				</div>
+			{/if}
+		</div>
+		<ul class="Others" style="position:static;">
+			<ol><a href="{:auto_url('prav',['fid'=>$fid,'aid'=>$aid])}">上一道题</a></ol>
+			{if $s_info.just_test}<div style="position:absolute;left:35%;width:80px;border:1px solid #00C454 ;border-radius:5px;text-align:center;" id="alertBtn">查看答案</div>{/if}
+			<li><a href="{:auto_url('next',['fid'=>$fid,'aid'=>$aid])}">下一道题</a></li>
+		</ul>
+	</div>
+</div>
+
+
+
+{if $s_info.just_test}
+<style type="text/css">
+.show_answer{
+	padding:10px;
+}
+.show_answer img{
+	max-width:100%;
+}
+</style>
+<div  class="show_answer_wap" style="display:none;">
+<div class="show_answer">
+正确是:{:get_answer($info.answer,$info.mid)}<br>{$info.content|format_math}
+</div>
+</div>
+<script src="__STATIC__/mui/js/mui.min.js"></script>
+<script type="text/javascript" charset="utf-8">
+			//mui初始化
+			mui.init({
+				swipeBack: true //启用右滑关闭功能
+			});
+			/*
+			document.getElementById("alertBtn").addEventListener('tap', function() {
+				mui.alert('{$info.content}', '答案是：{$info._answer}', function() {
+					//相关事件
+				});
+			});
+			*/
+$("#alertBtn").click(function(){
+	layer.open({
+		type:1,
+		title:"答案如下:",
+		content:$('.show_answer_wap').html(),
+		area:['95%','80%'],
+	});
+});
+</script>
+{/if}
+
+<script>
+$('.Answers input').click(function(){
+	if($(this).attr('type')=='text'){
+		return ;
+	}
+	var myArray=new Array();
+	var i=0;
+	var j=0;
+	$('.Answers input').each(function(){
+		i++;
+		if($(this).is(':checked')){
+			myArray[j]=i;
+			j++;
+		}		
+	});
+	var answer = myArray.join(',');
+	$.get("{:auto_url('answer',['fid'=>$fid,'aid'=>$aid])}?answer="+answer+'&'+Math.random(),function(d){});
+});
+
+$(".Answers input[type='text']").blur(function(){
+	$.get("{:auto_url('answer',['fid'=>$fid,'aid'=>$aid])}?answer="+$(this).val()+'&'+Math.random(),function(d){});
+});
+</script>
+
+{include file="index@footmenu" /}
+
+</body>
+</html>

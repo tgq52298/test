@@ -1,0 +1,89 @@
+<!--分类开始-->
+<style type="text/css">
+.MainMenu{
+	margin-top:8px;
+	background: #FFF;
+	padding: 15px 10px;
+}
+.MainMenu ul:after{
+	content: '';
+	display:block;
+	clear: both;
+}
+.MainMenu ul li{
+	width:25%;
+	float: left;
+	overflow: hidden;
+	position: relative;
+	margin-bottom:5px;
+}
+.MainMenu ul li span,.MainMenu ul li em{
+	display: block;
+	width:60px;
+	overflow: hidden;
+	margin: auto;
+	text-align: center;
+	position: relative;
+}
+.MainMenu ul li span{
+	border-radius: 50%;
+	background: #ccc;
+	color: #FFF;
+}
+.MainMenu ul li em{
+	height: 20px;
+	overflow: hidden;
+	font-size:14px;
+}
+.MainMenu ul li span:before{
+	content: '';
+	display: block;
+	padding-top: 100%;
+}
+.MainMenu ul li span i{
+	position: absolute;
+	left:50%;
+	top: 50%;
+	font-size:30px;
+  -webkit-transform: translate3D(-50%, -50%, 0);
+      -ms-transform: translate3D(-50%, -50%, 0);
+          transform: translate3D(-50%, -50%, 0);
+}
+.sort_button{
+	width:100%;
+}
+.sort_button .swiper-pagination{
+	bottom:0px !important;
+}
+</style>
+<!-- 滑动按钮要用到的CSS与JS文件,他涉及到三个class类 swiper-container swiper-wrapper swiper-slide -->
+<link href="__STATIC__/libs/swiper/swiper.min.css" rel="stylesheet">
+<script src="__STATIC__/libs/swiper/swiper.min.js"></script>
+<script>
+    $(function () {
+        var swiper = new Swiper('.sort_button', {
+			autoplay: {
+				delay: 2000,
+			 },
+			pagination: {
+				el: '.swiper-pagination', 
+			},
+        });
+    })
+</script>
+<div class="MainMenu">
+		<ul class="swiper-container sort_button">
+					<div class="swiper-wrapper">
+{volist name=":array_chunk(fun('Sort@son',$fid)?:fun('Sort@brother',$fid),8,true)" id="array"}
+
+<div class="swiper-slide">
+{volist name="$array" id="name"}
+				<li><a href="{:urls('near/index',['fid'=>$key])}"><span {if $key==$fid}style="background:#23C075;"{/if}><i class="{$key|get_sort='logo'|default='fa fa-leaf'}"></i></span><em>{$name}</em></a></li>
+				{/volist}
+</div>
+{/volist}
+					</div>
+					<div class="swiper-pagination"></div>
+		</ul>
+</div>
+<!--分类结束-->

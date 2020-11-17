@@ -1,0 +1,134 @@
+{extend name="$index_style_layout" /}
+{block name="head_keword"}{$webdb.mseo_keyword}{/block}
+{block name="head_description"}{$webdb.mseo_description}{/block}
+{block name="head_title"}{$keyword} - 搜索结果{/block}
+{block name="body_ContactSearch"}{/block}
+{block name="nav"}{/block}
+{block name="body_content"}
+<style> 
+ .searchbox{height:36px;margin:5px 10px;clear:both;border:1px solid #fc8c1d;position:relative;overflow:hidden}
+.searchbox form{height:38px}
+.searchbox .q{display:block;background:#FFF;width:auto;width:95%;height:38px;font-size:16px;color:#333;margin:0;padding:0 0 0 10px;border:0;line-height:38px;border:0;border-right:0;margin-right:20px}
+.searchbox .btn{width:55px;height:38px;line-height:38px;border:0;background-color:#fc8c1d;cursor:pointer;display:block;color:#FFF;text-align:center;font-size:16px;position:absolute;top:0;right:0;-webkit-appearance:none;border-radius:0}
+.searchbox .btn:hover{background-color:#fc9f38;-webkit-appearance:none;border-radius:0}
+#hd_main{margin:0 0 10px 0;padding:5px 10px 7px 10px;overflow:hidden;clear:both;position:relative;background-color:#FFF;padding-bottom:15px;background-color:#FFF}
+#hd_main h1{display:inline;color:#F00}
+#resinfo{margin-bottom:10px;color:#999;height:22px;line-height:22px}
+#resinfo .fr i{font-style:normal;border-bottom:1px solid #f76007;color:#f76007;line-height:22px;display:inline-block;float:left;margin-right:10px;padding:0 2px}
+#resinfo .fr a.wt{display:inline-block;float:left;margin-right:10px}
+#resinfo em{color:#2eb50c}
+.jc{margin-bottom:8px;display:block}
+.res{word-break:break-all;margin-right:0;padding-top:10px;overflow:hidden;font-family:arial}
+.res .g h2{font-size:16px;font-weight:normal;margin:0 0 6px 0;overflow:hidden}
+.res .g h2 a{color:#12c;text-decoration:underline}
+.res .g h2 a:hover{background-color:#f5f5f5}
+.res .g h2 a:visited{color:#551a8b}
+.res em{color:#d00;font-style:normal}
+.res .g{margin-right:5px;font-size:14px;overflow:hidden;margin-bottom:7px;padding:3px 5px 3px 0;margin-left:0}
+.res .g span.a{color:#008000}
+.res .g .view{margin:0 0 0 10px;color:#069;text-decoration:underline;font-size:12px;cursor:pointer}
+.res span.num{font-size:16px;margin-right:5px}
+.res span.nums{font-size:16px}
+.res .std{line-height:150%;font-size:13px}
+.res .g strong{color:#F00}
+.res .g .std{overflow:hidden}
+.res .g .pic{width:109px;height:82px;float:left;display:inline;overflow:hidden;margin-right:7px}
+.res .g .pic a{width:107px;height:80px;border:1px solid #CCC;display:block}
+.res .g .pic a:hover{border:1px solid #F90}
+.res .g .listimg img{width:107px;height:80px;margin-right:6px}
+.res .g .listimg{float:left;display:none}
+#stips{display:none;font-size:16px;margin:15px 0 5px 10px}
+#stips em{color:#d00;text-decoration:underline}
+.res .g b{color:#d00;font-weight:normal}
+.xglist{clear:both;margin:10px 0;padding:10px;background-color:#f9fafd}
+.xglist h4{line-height:30px;font-size:14px;font-weight:bold}
+.xglist li{width:150px;float:left;display:inline-block;margin:5px}
+.xglist li a{color:#06C;font-size:14px}
+.xglist li a:hover{text-decoration:none;background-color:#03C;color:#FFF}
+#sopage{text-align:center;margin:10px auto;clear:both；}
+#sopage a{border:1px solid #e5e5e5;margin:0 3px;text-decoration:none;font-size:16px;line-height:30px;height:30px;width:30px;text-align:center;color:#03c;font-weight:normal;margin-top:3px;outline:0;overflow:hidden;display:inline-block;float:left}
+#sopage a:hover{border:1px solid #f7af84;background-color:#fff;color:#f54a07}
+#sopage a.this{border:1px solid #e5e5e5;background-color:#edecec;color:#f73306}
+#sopage .n{width:62px}
+#plus{margin-bottom:7px;font-size:14px;border:1px dashed #f0fbf1;background-color:#fcfbef;padding:8px}
+.bdsug_copy{display:none}
+</style>
+<div class="searchbox">
+  <form action="{:url('search/index/lists')}" method="get">
+    <input align="middle" name="keyword" class="q" id="kw" value="{$keyword}" maxlength="1000" baiduSug="1" autocomplete="off" x-webkit-speech />
+    <input id="btn" class="btn" align="middle" value="搜索" type="submit" />
+  </form>
+</div>
+<div id="hd_main">
+<div class="res">
+  <div id="result"> {qb:tag name="wap_searchshow" rows="20" union="type" where="data=$keyword" class="app\search\index\Labelsearch@showlist"}
+    <div class="g">
+      <h2><a href="{:url($rs.module.'/content/show',['id'=>$rs['id']],'html',true)}" class="s" rel="nofollow">{$rs.title}</a></h2>
+      <div class="std">{$rs.des}...&nbsp;详细&gt;&gt;</div>
+      <span class="a">{:url($rs.module.'/content/show',['id'=>$rs['id']],'html',true)}</span></div>
+    {/qb:tag}
+    <div id="moredata"></div>
+    <script type="text/javascript">
+var morepage = 1;
+function ShowMoreInfo(){	
+	morepage++;	
+	$.get('{qb:url name="wap_searchshow" /}'+morepage,function(res){
+		if(res.code==0){
+			if(res.data==''){
+				layer.msg("已经显示完了！",{time:500});
+			}else{		
+				$('#result').append(res.data);
+                scroll_get = true; 
+			}
+		}else{
+			layer.msg(res.msg,{time:2500});
+		}
+	});
+}
+var scroll_get = true;	//做个标志,不要反反复复的加载
+$(document).ready(function () {
+	$(window).scroll(function () {
+		if (scroll_get==true &&  (400+$(window).scrollTop())>($(document).height() - $(window).height())) {
+			scroll_get = false;
+			ShowMoreInfo();
+		}
+	});
+});
+
+ 
+</script>
+    <div class="cl10"></div>
+    <div class="cl10"></div>
+    <div class="cl5"></div>
+  </div>
+  <!--result-->
+  <div class="cl10"></div>
+  <div class="searchbox">
+    <form action="{:url('search/index/lists')}" method="get">
+      <input align="middle" name="keyword" class="q" id="kw" value="{$keyword}" maxlength="100" autocomplete="off" x-webkit-speech />
+      <input id="btn" class="btn" align="middle" value="搜索" type="submit" />
+    </form>
+  </div>
+  <div class="cl10"></div>
+	<div class="xglist">
+    <h4>按频道搜索</h4>
+    <ul>
+		 <li><a href="{:url('search/index/lists','html',true)}?keyword={$keyword}"><i class="fa fa-fw fa-rss"></i> 全部频道</a></li>
+        {volist name="modellist" id="rs" key="k"} 
+         <li><a href="{:url('search/index/lists','html',true)}?keyword={$keyword}&type={$rs.type}"><i class="fa fa-fw fa-rss"></i> {$rs.title}</a></li>
+        {/volist}
+		 
+    </ul>
+    <div class="cl"></div>
+  </div>
+  <div class="xglist">
+    <h4>实时热搜</h4>
+    <ul>
+      {volist name="resou" id="rs" key="k"}
+      <li><a href="{:url('search/index/lists','html',true)}?keyword={$rs.keyword}">{$rs.keyword}</a></li>
+      {/volist}
+    </ul>
+    <div class="cl"></div>
+  </div>
+</div>
+{/block}

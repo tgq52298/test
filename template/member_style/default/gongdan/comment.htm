@@ -1,0 +1,232 @@
+<style type="text/css">
+.PostCommentBox{
+	position: relative;
+}
+.replayBox_upfile{
+    right: 20px;
+    bottom: 55px;
+    position: absolute;
+}
+.replayBox_upfile i{
+    position: relative;
+    font-size: 25px;
+    color: #b1b1b1;
+    margin-left: 8px;
+}
+.replayBox_upfile .choose_num {
+    position: absolute;
+    right: -4px;
+    top: -4px;
+    background: orange;
+    padding: 1px 2px;
+    color: #fff;
+    font-size: 14px;
+    display: none;
+}
+.listpic,.listmv{
+	display:table;
+}
+</style>
+	<link rel="stylesheet" href="__STATIC__/css/wapcomment.css"> 
+	<div class="WapCommentBox">
+		<div class="head">
+			<div class="tag">全部回复({$total})</div>
+			<div class="more"><button type="butter" onclick="post_comment(0)">发布回复</button></div>
+		</div>
+		<div class="ListComment">
+			{volist name="listdb" id="rs"}
+				<ul class="lists" id="comment_cnt_{$rs.id}">
+					<ol class="icon"><a href="{:get_url('user',$rs.uid)}"><img src="{$rs.icon}" onerror="this.src='__STATIC__/images/nobody.gif'"/></a></ol>
+					<li class="infos">
+						<div class="name"><a href="{:murl('member/msg/add',['uid'=>$rs.uid])}">{$rs.username}</a></div>
+						<div class="comment">
+						{$rs.content}
+						{if $rs.picurl}
+							<div class="listpic">
+							{volist name=":explode(',',$rs.picurl)" id="pic"}
+								<img width="80" style="cursor:pointer;float:left;margin:5px;" class="showimg" src="{$pic|tempdir}">
+							{/volist}
+							</div>
+						{/if}
+						{if $rs.mvurl}
+							<div class="listmv">
+							{:fun('Player@play',$rs.mvurl,300,250)}
+							</div>	
+						{/if}
+						</div>
+						<dl><dt>{$rs.time}</dt><dd><em onclick="dingcomment({$rs.id})"><i class="si si-like"></i> <a class="agree{$rs.id}">{$rs.agree}</a></em> <span onclick="post_comment({$rs.id})"><i class="fa fa-commenting-o"></i> 回复</span>
+						{if $rs.uid==login_user('uid')||login_user('groupid')==3}<span onclick="del_comment({$rs.id})"><i class="fa fa-close"></i></span>{/if}
+						</dd></dl>
+						<div class="repalyinfs repalyinfs{$rs.id}">
+							{volist name="rs.children" id="vo"}
+							<div id="comment_cnt_{$vo.id}"><a href="{:get_url('user',$vo.uid)}" target="_blank">{$vo.username}：</a>
+								{$vo.content}
+								{if $vo.picurl}
+									<div class="listpic">
+									{volist name=":explode(',',$vo.picurl)" id="pic"}
+										<img width="80" style="cursor:pointer;float:left;margin:5px;" class="showimg" src="{$pic|tempdir}">
+									{/volist}
+									</div>
+								{/if}
+								{if $vo.mvurl}
+									<div class="listmv">
+									{:fun('Player@play',$vo.mvurl,300,250)}
+									</div>	
+								{/if}
+								{if $rs.uid==login_user('uid')||login_user('groupid')==3}<span onclick="del_comment({$vo.id})" style="float:right;"><i class="fa fa-close"></i></span>{/if}
+							</div>
+							{/volist}
+						</div>
+					</li>
+				</ul>
+			{/volist}
+		</div>
+		<div class="ShowMoreComment"><button type="butter" onclick="ShowMoreComment()">更多回复 <i class="fa fa-angle-double-down"></i></button></div>
+	</div>
+	
+<script type="text/javascript">
+
+var UpImgUrl = "{:iurl('index/upfile/images')}?";	//上传图片接口 
+var UpMvUrl = "{:iurl('index/upfile/file')}?ext=mp4&size=20480"; //上传视频接口 最大视频尺寸是20M
+function open_upfile_images(fn){
+	layer.open({
+		type:2,
+		area:['98%','400px'],
+		content:UpImgUrl+"&img="+$(fn?".atc2_picurl":".atc_picurl").last().val()+"&fn="+(fn?fn:'end_upfile_images'),
+	});
+}
+function endup_images(imgs){
+	$(".atc2_picurl").last().val(imgs);
+	if(imgs!=''){
+		$(".images2_num").last().html(imgs.split(',').length);
+		$(".images2_num").last().show();
+	}else{
+		$(".images2_num").last().hide();
+	}
+}
+function open_upfile_mv(fn){
+	layer.open({
+		type:2,
+		area:['400px','350px'],
+		content:UpMvUrl+"&fn="+(fn?fn:'end_upfile_mv'),
+	});
+}
+function endup_mv(url){
+	$(".atc2_mvurl").last().val(url);
+	if(url!=''){
+		$(".mv2_num").last().show();
+	}else{
+		$(".mv2_num").last().hide();
+	}
+}
+
+var posturl,baseurl;
+	posturl=baseurl="{posturl}?tid={$info.shopid}";
+var repalyid=0;
+var commentpage=1;
+function post_comment(pid){			
+	if(pid>0){
+		repalyid=pid;
+		posturl=baseurl+"&pid="+pid;
+	}else{
+		repalyid=0;
+		posturl=baseurl
+	}
+	layer.open({
+			  type: 1,
+			  skin: 'layui-layer-demo', //样式类名
+			  area: ['320px', '280px'], //宽高
+			  closeBtn: 0, //不显示关闭按钮
+			  anim: 2,
+			  shadeClose: true, //开启遮罩关闭
+			  content: '<ul class="PostCommentBox"><ol><textarea placeholder="请输入回复内容"></textarea></ol><li><button type="butter" onclick="post_comment1()">发表</button><button type="butter" onclick="layer.closeAll()">取消</button></li>  <li class="replayBox_upfile">			<i onclick="open_upfile_images(\'endup_images\');" class="fa fa-photo">				<em class="images2_num choose_num">3</em>				<input type="hidden" name="picurl" class="atc2_picurl" value="">			</i>			<i onclick="open_upfile_mv(\'endup_mv\');" class="fa fa-video-camera">				<em class="mv2_num choose_num">1</em>				<input type="hidden" name="mvurl" class="atc2_mvurl" value="">			</i>		</li></ul>'
+	});
+}
+
+function post_comment1(){
+	var contents=$('.PostCommentBox textarea').val();
+	if(contents==''){
+		layer.alert("请输入回复内容！");
+	}else{
+		$.post(
+			posturl,
+			{content:contents,picurl:$(".atc2_picurl").last().val(),mvurl:$(".atc2_mvurl").last().val()},
+			function(res,status){
+				if(res.code==0){
+					if(repalyid>0){
+						$('.repalyinfs'+repalyid).html(res.data);
+					}else{
+						$('.ListComment').html(res.data);
+						commentpage=1;
+						//$('.ShowMoreComment').fadeIn();
+					}
+					layer.closeAll(); //疯狂模式，关闭所有层
+					layer.msg('发表成功！');
+					HiddenShowMoreComment();
+				}else{
+					layer.alert('评论发表失败:'+res.msg);
+				}
+			}
+		);
+	}
+}
+
+function del_comment(id){
+	layer.confirm('你确认要删除吗？',function(){
+		$.get("{:purl('comment/api/delete',[],'index')}?ids="+id,function(res){
+			if(res.code==0){
+				layer.msg('删除成功');
+				$("#comment_cnt_"+id).hide();
+			}else{
+				layer.alert(res.msg);
+			}
+		});
+	});
+}
+
+
+
+
+		function dingcomment(id){
+			var agree=parseInt($('.agree'+id).html());
+			$.get(baseurl+'&agree=1&id='+id+'&'+Math.random(),function(res){
+				if(res.code==0){
+					agree++;
+					$('.agree'+id).html(agree);
+					layer.msg('点赞成功！');
+				}else{
+					layer.alert('点赞失败:'+res.msg);
+				}
+			});
+		}
+
+		function ShowMoreComment(){
+			commentpage++;
+			$.get('{pageurl}?page='+commentpage+'&'+Math.random(),function(res){
+				if(res.code==0){
+					if(res.data==''){
+						layer.msg('显示完了！');
+						$('.ShowMoreComment').fadeOut();
+					}else{
+						res.data="<div class='pages"+commentpage+"'>"+res.data+"</div>";			
+						$('.ListComment').append(res.data);
+						$('.ListComment .pages'+commentpage).hide();
+						$('.ListComment .pages'+commentpage).show(500);
+					}
+				}else{
+					layer.msg(res.msg,{time:2500});
+				}
+			});
+		}
+
+		function HiddenShowMoreComment(){
+			var Comments=$('.ListComment .lists').length;
+			if(parseInt(Comments/{$cfg_array.rows})<1){
+				$('.ShowMoreComment').hide();
+			}else{
+				$('.ShowMoreComment').show();
+			}
+		}
+
+		HiddenShowMoreComment();
+	</script>

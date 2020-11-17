@@ -1,0 +1,96 @@
+{extend name="$member_style_layout" /}
+{block name="title"} 试卷列表 {/block}
+{block name="content"}
+<style>
+body{
+	background: #F5F5F5;
+}
+.sideBox{
+	padding: 5px 10px;
+}
+.sideBox ul{
+	position: relative;
+	display: table;
+	width: 100%;
+	border: #EEE solid 1px;
+	background: #FFF;
+}
+.sideBox ul ol,.sideBox ul li{
+	display: table-cell;
+	padding:5px;
+	line-height: 20px;
+	vertical-align: middle;
+}
+.sideBox ul ol{
+	line-height:25px;
+	padding-left: 10px;
+	color: #666;
+}
+.sideBox ul ol span{
+	color: #F60;
+}
+.sideBox ul ol em{
+	color: blue;
+}
+.sideBox ul li{
+	width: 50px;
+}
+.sideBox ul li a{
+	display: block;
+	text-align: center;
+	background: #1E9FFF;
+	color: #FFF;
+	line-height: 30px;
+}
+.sideBox ul li:nth-child(1) a{
+	background:#5FB878;
+}
+.sideBox ul li:nth-child(2) a{
+	background:#009688;
+}
+.sideBox ul li:nth-child(3) a{
+	background:#05554D
+}
+.sideBox ul li:nth-child(5) a{
+	background:#FF5722;
+}
+</style>
+
+	<h1 style='margin-left:10px;'><em class='glyphicon glyphicon-list-alt'></em>&nbsp;试卷管理：</h1>
+
+	{volist name="listdb" id="rs"}
+	<div class="sideBox">
+		<ul>
+			<ol>{$rs.name} <p><span>{$rs.number}</span>题 每题<em>{$rs.fenone}</em>分 <a href="{:iurl('category/index',['fid'=>$rs['id']])}" target="_blank">已参加考试<span>{:fun('exam@test_num',$rs['id'])}</span>人</a></p></ol>
+		</ul>
+		<ul>
+			<li><a href="{:murl('edit',['id'=>$rs['id']])}" onclick="edit('{:murl('question/index',['id'=>$rs['id']])}',1)">编辑</a></li>
+			<li><a href="javascript:;" onclick="add('{:murl('question/index',['id'=>$rs['id']])}',1)">加题</a></li>
+			<li><a href="javascript:;" onclick="add('{:murl('question/index',['id'=>$rs['id'],'type'=>1])}',2)">管理</a></li>
+			<li><a href="{:iurl('category/index',['fid'=>$rs['id']])}" target="_blank">考试</a></li>
+			<li><a href="{:murl('paper/delete','ids='.$rs[id])}" >删除</a></li>
+		</ul>
+	</div>
+	{/volist}
+
+	{$pages}
+
+<script>
+function add(url,t){
+	if(t==1){
+		var title = '选择试题';
+	}else{
+		var title = '试题管理';
+	}
+	layer.open({
+		title:title,
+		type: 2,
+		area: ['95%', '95%'],
+		fixed: false,
+		maxmin: true,
+		content: url
+	});	
+}
+</script>
+
+{/block}

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>我提交的信息</title>
+<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<link rel="stylesheet" href="__STATIC__/css/base.css">
+<link rel="stylesheet" href="__STATIC__/css/qb_ui.css">
+<link rel="stylesheet" href="__STATIC__/icon/icon.css">
+<script type="text/javascript" src="__STATIC__/js/core/jquery.min.js"></script>
+<script type="text/javascript" src="__STATIC__/layer/layer.js"></script>
+<style>
+body{
+	background: #F5F5F5;
+}
+.sideBox{
+	margin: 0px 10px 10px 10px;
+	background: #FFF;
+	border-radius: 5px;
+	box-shadow: 2px 2px 2px #CCC;
+	padding: 0 15px;
+	overflow: hidden;
+	font-size:16px;
+}
+.sideBox ul{
+	position: relative;
+	display: table;
+	width: 100%;
+	border-bottom: #DDD dotted 1px;
+}
+.sideBox ul ol,.sideBox ul li{
+	display: table-cell;
+	padding:10px 5px;
+	line-height: 20px;
+}
+.sideBox ul ol{
+	color: #888;	
+}
+.sideBox ul li{
+	text-align: right;
+}
+.sideBox .showimg,.sideBox .content{
+	border-bottom: #DDD dotted 1px;
+	padding: 8px 0;
+	color: #666;
+	font-size: 14px;
+	line-height: 20px;
+}
+.sideBox .showimg img{
+	max-width: 100%;
+}
+.sideBox .actions{
+	height: 40px;
+	padding: 10px 0;
+}
+.sideBox .actions a{
+	display: block;
+	width: 33%;
+	line-height: 40px;
+	text-align: center;
+	float: left;
+	color: #777;
+	font-size:16px;
+}
+.sideBox .actions a:before{
+	padding-right: 8px;
+}
+.sideBox .actions a.fa-eye{
+	border-left:#DDD solid 1px;
+	border-right:#DDD solid 1px;
+}
+</style>
+</head>
+<body>
+<ul class="qb_ui_page_menu">
+	{volist name='model_list' id='vo'}				 
+		<li><a href="{:auto_url('index',['mid'=>$key])}" {eq name="key" value='$mid'}class="blue"{/eq}>{$vo}</a></li>				
+	{/volist}
+</ul>
+{volist name="listdb" id="rs"}
+<div class="sideBox">
+	<ul>
+		<ol>时间</ol>
+		<li>{:date('Y-m-d H:i:s',$rs.create_time)}<div></div></li>		
+	</ul>
+	{notempty name="$rs.picurl"}
+	<div class="showimg"><img src="{$rs.picurl|tempdir}"/></div>
+	{/notempty}
+	{volist name="field_db" id="vs"}
+	{in name="vs.2" value="picture,textarea,ueditor"}
+		{notempty name="$rs[$vs[0]]"}
+	<div class="content">{$rs[$vs[0]]}</div>
+		{/notempty}
+	{else /}
+	<ul>
+		<ol>{$vs[1]}</ol>
+		<li>{$rs[$vs[0]]}</li>		
+	</ul>
+	{/in}
+	{/volist}
+	<div class="actions">
+		<a href="{:auto_url('delete','ids='.$rs[id])}" class="fa fa-trash">删除</a>
+		<a href="{:iurl('show','id='.$rs[id])}" target="_blank" class="fa fa-eye">浏览</a>
+		<a href="{:auto_url('edit','id='.$rs[id])}" class="fa fa-edit">修改</a>
+	</div>
+</div>
+{/volist}
+{$pages}
+</body>
+</html>

@@ -1,0 +1,72 @@
+{extend name="$member_style_layout" /}
+{block name="title"} 试题列表 {/block}
+{block name="content"}
+
+<style>
+body{
+	background: #F5F5F5;
+}
+.sideBox{
+	padding: 5px 10px;
+}
+.sideBox ul{
+	position: relative;
+	display: table;
+	width: 100%;
+	border: #EEE solid 1px;
+	background: #FFF;
+}
+.sideBox ul ol,.sideBox ul li{
+	display: table-cell;
+	padding:5px;
+	line-height: 20px;
+	vertical-align: middle;
+}
+.sideBox ul ol{
+	line-height:25px;
+	padding-left: 10px;
+	color: #666;
+}
+.sideBox ul ol span{
+	color: #F60;
+}
+.sideBox ul ol em{
+	color: blue;
+}
+.sideBox ul li{
+	width: 50px;
+}
+.sideBox ul li a{
+	display: block;
+	text-align: center;
+	background: #1E9FFF;
+	color: #FFF;
+	line-height: 30px;
+}
+.sideBox ul li:nth-child(1) a{
+	background:#009688;
+}
+
+.sideBox ul li:nth-child(3) a{
+	background:#FF5722;
+}
+
+</style>
+</head>
+<body>
+<h1 style='margin-left:10px;'><em class='glyphicon glyphicon-list-alt'></em>&nbsp;试题管理：</h1>
+{volist name="listdb" id="rs"}
+<div class="sideBox">
+	<ul>
+		<ol><a href="{:iurl('content/show','id='.$rs[id])}" target="_blank">{$rs.title}</a> <span></span> <em></em></ol>	
+	</ul>
+	<ul>
+		<li><a href="{:murl('content/edit','id='.$rs[id])}" >修改</a></li>
+		<li><a href="{:iurl('content/show','id='.$rs[id])}" target="_blank">查看</a></li>
+		<li><a href="{:murl('content/delete','ids='.$rs[id])}" >删除</a></li>
+	</ul>
+</div>
+{/volist}
+{$pages}
+
+{/block}

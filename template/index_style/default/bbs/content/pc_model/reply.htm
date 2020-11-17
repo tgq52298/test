@@ -1,0 +1,82 @@
+<!--编辑器回复框-->
+			{empty name="$info.lock"}
+			<div id="PostComment"><a class="fa fa-keyboard-o" href="javascript:;" onclick="get_ueditor(this)"> 恢复多功能编辑器</a>
+			<form class="ajax-post" method="post"  action="" onsubmit="return false;">
+				<div class="ueditor">
+					<!--<script id="content" class="js-ueditor" name="content" type="text/plain"></script>-->
+					<textarea name="content" id="content" style="width:100%;height:250px;padding:3px;"></textarea>
+				</div>
+				<div class="submit"><button type="submit">发表回复</button></div>
+				</form>
+			</div>
+			{/empty}
+
+<script type="text/javascript">
+//var is_ueditor = false;
+jQuery(document).ready(function() {
+	//重新定义编辑器的宽度＝表单提交容器标签的宽度
+	/*
+	$('#PostComment .ueditor').width($('#PostComment .submit').width());   
+    ueditor =  UE.getEditor($('.js-ueditor').attr('name'), {
+            initialFrameHeight:250,  //初始化编辑器高度,默认320
+            autoHeightEnabled:false,  //是否自动长高
+            maximumWords: 50000, //允许的最大字符数
+            serverUrl: '{:urls("index/attachment/upload","dir=images&from=ueditor&module=bbs")}',
+			toolbars: [
+						['fullscreen', 'source', 'removeformat','undo', 'redo', 'forecolor','backcolor','bold','fontsize','insertimage','attachment','link','emotion','pasteplain','insertcode']
+					],
+        });
+
+	setTimeout(function(){
+		UE.getEditor('content').destroy();
+		$('#content').attr("name",'content');
+		
+		is_ueditor = false;
+
+		
+		$('#content').attr("placeholder",'Ctrl+回车,可快速发表内容!');
+		$('#content').keyup(function(event){
+		  if(event.ctrlKey && event.keyCode ==13){
+			post_ueditor();
+		  }
+		});
+
+	},1000);
+	ueditor.addListener('afterpaste', function (t, arg) {
+       alert('粘贴监听');
+    })
+	*/
+
+	$('#content').attr("placeholder",'Ctrl+回车,可快速发表内容!'+'\n'+'截图提示：按住“Ctrl、Alt、A”这三个键，点击“完成”后，在此输入框Ctr+V粘贴即可实现截图上传');
+	$("#content").focus(function(){
+		$(this).attr("placeholder","");
+	});
+	paseImg($("#content"));	//截图
+	$('#content').keyup(function(event){
+		  if(event.ctrlKey && event.keyCode ==13){
+				postcontent( {content: format_content($('#content').val())} );
+		  }
+	});
+
+
+	$('.ajax-post').submit(function () {
+		if(!is_ueditor){
+			var form_data = {content: format_content( $('#content').val() ) };
+		}else{
+			var form_data = $('.ajax-post').serialize();				
+		}
+		postcontent(form_data);
+		return false;
+	});
+ 
+});
+
+
+function get_ueditor(o){
+	$(o).hide();
+	is_ueditor = true;
+	UE.getEditor('content', { initialFrameWidth:'100%',toolbars: [
+		['fullscreen', 'source', 'removeformat','undo', 'redo', 'forecolor','backcolor','bold','fontsize','insertimage','attachment','link','emotion','pasteplain','insertcode']
+	] });
+}
+</script>

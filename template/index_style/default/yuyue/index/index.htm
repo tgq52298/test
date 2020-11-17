@@ -1,0 +1,84 @@
+{extend name="$index_style_layout" /}
+
+<!--SEO相关-->
+{block name="head_title"}{$webdb.mseo_title?:$webdb.seo_title}{/block}
+{block name="head_keword"}{$webdb.mseo_keyword?:$webdb.seo_keyword}{/block}
+{block name="head_description"}{$webdb.mseo_description?:$webdb.seo_description}{/block}
+
+{block name="body_content"}
+<style>
+.Show_Shop_List{max-width: 640px;margin: 10px auto;}
+.Show_Shop_List:after{content: '';display: block;clear: both;}	
+.qb_ui_wapSortBoxCont .swiper-slide{width: auto!important;}
+</style>
+<!--分类开始-->
+<div class="qb_ui_wapSortBoxCont swiper-container">
+	<ul class="swiper-wrapper">
+		<li class="swiper-slide ck"><a href="{:urls('near/index')}">附近的</a></li>
+		{volist name="$fid|get_sort=###,'other'" id="vo"}
+		<li class='swiper-slide {eq name="$key" value="$fid"}ck{/eq}'><a href="{:urls('content/index',['fid'=>$key])}">{$vo}</a></li>
+		{/volist}
+	</ul>
+</div>
+<link href="__STATIC__/libs/swiper/swiper.min.css" rel="stylesheet">
+<script src="__STATIC__/libs/swiper/swiper.min.js"></script>
+<script type="text/javascript">
+$(function () {
+	var swiper = new Swiper('.qb_ui_wapSortBoxCont', {
+            spaceBetween: 0,
+            slidesPerView:'auto',
+            freeMode: true,
+			autoplay: {
+				delay: 4000,
+				stopOnLastSlide: false,
+				disableOnInteraction: true,
+			},
+	});
+})
+</script>
+<!--分类结束-->
+<style type="text/css">
+.shop-top{
+	border-bottom:1px solid #62b3e7;
+	margin-top:15px;
+}
+.shop-top .tag{
+	background:#62b3e7;
+	color:#fff;
+	width:120px;
+	height:35px;
+	line-height:35px;
+	text-align:center;
+	letter-spacing:2px;
+	font-size:16px;
+}
+</style>
+ 
+
+<ul class="shop-top">
+	<li class="tag">预约项目</li>
+</ul>
+<div class="Show_Shop_List">
+	{qb:listpage name="wapyuyue_index001" rows="10" order="list"}
+		{include file="waplistshop" /}
+	{/qb:listpage}
+</div>
+
+<!---异步显示更多调用一个显示更多的碎片模块[shop@content/showmore]，需要预设置如下参数[listurl：访问地址][thispage：开始页][TheListObj：插入对象][ThisRows：条数][listshops：子对象条数]--->
+<script type="text/javascript">
+var listurl='{qb:list_url name="wapyuyue_index001" /}';
+var thispage = 1;
+var TheListObj = $('.Show_Shop_List');
+var ThisRows = {$wapyuyue_index001.rows};	//每页显示几条 务必要注意,这里的变量名wapyuyue_index001必须要与上面的标签名一样,并且前面有$
+var listshops = $('.Show_Shop_List').children().length;
+</script>
+{include file="content/showmore" /}
+
+
+{php}
+$share['title']=$webdb['mseo_title']?:M('name');
+$share['about']=$webdb['mseo_description']?:M('name');
+{/php}
+{include file="index@share"/}
+
+{/block}

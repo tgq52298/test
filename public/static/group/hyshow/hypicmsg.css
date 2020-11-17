@@ -1,0 +1,172 @@
+.ListMySorts {
+	padding:5px 0;
+	line-height:25px;
+}
+.ListMySorts a{
+	display:inline-block;
+	font-size:14px;
+	padding:0 10px;
+	margin:5px 5px 0 0;
+	border:#DDD solid 1px;
+	color:#999;
+	border-radius:50%;
+}
+.ListMySorts a.ck{
+	border:#F60 solid 1px;	
+	background:#F90;
+	color:#FFF;
+}
+.ListMySorts a:hover{
+	border:#F30 solid 1px;	
+	background:#F60;
+	color:#FFF;
+}
+.listmsg{
+	border:#DDD solid 1px;
+	border-radius:5px;
+	margin-top:10px;
+	padding:6px 20px 6px 60px;
+	min-height:70px;
+	position:relative;
+	background:#FDFDFD;
+}
+.listmsg:hover{
+	background:#FFF;
+	border:#F60 solid 1px;
+}
+.listmsg ol{
+	position:absolute;
+	width:40px;
+	height:50px;
+	left:10px;
+	top:10px;
+}
+.listmsg ol em,.listmsg ol span{
+	display:block;
+	height:25px;
+	text-align:center;
+	line-height:25px;
+	overflow:hidden;
+	font-size:14px;
+}
+.listmsg ol em{
+	background:#F90;
+	color:#FFF;
+	border-radius:3px;
+}
+.listmsg .content{
+	line-height:20px;
+	font-size:14px;
+	color:#666;
+}
+.listmsg .listimgs:after{
+	content:'';
+	display:block;
+	width:100%;
+	clear:both;
+}
+.listmsg .listimgs div{
+	width:20%;
+	overflow:hidden;
+	float:left;
+	position:relative;
+}
+.listmsg .listimgs div:before{
+	content:'';
+	display:block;
+	padding-top:100%;
+}
+.listmsg .listimgs div span{
+	display:block;
+	position:absolute;
+	width:90%;
+	height:90%;
+	overflow:hidden;
+	border:#DDD solid 1px;
+	border-radius:5px;
+	left:0;
+	top:5%;
+	background:#FFF;
+}
+.listmsg .listimgs div span img{
+	max-width:95%;
+	max-height:95%;
+	cursor:pointer;
+	position:absolute;
+	left:50%;
+	top:50%;
+  -webkit-transform: translate3D(-50%, -50%, 0);
+      -ms-transform: translate3D(-50%, -50%, 0);
+          transform: translate3D(-50%, -50%, 0);
+}
+.listmsg .more{
+	display:block;
+	position:absolute;
+	width:25px;
+	height:100%;	
+	right:5px;
+	top:0;
+	background:url(more.png) center center no-repeat;
+	background-size:20px 30px;
+}
+.listmsg .more:hover{
+	background:url(more1.png) center center no-repeat;
+	background-size:25px 35px;
+}
+/*******/
+.ListImgBox{
+	position:fixed;
+	z-index:1000000;
+	width:100%;
+	height:100%;
+	overflow:hidden;
+	background:rgba(0,0,0,0.6);
+	left:0;
+	top:0;
+	display:none;
+}
+.ListImgBox .ListImg{
+	position:absolute;
+	width:1000000%;
+	height:100%;
+	left:0;
+	top:0;
+}
+.ListImgBox .ListImg li{
+	float:left;
+	position:relative;
+}
+.ListImgBox .ListImg li img{
+	position: absolute;
+	max-width:100%;
+	max-height:100%;
+  	left: 50%;
+	top: 50%;
+  -webkit-transform: translate3D(-50%, -50%, 0);
+      -ms-transform: translate3D(-50%, -50%, 0);
+          transform: translate3D(-50%, -50%, 0);
+}
+.pravnext ol,.pravnext li{
+	position: absolute;
+	width:50px;
+	height:50px;	
+	border-radius:5px;
+	top:45%;
+	filter:alpha(opacity=30); 
+	-moz-opacity:0.3; 
+	opacity:0.3;
+	cursor:pointer;
+}
+.pravnext ol{
+	left:50px;
+	background:#F60 url(prav.png) center center no-repeat;
+}
+.pravnext li{
+	right:50px;
+	background:#F60 url(next.png) center center no-repeat;
+}
+.pravnext ol:hover,.pravnext li:hover{
+	filter:alpha(opacity=100); 
+	-moz-opacity:1; 
+	opacity:1;
+}

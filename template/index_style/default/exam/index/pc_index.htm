@@ -1,0 +1,133 @@
+{extend name="$index_style_layout" /}
+
+<!--SEO相关-->
+{block name="head_title"}{$webdb.mseo_title?:$webdb.seo_title}{/block}
+{block name="head_keword"}{$webdb.mseo_keyword?:$webdb.seo_keyword}{/block}
+{block name="head_description"}{$webdb.mseo_description?:$webdb.seo_description}{/block}
+
+{block name="body_content"}
+
+    <link rel="stylesheet" href="__STATIC__/exam/default/pc/common.css">
+    <link rel="stylesheet" href="__STATIC__/exam/default/pc/index.css">
+
+<div class="body-bg">
+	<div class="k-test-content clearfix">
+
+		<div class="content-left">
+			<div class="text-content">
+				<div class="test-titel clearfix">
+					{qb:tag name="exam_pcindex_newhead" type='text'}
+					<h3 class="titel">最新考试</h3>
+					<a href="{:urls('info/index')}" class="more"><span class="btn">></span>更多</a>
+					{/qb:tag}
+				</div>
+				<div class="new-test-con">
+					<ul>
+					{qb:tag name="exam_pcindex_new001" class="app\exam\model\Category@label" order="id" by="desc" rows="5" }
+						<li>
+							<div class="icon-new"></div>
+							<div class="text-info">
+								<a href="{$rs.url}" class="text-name"><h3>{$rs.title}</h3></a>
+								<div class="info">
+									<span class="type"> {:get_word(fun('exam@title','grade',$rs.grade)?:'没划分',50)}</span>
+									<span class="time">考试时限：不限 </span>
+									<!-- <span class="time">发布时间：{:format_time($rs.create_time,'Y-m-d')}</span> -->
+									<span class="time">考试次数：1次</span>
+								</div>
+							</div>
+							<a href="{$rs.url}" class="button">进入考试</a>
+						</li>
+					{/qb:tag}
+				 	</ul>
+				</div>
+			</div>
+
+			<div class="text-content mt25">
+				<div class="test-titel clearfix">
+					{qb:tag name="exam_pcindex_examinationquestions_head" type='text'}
+					<h3 class="titel">试题大全</h3>
+					<a href="{:urls('info/index')}" class="more"><span class="btn">></span>更多</a>
+					{/qb:tag}
+				</div>
+
+				<div class="new-subject-con">
+					<ul class="subject-tab-menu">
+					{volist name=":query('exam_kemu',['limit'=>6])" id="rs"}
+						<li {if $i==1} class="cur" {/if}><a >{:get_word($rs.name,13)}</a></li>
+					{/volist}
+					</ul>
+
+				<div class="subject-tabbox ">
+					{volist name=":query('exam_kemu',['limit'=>6])" id="kemu"}
+					<div class="subject-list {if $i>1} hide {/if}">
+						<ul>
+						{volist name=":query('exam_content1',['where'=>['kemu'=>['like','%,'.$kemu['id'].',%']],'limit'=>12])" id="rss"}
+							<li>
+								<a href="{:urls('content/show',['id'=>$rss['id']])}"><em class="tip">[单选题]</em>{:get_word($rss.title,40)} </a> 
+							</li>
+						{/volist}
+						</ul>
+					</div>
+					{/volist}
+				</div>
+			</div>
+
+		</div>
+	</div>  
+	
+        
+	<div class="content-right">
+		<div class="hot-test-con">
+			<div class="test-titel clearfix">
+				{qb:tag name="exam_pcindex_hothead" type='text'}
+				<h3 class="titel">最新考试</h3>
+				{/qb:tag}
+			</div>
+			<div class="hot-list">
+				<ul>
+					{qb:tag name="exam_pcindex_hot001" class="app\exam\model\Category@label" order="id" by="desc" rows="10" }
+					<li>
+						<em {if $i<4}class="bg0{$i}"{/if}>{$i}</em>
+						<a href="{$rs.url}">{$rs.title}</a>
+					</li>
+					{/qb:tag}
+				</ul>
+			</div>
+		</div>
+		<div class="hot-test-con mt25">
+			<div class="test-titel clearfix">
+				{qb:tag name="exam_pcindex_exerciseshead" type='text'}
+				<h3 class="titel">做练习题</h3>
+				<a href="{:urls('content/index',['mid'=>1])}" class="more"><span class="btn">></span>更多</a>
+				{/qb:tag}
+			</div>
+			<div class="exercises-list">
+				<ul>
+					{qb:tag name="exam_pcindex_exercise001" class="app\exam\model\Category@label" order="id" by="desc" rows="6" }
+						<li><a href="{$rs.url}">{$rs.title}</a></li>
+					{/qb:tag}
+				</ul>
+			</div>
+		</div>
+
+	        </div>
+	</div>
+
+</div>
+
+
+<script>
+    $(document).ready(function(){
+        var $tab_li = $('.subject-tab-menu li');
+        $tab_li.hover(function(){
+            $(this).addClass('cur').siblings().removeClass('cur');
+            var index = $tab_li.index(this);
+            $('div.subject-tabbox > div').eq(index).show().siblings().hide();
+        });
+    });
+    $('.subject-list li:nth-child(2n)').css('margin-right','0')
+
+</script>
+
+{include file="index@share"/}
+{/block}

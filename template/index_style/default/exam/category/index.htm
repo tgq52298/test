@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>{$info.name}</title>
+<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<link rel="stylesheet" href="__STATIC__/css/base.css">
+<link rel="stylesheet" href="__STATIC__/css/qb_ui.css">
+<link rel="stylesheet" href="__STATIC__/icon/icon.css">
+<link rel="stylesheet" href="__STATIC__/mui/css/mui.min.css">
+<script type="text/javascript" src="__STATIC__/js/core/jquery.min.js"></script>
+<script type="text/javascript" src="__STATIC__/layer/layer.js"></script>
+<style>
+body{
+	background: #F5F5F5;
+}
+.OverContent{
+	max-width: 640px;
+	position: relative;
+	margin: auto; 
+}
+.OverContent:before{
+	content: '';
+	display: block;
+	position: absolute;
+	width: 100%;
+	padding-top: 60%;
+	background: #00C454;
+	left: 0;
+	top:0;
+}
+.usericon{
+	position: relative;
+	margin-left: auto; margin-right: auto;
+	width: 15%;
+	padding: 2% 0;
+}
+.usericon img{
+	width: 120px;
+	height: 120px;
+	border-radius: 50%;
+}
+.OverContent .title{
+	position: relative;
+	text-align: center;
+	padding: 10px;
+}
+.OverContent .title span{
+	display: inline-block;
+	background: #FFAD01;
+	color: #FFF;
+	padding: 5px 20px;
+	line-height: 30px;
+	font-size:20px;
+	border-radius: 5px;
+}
+.OverContent .MoreInfo{
+	position: relative;
+	width: 80%;
+	margin: 5% auto 0 auto;
+	background: #FFF;
+	box-shadow: 3px 3px 3px #AAA;
+	border-radius: 5px;
+	padding: 20px 0;
+}
+.OverContent .MoreInfo div{
+	padding: 5px 15px;
+	line-height: 25px;
+	text-align: center;
+	color: #666;
+}
+.OverContent .MoreInfo div span{
+	display: inline-block;
+	padding: 0 5px;
+	color: #F30;
+}
+.OverContent .MoreInfo div em{
+	display: inline-block;
+	padding: 0 5px;
+	color: blue;
+}
+.OverContent .MoreInfo p{
+	text-align: center;
+	padding: 15px;
+}
+.OverContent .MoreInfo p span{
+	font-size:30px;
+	color: #F30;
+}
+.OverContent .MoreInfo a{
+	display: block;
+	width: 80%;
+	text-align: center;
+	line-height: 50px;
+	background: #00C454;
+	color: #FFF;
+	height: 50px;
+	overflow: hidden;
+	margin: auto;
+	border-radius: 25px;
+	font-size: 20px;
+}
+.OverContent .MoreInfo a:hover{
+	background: #F60;
+}
+</style>
+</head>
+<body>
+
+<i class="si si-action-undo" onclick="history.go(-1);" style="position:absolute;z-index:10;left:15px;top:15px;color:#fff;font-size:20px;"></i>
+
+
+<i class="fa fa-star fav-exam" style="position:fixed;z-index:10;right:19px;top:15px;color:#fff;"> 收藏</i>
+<script type="text/javascript">
+$.get("{:urls('favpaper/check')}?id={$fid}",function(res){
+	if(res.code==0){
+		$(".fav-exam").html(' 已收藏');
+	}else{
+		$(".fav-exam").click(function(){
+			var url="{:urls('favpaper/add')}?id={$fid}";
+			$.get(url,function(res){
+				if(res.code==0){
+					$(".fav-exam").html(' 已收藏');
+					layer.msg('收藏成功');
+				}else{
+					layer.alert(res.msg);
+				}
+			})
+		});
+	}
+});
+</script>
+
+
+<div class="OverContent">
+	<div class="usericon">
+		<a href="{:get_url('user','uid='.$userdb[uid])}" target="_blank">
+			<img src="{$userdb.icon|tempdir}" onerror="this.src='__STATIC__/images/nobody.gif'"/>
+		</a>
+	</div>
+	<div class="title"><span>{$info.name}</span></div>
+	<div class="MoreInfo">
+		<div>当前试卷共<span>{:fun('exam@paper_num',$fid)}</span>题，每题<em>{:intval(100/fun('exam@paper_num',$fid))}</em>分</div>
+		<div>已参加{$info.just_test?'练习':'考试'}<span>{:fun('exam@test_num',$fid)}</span>人，当前平均分<em>{:fun('exam@average',$fid)}</em>分</div>
+		<!--<p>当次考试得分是：<span>{$total_fen}</span></p>-->
+		{if $info.money>0}<p>本次考试需要消费积分：<span>{$info.money}</span> 个</p>{/if}
+		<a href="{:urls('info/show',['fid'=>$fid,'aid'=>fun('exam@paper_first',$fid)])}" {if $info.money>0} class="alert" data-alert="本次考试需要消费积分：{$info.money}个，点击确定将自动扣除"{/if}>开始{$info.just_test?'训练学习':'考试'}</a>
+	</div>
+</div>
+
+
+<link rel="stylesheet" href="__STATIC__/group/member.css">
+<div class="MainMemberBox ShowContentType" style="margin-top:20px;">
+	<div class='TopBox' style='background:#F9CC9D;'>
+		<div class='name'>最近{$info.just_test?'练习':'考试'}学员</div>
+	</div>
+	<div class='listmemberBox'>
+		{qb:tag name="exam_recently_wapindex" class="app\exam\model\Putin@label" where="paperid=$fid" order="id" by="desc" rows="10" }
+		<div class='lists list2'>
+			<div class='icon'><a href="{:get_url('user',$rs.uid)}"><img src="{:get_user_icon($rs.uid)}" onerror="this.src='__STATIC__/images/nobody.gif'"></a></div>
+			<div class='infos'>
+				<div class='name'><a href="{:urls('category/index',['fid'=>$rs.id])}"><div class='num'>{:fun('Exam@get_category_byid',$rs['paperid'])['name']}</div></a></div>
+				<div class='more'>
+					<div class='iconfont'> <i class="fa fa-fw fa-user-o"></i>用户：<text>{:get_user($rs['uid'])['username']}</text> &nbsp;<i class="fa fa-fw fa-file-text-o"></i>成绩：<text>{$rs.fen}</text> 分 </div>
+				</div>
+				<div class='more'><div class='iconfont'>交卷时间：{$rs.create_time|format_time="Y-m-d H:i"}</div></div>
+			</div>
+		</div>
+		{/qb:tag}
+	</div>
+	<div class="ShowMores" onclick="showMoreCont();"><span>查看更多</span></div>
+	<script type="text/javascript">
+
+	var page=1;
+	var rows=4;
+	function showMoreCont(){
+		//$(".ShowMore").html("内容加载中……");
+		layer.msg("内容加载中……",{time:500});
+		page++;
+		$.get('{qb:url name="exam_recently_wapindex" /}'+page,function(res){
+			layer.closeAll();
+			if(res.code==0){
+				if(res.data==''){
+					layer.msg("已经显示完了！",{time:500});
+					$(".ShowMoreShop").hide();
+				}else{
+					$('.listmemberBox').append(res.data);
+					$(".ShowMoreShop").html("<span>点击查看更多</span>");
+			
+					scroll_get = true;  //这一行仅仅是匹配滚动显示更多.如果没使用滚动特效,可以删除
+				}
+			}else{
+				layer.msg(res.msg,{time:2500});
+			}
+		});
+
+	}
+	</script>
+</div>
+
+
+{include file="index@footmenu" /}
+
+<script type="text/javascript" src="__STATIC__/js/qibo.js"></script>
+</body>
+</html>

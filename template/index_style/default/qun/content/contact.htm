@@ -1,0 +1,60 @@
+{extend name="$index_style_layout" /}
+
+<!--SEO相关-->
+{block name="head_title"}{$info.title}{/block}
+{block name="head_keword"}{$info.keywords?:$info.title}  {$s_info.name} {/block}
+{block name="head_description"}{:get_word(del_html($info['content']),300)}{/block}
+
+
+
+{block name="body_content"}
+	<link rel="stylesheet" href="__STATIC__/qun/default/contact.css">
+
+	<!-- 顶部图 -->
+	{qb:hy name="qun_wapcontent_contact_pic001" type="image"}<img src="{$picurl}" style='display:none;'>{/qb:hy}
+	<script type="text/javascript">
+	$(document).ready(function () {
+		var bgimg_url = "{$qun_wapcontent_contact_pic001.picurl|default='__STATIC__/qun/default/topbg.png'}";
+		$('.topBox').css({'background':'url('+bgimg_url+') center center no-repeat','background-size':'100% 100%'});
+	
+	});
+	</script>
+
+
+	<div class="AboutMeCont">
+		<div class="topBox"><span></span></div>
+		<div class="ContBox">
+			<div class="head"><span>联系我</span></div>
+			<ul class="Member">
+				<ol><div><span><em>
+					<img onError="this.src='__STATIC__/images/noface.png'" src="{$info.uid|get_user_icon}">
+				</em></span></div></ol>
+				<li>{:get_user($info.uid)['username']}</li>
+			</ul>
+			<div class="company">{$info.title}</div>
+			<ul class="MoreInfo">
+				<li class="tel"><span>电话：{$info.telphone}</span><a href='tel:{$info.telphone}'><em class='si si-call-out'></em></a></li>
+				<li class="address"><span>地址：{$info.address}</span><a href="{:urls('map/index',['id'=>$info.id])}"><em class='glyphicon glyphicon-map-marker'></em></a></li>
+			</ul>
+			{if (config('webdb.wxapp_appid')&&config('webdb.wxapp_appsecret'))}
+			<ul class="wxcode">
+				<ol><span>{qb:hy name="qun_wapcontent_contact_imgtitle001" type="text"}长按识别__QUN__小程序{/qb:hy}</span></ol>
+				<li>
+					<img src="{:fun('wxapp@qun_code',$info['id'])}">
+				</li>
+			</ul>
+			{/if}
+
+			<ul class="wxcode">
+				<ol><span>{qb:hy name="qun_wapcontent_contact_imgtitle002" type="text"}长按识别__QUN__二维码{/qb:hy}</span></ol>
+				<li>
+					<img src="{:get_qrcode(urls('show',['id'=>$id,'my_qid'=>$inifo['id']]))}">
+				</li>
+			</ul>
+		</div>
+	</div>
+
+	{include file="qun@set" /}
+	{include file="index@share" /}
+{/block}
+

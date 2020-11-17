@@ -1,0 +1,48 @@
+<!--圈子菜单-->
+<style type="text/css">
+.MainMenu{
+	padding: 3px;
+}
+.MainMenu ul li span,.MainMenu ul li em{
+	width:55px;
+}
+.MainMenu ul li span i{
+	font-size:22px;
+}
+.MainMenu ul li em{
+	overflow: hidden;
+	font-size:13px;
+}
+</style>
+
+	<div class="SideBox">
+		<div class="MainMenu">
+			<ul>
+				<li>
+					{qb:hy name="wap_qun_link02" type="link"}
+					<!--<a href="javascript:share_btn();"><span><i class="fa fa-fw fa-qrcode"></i></span><em>分享码</em></a>-->
+					<a href="{$url}"><span {if $bgcolor!=''}style="background:{$bgcolor}"{/if}><i class="{$logo}"></i></span><em {if $font_color!=''}style="color:{$font_color}"{/if}>{$title}</em></a>
+					{/qb:hy}
+				</li>
+				<li>
+					{qb:hy name="wap_qun_link03" type="link"}
+					<!--<a href="{:get_url('msg','-'.input('id'))}"><span><i class="fa fa-comments-o"></i></span><em>群聊</em></a>-->
+					<a href="{$url}"><span {if $bgcolor!=''}style="background:{$bgcolor}"{/if}><i class="{$logo}"></i></span><em {if $font_color!=''}style="color:{$font_color}"{/if}>{$title}</em></a>
+					{/qb:hy}
+				</li>
+				<li>
+					{qb:hy name="wap_qun_link04" type="link"}
+					<!--<a href="{:urls('qun/member/index',['id'=>input('id')])}"><span><i class="fa fa-fw fa-user"></i></span><em>粉丝</em></a>-->
+					<a href="{$url}"><span {if $bgcolor!=''}style="background:{$bgcolor}"{/if}><i class="{$logo}"></i></span><em {if $font_color!=''}style="color:{$font_color}"{/if}>{$title}</em></a>
+					{/qb:hy}
+				</li>
+				<li>
+					<!--<a href="{:urls('qun/bbs/index',['id'=>input('id')])}"><span><i class="fa fa-fw fa-comments-o"></i></span><em>交流区</em></a>-->
+					{qb:hy name="wap_qun_link01" type="link"}		
+					<!--<a href="{:urls('qun/map/index',['aid'=>input('id')])}"><span><i class="fa fa-fw fa-flag-checkered"></i></span><em>导航</em></a>-->
+					<a href="{$url}"><span {if $bgcolor!=''}style="background:{$bgcolor}"{/if}><i class="{$logo}"></i></span><em {if $font_color!=''}style="color:{$font_color}"{/if}>{$title}</em></a>
+					{/qb:hy}
+				</li>
+			</ul>
+		</div>
+	</div>

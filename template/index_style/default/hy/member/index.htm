@@ -1,0 +1,115 @@
+{extend name="$index_style_layout" /}
+{block name="head_title"}{$info.title} -> {:M('name')}{/block}
+
+{block name="body_content"}
+<link rel="stylesheet" href="__STATIC__/group/member.css">
+<div class="MainMemberBox ShowContentType">
+	<div class='TopBox'>
+	  <div class='home'><a href="{:urls('content/show',['id'=>$id])}"><i class="fa fa-reply"></i>首页</a></div>
+	  <div class='name'>会员排行榜</div>
+	  <div class='member'><a href="#"><i class="fa fa-user-o"></i></a></div>
+	</div>
+	<div class='ShowTypes'>
+	  <div>活跃会员</div>
+	  <div>最新加入</div>
+	</div>
+
+	<div class='listmemberBox'>
+{qb:tag name="hy_member_wapindex" class="app\hy\model\Member@get_label" rows="10" union="aid=id,order,by" order="view" by="desc"}
+	    <div class='lists list{$i}'>
+	      <div class='icon'><a href="{:get_url('user',$rs['uid'])}"><img src="{$rs.icon}" onerror="this.src='__STATIC__/images/nobody.gif'"></a></div>
+	      <div class='infos'>
+	        <div class='name'><div class='num'>NO.{$i}</div><text>{$rs.username}</text></div>
+	        <div class='more'>
+	          <div class='iconfont'><i class="fa fa-arrows-v"></i>身份：<text>{eq name="rs.type" value="2"}管理员{else /}VIP会员{/eq}</text></div>
+	          <div class='time'>{$rs.create_time} 加入</div>
+	        </div>
+	      </div>
+	    </div>
+{/qb:tag}
+	</div>
+	<div class='listmemberBox'></div>
+	<div class="ShowMores"><span>查看更多</span></div>
+</div>
+<script type="text/javascript">
+
+var ajax_url_db = ['&order=view&','&order=id&'];
+var choose_i = 0; //选中第几项
+var haveshowpage = []; //每一项,作个标志,已经已显示到第几页
+    haveshowpage[0] = 1; //第一项就从第二页开始
+
+//显示更多
+function showMoreContent(){	
+	var url = ajax_url_db[choose_i];	//第几项对应的网址
+	haveshowpage[choose_i]++;
+	$.get('{qb:url name="hy_member_wapindex"/}' + haveshowpage[choose_i] + url + Math.random(),function(res){
+		if(res.code==0){
+			if(res.data==''){
+				layer.msg("已经显示完了！",{time:500});
+				$('.ShowMores').off("click");
+				$('.ShowMores span').html('显示完了');
+			}else{
+				if(haveshowpage[choose_i]==1){
+					$('.ShowContentType .listmemberBox').eq(choose_i).html(res.data);
+				}else{
+					$('.ShowContentType .listmemberBox').eq(choose_i).append(res.data);
+				}
+			}
+		}else{
+			layer.msg(res.msg,{time:2500});
+		}
+	});
+}
+
+
+//切换显示
+function showContentType(num){
+
+	choose_i = num;
+	$('.ShowMores').off("click");	//先移除,避免重复加多次click事件
+	$('.ShowMores').on("click",showMoreContent);
+	$('.ShowMores span').html('查看更多');
+	//$('.ShowMores').css({'background':'orange'});
+
+	if(haveshowpage[num]==undefined){
+		haveshowpage[num] = 0;
+		showMoreContent();
+	}
+
+	$('.ShowContentType .ShowTypes div').removeClass('ck');
+	$('.ShowContentType .ShowTypes div').eq(num).addClass('ck');
+	$('.ShowContentType .listmemberBox').hide();
+	$('.ShowContentType .listmemberBox').eq(num).show();
+}
+$('.ShowContentType .ShowTypes div').click(function(){
+	showContentType( $(this).index() );
+});
+showContentType(0);
+
+
+
+
+
+
+
+
+var shoppage=1;
+function showMoreShop(url){	
+	shoppage++;
+	$.get(url+shoppage+'&'+Math.random(),function(res){
+		if(res.code==0){
+			if(res.data==''){
+				layer.msg("已经显示完了！",{time:500});
+				$('.ShowMores').attr('onclick','');
+				$('.ShowMores span').html('显示完了');
+				$('.ShowMores span').css({'background':'#eee'});
+			}else{
+				$('.listmemberBox').append(res.data);
+			}
+		}else{
+			layer.msg(res.msg,{time:2500});
+		}
+	});
+}
+</script>
+{/block}

@@ -1,0 +1,181 @@
+{extend name="$index_style_layout" /}
+
+<!--SEO相关-->
+{block name="head_title"}{$info.title}{/block}
+{block name="head_keword"}{$info.keywords?:$info.title}  {$s_info.name} {/block}
+{block name="head_description"}{:get_word(del_html($info['content']),300)}{/block}
+
+{block name="nav"}{qb:nav title="考试区" url="?" /}{/block}
+
+{block name="body_content"}
+
+<link rel="stylesheet" href="__STATIC__/exam/default/pc/common.css">
+<link rel="stylesheet" href="__STATIC__/exam/default/pc/style.css">
+
+<div class="body-bg">
+	<div class="k-test-content clearfix">
+
+		<div class="content-left">
+			<div class="text-content">
+				<div class="test-titel clearfix">
+					<h3 class="titel">在线考试</h3>
+					<span class="btn"></span>
+				</div>
+
+				<div class="choice-type-con">
+
+				<!-- 	
+				{if getArray($array=model_config())}
+				<div class="choice-list clearfix">
+					<h3 class="htit">题型：</h3>
+						<div class="list">
+						{volist name="$array" id="rs"}
+						<a style="margin-bottom:5px;" href="#" onclick="choose_g_type('','','','{$rs.id}')" >{$rs.title}</a>
+						{/volist}
+					</div>
+				</div>
+				{/if}
+				 -->
+					{if getArray($array=fun('exam@get_sort','grade'))}
+					<div class="choice-list clearfix">
+						<h3 class="htit">年级：</h3>
+						<div class="list">
+							{volist name="$array" id="name"}
+							<a href="javascript:;" onclick="choose_g_type({$key},'','')" >{$name}</a>
+							{/volist}
+							
+						</div>
+					</div>
+					{/if}
+
+					{if getArray($array=fun('exam@get_sort','step'))}
+					<div class="choice-list clearfix">
+						<h3 class="htit">章节：</h3>
+						<div class="list">
+							{volist name="$array" id="name"}
+							<a href="javascript:;" onclick="choose_g_type('','',{$key})">{$name}</a>
+							{/volist}
+							
+						</div>
+					</div>
+					{/if}
+
+					{if getArray($array=fun('exam@get_sort','kemu'))}
+					<div class="choice-list clearfix">
+						<h3 class="htit">科目：</h3>
+						<div class="list">
+							{volist name="$array" id="name"}
+							<a href="javascript:;" onclick="choose_g_type('',{$key},'')" >{$name}</a>
+							{/volist}
+						</div>
+					</div>
+					{/if}
+
+				</div>
+
+
+	                
+
+				<div class="text-state-con">                    
+					<div class="state-tab-box">
+						<div class="state-test-list">
+							<ul class="test-list exam_pcinfo_index001">
+								{qb:tag name="exam_pcinfo_index001" class="app\exam\model\Category@label" where="grade=$grade&kemu=$kemu&step=$step" order="id" by="desc" rows="10" }
+								<li>
+									<div class="icon-new"></div>
+									<div class="text-info">
+										<a href="{$rs.url}" class="text-name"><h3>{$rs.title}</h3></a>
+										<div class="info">
+											<span class="type">普通考试</span>
+											<span class="time">考试时限：不限</span>
+											<span class="time">考试：{$rs.user_num}人 &nbsp;&nbsp;{:fun('exam@title','grade',$rs.grade)} </span>
+										</div>
+									</div>
+									 <a href="{$rs.url}" class="button">进入考试</a>
+									<!-- 考试已结束 -->
+								</li>
+								{/qb:tag}
+							</ul>
+						</div>
+					</div>
+				</div> 
+				<div class="ShowMore2" onclick='showMoreBbs()'><span>查看更多</span></div>
+			</div>                        
+		</div>
+
+		<script>
+		//筛选
+		function choose_g_type(grade,kemu,step){
+			if(grade!='') Grade = grade;
+			if(kemu!='') Kemu = kemu;
+			if(step!='') Step = step;
+			shop_bbs_page = 0;
+			showMoreBbs();
+		}
+
+		//CSS样式的切换
+		$(".list").each(function(){
+			var that = $(this);
+			$(this).find('a').click(function(){
+				$(this).siblings().removeClass('select');
+				$(this).addClass('select');
+			});
+		});
+
+		var Grade='',Kemu='',Step='';
+		var shop_bbs_page=1;
+		function showMoreBbs(){
+			var url = "{qb:url name='exam_pcinfo_index001'/}";
+			shop_bbs_page++;
+			$.get(url+shop_bbs_page+"&grade="+Grade+"&kemu="+Kemu+"&step="+Step,function(res){	
+				if(res.code==0){
+					if(res.data==''){
+						if(shop_bbs_page==1){
+							$('.exam_pcinfo_index001').html('');
+							layer.msg("没有数据！",{time:500});
+						}else{
+							layer.msg("已经显示完了！",{time:500});
+						}				
+						$('.ShowMore2').hide();
+					}else{
+						if(shop_bbs_page==1){
+							$('.exam_pcinfo_index001').html(res.data);
+						}else{
+							$('.exam_pcinfo_index001').append(res.data);
+						}
+						$('.ShowMore2').show();
+					}
+				}else{
+					layer.msg(res.msg,{time:2500});
+				}
+			});
+		}
+
+		</script>
+
+
+		<div class="content-right">
+			<div class="hot-test-con">
+				<div class="test-titel clearfix">
+					{qb:tag name="exam_pcindex_hothead" type='text'}
+					<h3 class="titel">最新考试</h3>
+					{/qb:tag}
+				</div>
+				<div class="hot-list">
+					<ul>
+						{qb:tag name="exam_pcindex_hot001" class="app\exam\model\Category@label" order="id" by="desc" rows="10" }
+						<li>
+							<em {if $i<4}class="bg0{$i}"{/if}>{$i}</em>
+							<a href="./index.php?i=2&c=entry&id=77&do=testshow&m=online_testpc">{$rs.title}</a>
+						</li>
+						{/qb:tag}
+					</ul>
+				</div>
+			</div>
+		</div>
+
+
+	</div> 
+</div>
+{include file="index@share"/}
+{/block}

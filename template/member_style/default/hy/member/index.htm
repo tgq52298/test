@@ -1,0 +1,108 @@
+{extend name="$member_style_layout" /}
+{block name="title"}商铺成员管理{/block}
+{block name="content"}
+<link rel="stylesheet" href="__STATIC__/group/member_list.css">
+<div class="MemberContainer">
+	<div class="ShowType">
+		<a href="#">全部</a>
+		<a href="#">已审</a>
+		<a href="#">未审</a>
+	</div>
+	<div class="ListMember">
+		{qb:tag name="hy_member_wapshow01" class="app\hy\model\Member@get_label" rows="8"}
+		<div class="list">
+			<a href="{$rs.url}">
+			<dl>
+				<dt><span><img src="{$rs.icon}" onerror="this.src='__STATIC__/images/nopic.png'"/></span></dt>
+				<dd>
+					<div class="name">{$rs.username}{if ($rs.type==2)}<span>管理员</span>{elseif ($rs.type==0)}<em>待审核</em>{/if}</div>
+					<div class="time">加入时间：{$rs.create_time}</div>
+				</dd>
+			</dl>
+			</a>
+			<div class="butter">
+				{lt name="rs.type" value="2"}<span><a href="javascript:" onclick="act('del','{$rs.id}')">踢除</a></span>{/lt}
+				{eq name="rs.type" value="0"}<span><a href="javascript:" onclick="act('yz','{$rs.id}')">通过审核</a></span>{/eq}
+				{eq name="rs.type" value="1"}<span><a href="javascript:" onclick="act('up','{$rs.id}')">设为管理员</a></span>{/eq}
+				{eq name="rs.type" value="2"}<span><a href="javascript:" onclick="act('down','{$rs.id}')">降为普通会员</a></span>{/eq}
+			</div>
+		</div>
+		{/qb:tag}
+	</div>
+	<div class="ListMember">加载中...</div>
+	<div class="ListMember">加载中...</div>
+	<div class="ShowMores">查看更多</div>
+</div>
+
+<script type="text/javascript">
+var ajax_url_db = ['&by=desc&type=all&','&by=asc&type=yz&','&by=desc&type=noyz&'];
+var choose_i = 0; //当前选中第几项
+var haveshowpage = []; //每一项,作个标志,已经已显示到第几页
+	//haveshowpage[0] = 1;	//第一项是从第二页开始,第一页显示过了
+//显示更多
+function showMoreContent(){
+	haveshowpage[choose_i]++;
+	$.get('{qb:url name="hy_member_wapshow01"/}' + haveshowpage[choose_i] + "&union=aid,type,by,order&aid={$id}"+ ajax_url_db[choose_i] +'&'+Math.random(),function(res){
+		if(res.code==0){
+			if(res.data==''){
+				layer.msg("已经显示完了！",{time:500});
+				$('.ShowMores').off("click");
+				$('.ShowMores').html('显示完了');
+				//$('.ShowMores').css({'background':'#eee'});
+				if(haveshowpage[choose_i]==1){
+					$('.MemberContainer .ListMember').eq(choose_i).html('');
+				}
+			}else{
+				if(haveshowpage[choose_i]==1){
+					$('.MemberContainer .ListMember').eq(choose_i).html(res.data);
+				}else{
+					$('.MemberContainer .ListMember').eq(choose_i).append(res.data);
+				}
+			}
+		}else{
+			layer.msg(res.msg,{time:2500});
+		}
+	});
+}
+
+//切换显示
+function showContentType(num){	
+	//更多显示
+	choose_i = num;
+	if( haveshowpage[num] == undefined ){
+		 haveshowpage[num] = 0;
+		 showMoreContent();
+	}
+	$('.ShowMores').off("click"); //避免显示更多,出现多次点击事件
+	$('.ShowMores').on("click",showMoreContent);
+	$('.ShowMores').html('查看更多');
+
+	//切换显示
+	$('.ShowType a').removeClass('ck');
+	$('.ShowType a').eq(num).addClass('ck');
+	$('.MemberContainer .ListMember').hide();
+	$('.MemberContainer .ListMember').eq(num).show();
+}
+
+//切换按钮添加事件
+$('.ShowType a').click(function(){
+	var thisnum=$(this).index();
+	showContentType(thisnum);
+});
+
+//初始化点中第一项
+showContentType(0);
+
+function act(type,id){
+	$.get('{:iurl("wxapp.member/act")}?type='+type+'&id='+id,function(res){		
+		if(res.code==0){
+			layer.msg("操作成功" ,{time:500});
+			location.reload();
+		}else{
+			layer.msg("操作失败:" + res.msg ,{time:2500});
+		}
+	});
+}
+</script>
+
+{/block}

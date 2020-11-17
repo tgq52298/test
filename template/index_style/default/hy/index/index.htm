@@ -1,0 +1,141 @@
+{extend name="$index_style_layout" /}
+
+<!--SEO相关-->
+{block name="head_title"}{$webdb.mseo_title?:$webdb.seo_title}{/block}
+{block name="head_keword"}{$webdb.mseo_keyword?:$webdb.seo_keyword}{/block}
+{block name="head_description"}{$webdb.mseo_description?:$webdb.seo_description}{/block}
+
+{block name="body_content"}
+<!--幻灯片开始---->
+<script type="text/javascript" src="__STATIC__/mui/js/mui.min.js"></script>
+<link rel="stylesheet" href="__STATIC__/index/default/slider.css">
+<div id="slider" class="mui-slider" >
+		<div class="mui-slider-group mui-slider-loop">
+			<div class="mui-slider-item mui-slider-item-duplicate"><a href="{:urls('near/index')}"><img src="__STATIC__/group/circle/wapbanner.jpg"></a></div>
+			<div class="mui-slider-item"><a href="{:urls('near/index')}"><img src="__STATIC__/group/circle/wapbanner.jpg"></a></div> 
+			<div class="mui-slider-item mui-slider-item-duplicate"><a href="{:urls('near/index')}"><img src="__STATIC__/group/circle/wapbanner.jpg"></a></div>
+		</div>
+		<div class="mui-slider-indicator">
+			<div class="mui-indicator mui-active"></div>
+			<div class="mui-indicator"></div> 
+		</div>
+</div>
+<script type="text/javascript" charset="utf-8">var slider = mui("#slider");</script>
+<!--幻灯片结束---->
+<link rel="stylesheet" href="__STATIC__/group/index.css">
+<div class="MainContainer">
+	<div class="SearchBox">
+		<form method="POST" action="{:url('search/index/lists')}">
+			<ul>
+				<ol><input name="keyword" type="text" placeholder="请输入关键字"/></ol>
+				<li><button type="submit"><i class="fa fa-search"></i></button></li>
+			</ul>
+		</form>
+	</div>
+	<div class="HotGroupBox">
+		<div class="head">热门商铺</div>
+		<div id="ListGroup">
+			<ul>
+				{qb:tag name="hy_wapindex001" type="hy" order="status" by="desc" rows="10"}
+				<li><a href="{$rs.url}"><span><img src="{$rs.picurl}" onerror="this.src='__STATIC__/images/nopic.png'"></span><em>{$rs.title}</em></a></li>
+				{/qb:tag}
+			</ul>
+		</div>
+	</div>
+	<div class="MainAction">
+		<ul>
+			<ol><a href="{:urls('content/index','mid=1')}"><i class="fa fa-object-ungroup"></i> 所有商铺</a></ol>
+			<li><a href="{:urls('content/add')}"><i class="fa fa-user-plus"></i> 创建商铺</a></li>
+		</ul>
+	</div>
+	<div class="ShowContentType">
+		<div class="tags"><span class="ck">产品</span><span>图片</span><span>话题</span></div>
+		<div class="Contents shoptopic">
+			{qb:tag name="hy_wapindex_shop001" type="shop" mid="1" order="id" by="asc" rows="8" js="shoptopic"}
+			<div class="shops"><a href="{$rs.url}"><span><img src="{$rs.picurl}" onerror="this.src='__STATIC__/images/nopic.png'"></span><em>{$rs.title}</em><dl><dt>&yen;{$rs.price}</dt><dd>&yen;{$rs.price}</dd></dl></a></div>
+			{/qb:tag}
+		</div>
+		<div class="Contents phototopic">
+			{qb:tag name="hy_wapindex_photo001" type="cms" mid="2" order="id" by="asc" rows="8" js="phototopic"}
+			<div class="imgs"><a href="{$rs.url}"><span><img src="{$rs.picurl}" onerror="this.src='__STATIC__/images/nopic.png'"></span><em>{$rs.title}</em></a></div>
+			{/qb:tag}
+		</div>
+		<div class="Contents bbstopic">
+			{qb:tag name="hy_wapindex_bbs001" type="bbs" order="list" by="desc" rows="15" js="bbstopic"}
+			<div class="lists">
+				<ul>
+					<li class="img"><a href="{:get_url('user',$rs.uid)}"><img src="{$rs.user_icon}" onerror="this.src='__STATIC__/images/nobody.gif'"></a></li>
+					<li class="info"><span>{$rs.username}</span><em>{$rs.time}</em></li>
+					<li class="more"><span>{if ($rs.status>1)}精{elseif (time()-$rs.create_time<3600*24)}新{elseif ($rs.view>10)}热{/if}</span></li>
+				</ul>
+				<a href="{$rs.url}">
+				<dl>
+					<dt>{$rs.title}</dt>
+					{if (count($rs['picurls'])>2)}
+					<dd>
+						{volist name="rs.picurls" id="vs"}
+						{lt name="i" value="4"}<div><span><img src="{$vs}" onerror="this.src='__STATIC__/images/nopic.png'"></span></div>{/lt}
+						{/volist}
+					</dd>
+					{/if}
+				</dl>
+				</a>
+				<div class="others">
+					<span><i class="fa fa-thumbs-o-up">{$rs.agree}</i></span>
+					<em><i class="fa fa-commenting-o">{$rs.replynum}</i></em>
+				</div>
+			</div>
+			{/qb:tag}
+		</div>
+		<div class="ShowMores"><span>查看更多</span></div>
+	</div>
+</div>
+
+<script type="text/javascript">
+var ajax_url_db = ['{qb:url name="hy_wapindex_shop001"/}','{qb:url name="hy_wapindex_photo001"/}','{qb:url name="hy_wapindex_bbs001"/}'];
+var choose_i = 0; //选中第几项
+var shoppage = 1;
+var haveshowpage = []; //每一项,作个标志,已经已显示到第几页
+//显示更多
+function showMoreContent(){	
+	var url = ajax_url_db[choose_i];	//第几项对应的网址
+	shoppage++;
+	haveshowpage[choose_i] = shoppage;
+	layer.msg("加载中...",{time:1000});
+	$.get(url+shoppage+'&'+Math.random(),function(res){
+		if(res.code==0){
+			if(res.data==''){
+				layer.msg("已经显示完了！",{time:500});
+				$('.ShowMores').off("click");
+				$('.ShowMores span').html('显示完了');
+				$('.ShowMores span').css({'background':'#eee'});
+			}else{
+				$('.ShowContentType .Contents').eq(choose_i).append(res.data);
+			}
+		}else{
+			layer.msg(res.msg,{time:2500});
+		}
+	});
+}
+
+//切换显示
+function showContentType(num){
+
+	choose_i = num;
+	shoppage = haveshowpage[choose_i]>1 ? haveshowpage[choose_i] : 1;
+	$('.ShowMores').off("click"); //避免出现多次点击事件
+	$('.ShowMores').on("click",showMoreContent);
+	$('.ShowMores span').html('查看更多');
+
+	$('.ShowContentType .tags span').removeClass('ck');
+	$('.ShowContentType .tags span').eq(num).addClass('ck');
+	$('.ShowContentType .Contents').hide();
+	$('.ShowContentType .Contents').eq(num).show();
+}
+$('.ShowContentType .tags span').click(function(){
+	var thisnum=$(this).index();
+	showContentType(thisnum);
+});
+showContentType(0);
+</script>
+{/block}

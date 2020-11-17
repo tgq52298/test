@@ -1,0 +1,74 @@
+{extend name="$member_style_layout" /}
+
+{block name="title"}我购买的商品{/block}
+{block name="content"}
+<link rel="stylesheet" href="__STATIC__/css/pcorder.css">
+<style>
+  .c_b{color:blue;}
+  .c_g{color:green;}
+</style>
+{empty name="listdb"}<div style="padding:50px;font-size:14px;">你还没有购买任何商品</div>{/empty}
+{volist name="listdb" id="rs"}
+<div class="ListOrder">
+  <div class="company">
+    <span>{$rs.create_time}</span>
+    <a  target="_blank" href="{:get_url('user',"uid=$rs[shop_uid]")}">
+      <em>
+        <img src="{$rs.shop_uid|get_user_icon}" onerror="this.src='__STATIC__/index/base/noface.gif'"/></em>{$rs.shop_uid|get_user_name}</a>
+  </div>
+  <ul class="orderinfo">
+    <li class="shops">
+{volist name="rs.shop_db" id="vs"}
+		<div class='list'>
+			<div class='listtable'>
+			  <div class='img'>
+				<a href="{:iurl('content/show',['id'=>$vs['id']])}" target="_blank"><img src="{$vs.picurl}" onerror="this.src='__STATIC__/images/nopic.png'"/></a>
+			  </div>
+			  <div class='t'>
+				<a href="{:iurl('content/show',['id'=>$vs['id']])}" target="_blank">{$vs.title}</a></div>
+			  <div class='price'>
+				<s>&yen;{$vs._price}</s>
+				<span>&yen;{$vs._price}</span></div>
+			  <div class='num'>X {$vs._num}</div></div>
+		  </div>
+{/volist}
+    </li>
+    <li class="totalmoney" style="font-size:15px;">
+          {if $rs.pay_name=='under_line'} <p class='c_b'>货到付款</p>{/if}
+          应付金额<br>&yen;{$rs.pay_money}
+          {if $rs.user_rmb>0} <br><span class='c_g'>余额支付<br>&yen;{$rs.user_rmb}元</span>{/if}
+    </li>
+    <li class="state">
+            <div>
+                    {eq name="$rs.pay_status" value="1"}
+                    已付款 
+                    {else /}
+                    <a style="border:1px solid #ccc;padding:3px;" href="{:iurl('order/rmb_pay',['ids'=>$rs['id']])}" title="点击支付" target="_blank">未付款</a>
+                    {/eq}
+            </div>
+            <div>
+                                {eq name="$rs.shipping_status" value="1"}
+                                  <span style="color:blue;">已发货</span> <br> 
+
+                                          {eq name="$rs.receive_status" value="1"}
+                                              <span style="color:blue;">已签收</span> <br> 
+                                            {else /}
+                                              <span><a href="{:murl('order/confirmation',['id'=>$rs['id']])}">签收</a></span><br>
+                                            {/eq}
+                                  
+                                {else /}
+                                 待发货<br>
+                                {/eq}
+            </div>
+    </li>
+    <li class="action">
+      <a href="{:urls('show',['id'=>$rs['id']])}">查看</a>
+
+       
+    </li>
+  </ul>
+  <div class="otheraction">订单号：{$rs.order_sn}</span></div>
+</div>
+{/volist}
+<div class="OrderPage">{$pages}</div>
+{/block}

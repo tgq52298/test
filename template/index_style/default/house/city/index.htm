@@ -1,0 +1,50 @@
+{extend name="$index_style_layout" /}
+
+<!--SEO相关-->
+{block name="head_title"}{$fid?($info['seo_title']?:$info['name']):$m_info['title']}{/block}
+{block name="head_keword"}{$fid?($info['seo_keywords']?:$info['name']):$m_info['title']}{/block}
+{block name="head_description"}{$info.seo_description}{/block}
+
+{block name="body_AllScorllSlide"}
+<!--通栏横幅图片__STATIC__/css/qb_ui.css中控制图片宽度百分百高度行内样式设置，如不设置不小于100px---->
+{qb:tag name="web_banner_pic01" type="image"}
+<!--
+<div class="qb_ui_AllscrollBanner" style="height:300px;">
+	<a href="#1"><img src="__STATIC__/images/s0.jpg"></a>
+</div>
+-->
+<div class="qb_ui_AllscrollBanner" style="height:300px;">
+	<a href="{$url}"><img src="{$picurl}"></a>
+</div>
+{/qb:tag}
+{/block}
+{block name="body_content"}
+
+<link rel="stylesheet" type="text/css" href="https://life8.php168.com/images/default/allcity.css">
+ <div style="width:1200px;margin:auto;">
+      <table width="100%" border="0" cellspacing="0" cellpadding="0" style="margin-top:10px;" class="hotcity">
+        <tr> 
+          <td width="69%"> <b><font color="#FF0000">推荐城市:</font></b>
+            <a href="#">北京</a>
+          </td>
+          <td width="31%" align="right">请选择一个城市↓</td>
+        </tr>
+      </table>
+{volist name=":get_area('','',0)" id="name"}
+      <table width="100%" border="0" cellspacing="0" cellpadding="0" class="allcity">
+        <tr> 
+          <td class="L">{$name}</td>
+          <td class="R"> 
+            {volist name=":get_area('','',$key)" id="sname"}
+				<a href="{:urls('index/index','city_id='.$key)}">{$sname}</a> 
+            {/volist}
+          </td>
+        </tr>
+      </table>
+{/volist}
+      
+    </td>
+  </tr>
+</table>
+</div><br>
+{/block}

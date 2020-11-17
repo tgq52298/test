@@ -1,0 +1,22 @@
+{extend name="$member_style_layout" /}
+
+{block name="content"}
+{include file="member@common/menu" /}
+	{include file="member@common/form" /}
+
+
+<script>
+$(function(){
+	{if $rz_rmb>0}	
+		$('.tag').after("<div style='font-size: 12px;color: red; '>【认证费用{$rz_rmb}元，提交申请将会从你的账户余额中扣取】</div>");
+	{/if}
+	$('#form_group_fid').hide();
+})	
+</script>
+
+{/block}
+    
+    
+
+   
+   

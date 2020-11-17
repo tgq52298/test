@@ -1,0 +1,26 @@
+<!--圈子公告与介绍-->
+<div class="main">
+					<div class="mhead mhead1">
+						<div class="third"><a href="#">__QUN__介绍</a></div>
+						<div><a href="#">公告信息</a></div>
+					</div>
+					<div class="tbox">
+						<div class="text">
+							<p>{$info.content}</p>
+						</div>
+						<div class="text">
+							<p>{$info.notice|default='暂无公告消息'}</p>
+						</div>
+					</div>
+<script>
+$('.tbox .text').eq(1).hide();;
+$(".mhead1 div").hover(function(){
+var thisindex = $(this).index();
+$(this).addClass("third").siblings().removeClass("third");
+$(".tbox .text").eq(thisindex).show().siblings().hide();
+})
+</script>	
+
+</div>
+
+<div style="display:none;" class="taglabel">目的是不给用户复制当前碎片</div>

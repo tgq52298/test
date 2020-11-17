@@ -1,0 +1,44 @@
+{extend name="$simple_layout" /}
+
+{block name="title"}
+我提交的认证申请
+{/block}
+
+{block name="content"}
+<div class="mui-card">
+	<div class="mui-card-content">
+		<div class="mui-card-header mui-card-media">
+			<img src="{$info.icon|get_user_icon}" />
+			<div class="mui-media-body">
+				申请者：{$info.uid|get_user_name}
+				<p>申请于 {$info.create_time|date="y-m-d H:i:s",###}</p>
+			</div>				 
+		</div>
+
+{volist name="$info.field_array" id="rs"}
+	{switch name="rs.type"}
+		{case value="image"} <img src="{$rs.value}"> {/case}
+		{case value="file"} <a href="{$rs.value}">点击下载</a> {/case}
+		{case value="images"}{volist name="$rs.value" id="qs"}<img src="{$qs.picurl}">{/volist}{/case}
+		{case value="images2"}{volist name="$rs.value" id="qs"}<a href="{$qs.url}"><img src="{$qs.picurl}" alt="{$qs.title}"></a>{/volist}{/case}
+		{case value="files"}{volist name="$rs.value" id="qs"} <a href="{$qs.url}">点击下载</a><br>{/volist}{/case}
+		{default /}
+		    <div class="mui-card-header">
+		    <p class="mui-card-link">{$rs.title}</p>
+		    
+		    {if $rs['type']=='radio'}
+		   
+			{php}$radioname=$rs['name'];{/php}
+			<a class="mui-card-link">{$info["$radioname"]}</a>
+		    {elseif $rs['type']=='select'&&$rs['name']=='qun_id' /}
+			<a class="mui-card-link">{$quntitle}</a>
+		    {else /}
+			<a class="mui-card-link">{$rs.value}</a>
+		{/if}
+			</div>
+		
+	{/switch}
+{/volist}
+	</div>
+</div>
+{/block}

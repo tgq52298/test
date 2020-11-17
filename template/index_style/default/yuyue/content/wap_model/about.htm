@@ -1,0 +1,60 @@
+<!--产品介绍-->
+	<div class="ChangeShowCont">
+		<div class="mui-slider">
+			<div class="mui-slider-indicator mui-segmented-control mui-segmented-control-inverted">
+				<a class="mui-control-item" href="#mobileitem1">产品介绍</a>
+				<a class="mui-control-item" href="#mobileitem2">{if $info.ext_id} 商家介绍 {elseif $info.mid==5}兑换必读{elseif $info.mid==4}秒杀必读{elseif $info.mid==3}竟拍必读{elseif $info.mid==2}砍价必读{else /} {$info.price_changetype==2?'早买早优惠':'拼团必读'} {/if}</a>
+			</div>
+			<div class="mui-slider-progress-bar mui-col-xs-6"></div>
+			<div class="mui-slider-group">
+				<div id="mobileitem1" class="mui-slider-item mui-control-content mui-active">
+<style type="text/css">
+.contentinfo img{
+	max-width:100%;
+}
+</style>
+					<div class="contentinfo">
+					{$info.content}
+					</div>
+				</div>
+				<div id="mobileitem2" class="mui-slider-item mui-control-content">
+					<div class="contentinfo">
+{if $info.ext_id}
+	{:fun('qun@getbyid',$info.ext_id)['content']}
+{elseif $info.mid==5}
+下单后不管是否付款.都会先扣除积分 
+{elseif $info.mid==6}
+1、一旦成团,订金不退还,没有成团之前,可以随时申请退订金!!<br>
+2、开团享受优惠，但必须组团成功后，才能成交。单独购买可以马上付款成交
+{elseif $info.mid==4}
+1、参与提前秒杀活动可邀请好友助力,每次助力可比他人提前 {$info.each_time} 秒抢购。<br>
+{elseif $info.mid==3}
+				1、参与竟拍，必须先报名交纳保证金 {$info.fewmoney} 元。<br>
+				2、未能竟拍成功的，保证金会在拍卖 {$info.end_time} 结束后自动退还（拍卖结束前不能申请退还）。<br>
+				3、竟拍成功者，需要在拍卖结束后 {$info.limit_day} 内付尾款，即{:date('Y-m-d H:i',strtotime($info.end_time)+$info.limit_day*3600*24)}之前必须付款，否则系统会自动没收保证金给商家（中标者务必要及时交纳尾款!!）。<br>
+				4、若商家设置两位以上中标者，那么价格会以自己最后出的价格支付，而不是统一最高那个价格。比如三个人,分别最后出的价格是100元、99元、98元，如果有两位中标者的话，他们的支付价格分别是100元与99元，并不是都为100元。<br>
+{elseif $info.mid==2}
+				1、参与砍价都要先交纳订金 {$info.fewmoney} 元，随时可退。<br>
+				2、砍价有时间限制，超过指定时间将不能再砍价，若不满意价格的话，可随时申请退款。<br>
+{else /}
+				{if $info.price_changetype==2}
+					{volist name=':explode("\n",str_replace(["\r","－"], ["","-"], trim($info["price_grow"],"\r\n")))' id="value"}
+						{php}list($nums,$money)=explode('=',$value);{/php}
+						{if is_numeric($nums)}
+							第 {$nums} 位下单用户享受优惠 {$money} 元<br>
+						{else /}
+							{php}list($min,$max) = explode('-', $nums);{/php}
+							第 {$min} 位到第 {$max} 位下单用户享受优惠 {$money} 元<br>
+						{/if}
+					{/volist}
+				{else /}
+					{qb:tag name="wapyuyue_notice_1" type="text"}一旦成团,订金不退还,没有成团之前,可以随时申请退订金!!{/qb:tag}
+				{/if}
+{/if}
+
+
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>

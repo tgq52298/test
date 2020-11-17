@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>试卷列表</title>
+<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<link rel="stylesheet" href="__STATIC__/css/base.css">
+<link rel="stylesheet" href="__STATIC__/css/qb_ui.css">
+<link rel="stylesheet" href="__STATIC__/icon/icon.css">
+<script type="text/javascript" src="__STATIC__/js/core/jquery.min.js"></script>
+<script type="text/javascript" src="__STATIC__/layer/layer.js"></script>
+<style>
+body{
+	background: #F5F5F5;
+}
+.sideBox{
+	padding: 5px 10px;
+}
+.sideBox ul{
+	position: relative;
+	display: table;
+	width: 100%;
+	border: #EEE solid 1px;
+	background: #FFF;
+}
+.sideBox ul ol,.sideBox ul li{
+	display: table-cell;
+	padding:5px;
+	line-height: 20px;
+	vertical-align: middle;
+}
+.sideBox ul ol{
+	padding-left: 10px;
+	color: #666;
+}
+.sideBox ul ol span{
+	color: #F60;
+}
+.sideBox ul ol em{
+	color: blue;
+}
+.sideBox ul li{
+	width: 50px;
+}
+.sideBox ul li a{
+	display: block;
+	text-align: center;
+	background: #1E9FFF;
+	color: #FFF;
+	line-height: 30px;
+}
+.sideBox ul li:nth-child(2) a{
+	background:#5FB878;
+}
+.sideBox ul li:nth-child(3) a{
+	background:#009688;
+}
+.sideBox ul li:nth-child(4) a{
+	background:#05554D
+}
+.sideBox ul li:nth-child(6) a{
+	background:#FF5722;
+}
+.mui-pager {
+	padding-left: 0;
+	list-style: none;
+	text-align: center
+}
+
+.mui-pager:after,.mui-pager:before {
+	display: table;
+	content: ' '
+}
+
+.mui-pager:after {
+	clear: both
+}
+
+.mui-pager li {
+	display: inline
+}
+
+.mui-pager li>a,.mui-pager li>span {
+	display: inline-block;
+	padding: 5px 14px;
+	border: 1px solid #ddd;
+	border-radius: 6px;
+	background-color: #fff;
+	background-clip: padding-box
+}
+
+.mui-pager li.mui-active>a,.mui-pager li.mui-active>span,.mui-pager li:active>a,.mui-pager li:active>span {
+	cursor: default;
+	text-decoration: none;
+	color: #fff;
+	border-color: #007aff;
+	background-color: #007aff
+}
+
+.mui-pager .mui-next>a,.mui-pager .mui-next>span {
+	float: right
+}
+
+.mui-pager .mui-previous>a,.mui-pager .mui-previous>span {
+	float: left
+}
+
+.mui-pager .mui-disabled>a,.mui-pager .mui-disabled>a:active,.mui-pager .mui-disabled>span,.mui-pager .mui-disabled>span:active {
+	opacity: .6;
+	color: #777;
+	border: 1px solid #ddd;
+	background-color: #fff
+}
+</style>
+</head>
+<body>
+{volist name="listdb" id="rs"}
+<div class="sideBox">
+	<ul>
+		<ol>{$rs.name} <span>{$rs.number}</span>题 每题<em>{$rs.fenone}</em>分 <a href="{:iurl('category/index',['fid'=>$rs['id']])}" target="_blank">已参加考试<span>{:fun('exam@test_num',$rs['id'])}</span>人</a></ol>
+		<li><a href="{:murl('edit',['id'=>$rs['id']])}" onclick="edit('{:murl('question/index',['id'=>$rs['id']])}',1)">编辑</a></li>
+		<li><a href="javascript:;" onclick="add('{:murl('question/index',['id'=>$rs['id']])}',1)">加题</a></li>
+		<li><a href="javascript:;" onclick="add('{:murl('question/index',['id'=>$rs['id'],'type'=>1])}',2)">管理</a></li>
+		<li><a href="{:iurl('category/index',['fid'=>$rs['id']])}" target="_blank">考试</a></li>
+		<li><a href="{:murl('paper/delete','ids='.$rs[id])}" >删除</a></li>	
+	</ul>
+</div>
+{/volist}
+{$pages}
+<script>
+function add(url,t){
+	if(t==1){
+		var title = '选择试题';
+	}else{
+		var title = '试题管理';
+	}
+	layer.open({
+		title:title,
+		type: 2,
+		area: ['95%', '95%'],
+		fixed: false,
+		maxmin: true,
+		content: url
+	});	
+}
+
+</script>
+</body>
+</html>

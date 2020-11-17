@@ -1,0 +1,196 @@
+﻿
+{extend name="$index_style_layout" /}
+{block name="head_title"}{:M('name')}{/block}
+
+{block name="body_content"}
+<link rel="stylesheet" href="__STATIC__/bbs/post.css">
+<div class="bbsContainer">
+<!--
+	<ul class="topBoxs">
+		<li class="logo"><a href="/"><img src="__STATIC__/bbs/logo1.png"></a></li>
+		<li class="info"><span>{:M('name')}</span><em>{$userdb.username}</em></li>
+		<li class="atten"><a href="{:get_url('member')}"><i class="si si-user"></i></a></li>
+	</ul>
+	<div class="quideBox"><a href="{:urls('index/index')}">返回主页</a> -&gt; {notempty name="fid"}<a href="{:urls('content/index',['fid'=>$fid])}">{:get_sort($fid)}</a> &gt;{/notempty} 发表帖子</div>
+-->
+	<form class="ajax-post" action="" method="post">
+	<div class="PostBox">
+		<ul>
+			<ol>信息标题</ol>
+			<li><input type="text" value="{$info.title}" name="title" placeholder="请输入标题" required/></li>
+		</ul>
+{qb:form field="title,content,picurl"}
+		<ul>
+			<ol>{title}</ol>
+			<li>{value}</li>
+		</ul>
+{/qb:form}
+		<ul>
+			<ol>所在地区</ol>
+			<li>
+				<ul class="ListArea">
+					<select name='province_id' data-title="请选择省份"></select> 
+					<select name='city_id' data-title="请选择城市"></select> 
+					<select name='zone_id' data-title="请选择区域"></select> 
+					<select name='street_id' data-title="请选择街道"></select>
+				</ul>
+			</li>
+		</ul>
+		<ul>
+			<ol>信息详情</ol>
+			<li>
+				<link rel="stylesheet" href="__STATIC__/libs/summernote/bootstrap.min.css" />
+				<script type="text/javascript" src="__STATIC__/libs/summernote/bootstrap.min.js"></script>
+				<link rel="stylesheet" href="__STATIC__/libs/summernote/summernote.css">
+				<script type="text/javascript" src="__STATIC__/libs/summernote/summernote.js"></script>
+				<script type="text/javascript">
+					$(function() {
+					  $('.summernote').summernote({
+						height: 150,
+						toolbar: false
+					  });
+					});
+				</script>
+				<textarea name="content" class="summernote" placeholder="请输入内容">{$info.content}</textarea>
+			</li>
+		</ul>
+		<ul class="uploadImg">
+		    <div style="display:none;">
+				<input type="file" name="fileToUpload" id="fileToUpload" accept="image/*" multiple/>
+				<input type="text" name="picurl" value="{$info.picurl}" id="compressValue"  style="width:100%;" /> 
+			</div>
+			<ol>点击上传图片</ol>
+			<li onclick='$("#fileToUpload").click()'><i class="si si-camera"></i></li>
+		</ul>
+		<div class="ListImgs"></div><input type="hidden" name="fid" value="{$fid}">
+		<div class="button"><button type="submit">{empty name='id'}发表信息{else /}修改信息{/empty}</button></div>		
+	</div>
+	</form>
+</div>
+
+<SCRIPT LANGUAGE="JavaScript">
+//这个区域内的是地区选择事件
+
+$(".ListArea select").each(function(i){
+	$(this).hide();	//把所有都隐藏起来.有数据加载成功才显示
+	$(this).change(function () {
+       var val = $(this).val();	//$(this).children('option:selected').val();
+       choose_where(i,val);  
+   });
+});
+
+//页面初始化
+var default_ckid = ["{$info.province_id}","{$info.city_id}","{$info.zone_id}","{$info.street_id}"];
+choose_where(0,0,default_ckid[0],true);
+
+//下拉框选择事件
+function choose_where(num,pid,ckid,ifload){	//第几个选项,父ID,默认初始化选中ID,是否页面默认初始化
+	if(ifload!==true && num==0 && pid==0){	//省份即第一项,不是默认加载的时候,选择0时,就不要给下级加数据,而是把下级全部清空
+		delete_sons(num+1);	//所有子级的数据全清空
+		return ;
+	}
+	var iftop = num===0 ? 1 : 0;
+	$.get("{:purl('area/api/getlist',[],'index')}?iftop="+iftop+"&pid="+pid+"&ckid="+ckid,function(res){
+		if(res.code==0){	//有数据
+			if(ifload===true){	//页面初始化时加载的默认数据
+				set_area_value(num,res.data,ckid);		//当前选项赋值
+				choose_where(num+1,ckid,default_ckid[num+1],ifload);	//加载数据成功,才返回当前选中的ID给下级当作父ID继续取值
+			}else{	//用户重新自由选择
+				set_area_value(num+1,res.data);	//下级数据填充				
+				delete_sons(num+2);	//下下级以后的数据全清空
+			}
+		}else{	//无数据
+			delete_sons(num+1);	//下级数据不存在的话,就把他们全清空
+		}
+	});
+}
+
+//清空下级后面所有的数据
+function delete_sons(min){
+	leng = $(".ListArea select").length;
+	for(i=min;i<leng;i++){
+		set_area_value(i,[]);
+	}
+}
+
+//下级数据赋值
+function set_area_value(num,data,ckid){
+	that = $(".ListArea select").eq(num);
+	if(data.length==0){
+		that.hide();
+	}else{
+		that.show();
+	}
+	that.empty();	//首先清空select现在有的内容
+    that.append("<option selected='selected' value='0'>"+that.data("title")+"</option>");
+	data.forEach(function(item){
+		var ck = ckid==item.id ? ' selected ' : '';
+		that.append("<option  value='" + item.id + "' " + ck + ">" + item.name + "</option>");
+	})
+}
+</SCRIPT>
+
+<script type="text/javascript" src="__STATIC__/js/base64uppic.js"></script>
+<script type="text/javascript">
+		var severUrl = "{:urls('index/attachment/upload','dir=images&from=base64&module=fenlei')}";
+		var pics = [];
+        //图片上传change事件
+        $('#fileToUpload').change(function(){			
+            uploadBtnChange($(this).attr("id"),'compressValue',pics,viewpics);
+        });
+
+		function viewpics(url,pic_array){
+			var html = '';
+			pic_array.forEach(function(f){
+				html += '<div><span><img src="/public/'+f+'"></span><em><i class="fa fa-remove"></i></em></div>';
+			});
+			$(".ListImgs").html(html);
+			addclick();
+		}
+
+		if($("#compressValue").val()!='')pics = $("#compressValue").val().split(',');
+		viewpics('',pics);		
+		
+
+		function addclick(){
+			$(".ListImgs em").click(function(e){
+				//这里删除的图片没有真正从服务器删除
+				$(this).parent().remove();
+				pics = [];
+				var obj = $(".ListImgs img");
+				obj.each(function(e){
+					var img = $(this).attr("src");
+					img = img.replace('/public/','');
+					pics.push(img);
+					$("#compressValue").val( pics.join(',') );
+				});
+				if(obj.length==0){
+					$("#compressValue").val('');
+				}			
+			});
+		}
+		addclick();
+
+
+var url = "{empty name='id'}{:urls('wxapp.post/add')}{else /}{:urls('wxapp.post/edit',['id'=>$id])}{/empty}";
+	
+	$(document).ready(function(){
+        $('.ajax-post').submit(function () {
+            var form_data = $(this).serialize();
+            $.post(url, form_data).success(function (res) {
+                if (res.code==0) {
+					layer.open({title: '提示',content: res.msg});
+                    setTimeout(function () {
+                        location.href = "{:urls('show')}?id=" + res.data.id;
+                    }, 100);
+                } else {
+					layer.open({title: '提示',content: res.msg});
+                }
+            }).fail(function () {
+				layer.open({title: '提示',content: '服务器发生错误'});
+            });
+            return false;
+        });
+    });
+</script>
+{/block}

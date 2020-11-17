@@ -1,0 +1,106 @@
+{extend name="$index_style_layout" /}
+
+<!--SEO相关-->
+{block name="head_title"}{$webdb.mseo_title?:$webdb.seo_title}{/block}
+{block name="head_keword"}{$webdb.mseo_keyword?:$webdb.seo_keyword}{/block}
+{block name="head_description"}{$webdb.mseo_description?:$webdb.seo_description}{/block}
+
+{block name="body_content"}
+
+<link rel="stylesheet" href="__STATIC__/bespeak/default/pc/index.css">
+
+<div class='wrap'>
+	<div class="Content">
+		<div class="Banner">
+			<div class="bannerpic">
+				 {qb:tag name="pcbespeak_index_banner1" type="image"} 
+				 <!-- <a href="#"><img src="__STATIC__/bespeak/default/demo/banner.png"/></a> -->
+				 {/qb:tag}
+			</div>
+			<div class="Scan">
+				<div class="img"><img src="{:get_qrcode(get_url('location'))}" width="152"/></div>
+				<div class="word">
+					{qb:tag name="pcbespeak_index_scanning_codetip" type="text"} 
+					<span>微信扫一扫</span>
+					<span><a>马上预约</a></span>
+					{/qb:tag}
+				</div>
+			</div>
+		</div>
+		
+		<div class="Ad">
+			{qb:tag name="pcbespeak_index_banner2" type="image"}
+			<!--<a href="#"> <img src="__STATIC__/bespeak/default/demo/banner2.png"/></a> --> 
+			{/qb:tag}
+		</div>
+		
+		<div class="Text">
+			<div class="head">
+				<div class="tag">{qb:tag name="pcbespeak_index_fuwu_head" type="text"} <span>商家服务</span> {/qb:tag}</div>
+			</div>
+			<div class="listbox">
+				{qb:listpage name="pcbespeak_index_fuwu_page_listdata1" field="title" type="bespeak" rows="20" mid='1' order="list" where="status>0"}
+					<div class="piclist">
+						<div class="pic"><a href="{$rs.url}"><img src="{$rs[picurl]}" onError="this.src='__STATIC__/images/nopic.png'"/></a></div>
+						<div class="word">
+							<div class="t"><a href="{$rs.url}">{$rs[title]}</a></div>
+							<div class="m">{:get_word($rs.content,70)}</div>
+							<div class="b">
+								<div><a href="{:urls('order/add',['id'=>$rs['id']])}" class='_pop' onclick="cklogin();">{$userdb.uid}立即预约</a></div>
+								<span>人气：<em class="c_red">{$rs[view]}</em></span>
+							</div>
+						</div>
+						<div class="code" onclick="window.open('{$rs.url}')"><span class="codetitle">扫一扫手机查看</span><span class="codepic"><img src="{:get_qrcode($rs['url'])}" width="200"/></span></div>
+					</div>
+				{/qb:listpage}
+			</div>
+		</div>
+<script>
+// 没登陆则关闭弹框
+function cklogin(){
+	var login= {if $userdb.uid}{$userdb.uid}{else/}0{/if};
+	if(login==0){
+		check_login();
+		setTimeout("layer.closeAll('iframe')", 1000 );
+	}
+}
+function check_login(){
+	if("{$userdb.uid}"==""){
+		layer.confirm('你还没登录,不能预约,你要登录吗？', {
+			btn : [ '登录', '取消' ]
+			}, function(index) {
+				window.location.href = "{:get_url('login')}";
+		}); 
+		return false;
+	}
+	return true;
+}
+</script>		
+		<div class="Ad">
+			{qb:tag name="pcbespeak_index_banner3" type="image"}
+			<!--<a href="#"> <img src="__STATIC__/bespeak/default/demo/banner3.png"/></a> -->
+			 {/qb:tag}
+		</div>
+		
+		<div class="Sclass">
+			<div class="head">
+				<div class="tag">
+					{qb:tag name="pcbespeak_index_sort_head" type="text"}<span>服务分类</span>{/qb:tag}
+				</div>
+			</div>
+			<div class="classlist">
+				{volist name=":get_sons(get_sort())" id="rs"}
+				<dl>
+					<dt><img src="{:tempdir($rs.ico)}" onError="this.src='__STATIC__/bespeak/default/wap/ficon1.png'"/></dt>
+					<dd ><a href="{:urls('content/index','fid='.$rs['id'])}">{:get_word($rs.name,12)}</a></dd>
+				</dl>
+				{/volist}			
+			</div>
+		</div>
+		
+	</div>
+</div>
+
+
+
+{/block}

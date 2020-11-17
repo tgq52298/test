@@ -1,0 +1,44 @@
+{if (($ads = fun('qun@adByid',$info['qun']['id'])) || $info['qun']['notice'])}
+<style type="text/css">
+#drk_colee_left0 a{font-size:45px;font-family:黑体;color:#FFFF00;}
+</style>
+<div style="width:1200px;line-height:60px;height:60px;margin:auto;background:url(__STATIC__/group/marquee.png) #666;margin-bottom:10px;">
+<div id="drk_colee_left0" style="overflow:hidden;width:100%;margin:5px auto 0 auto;">
+	<table>
+      <tr>
+      	<td id="drk_colee_left1">
+        	<div style="white-space:nowrap;">
+
+{if $ads.ad}
+	<a href="{$ads['ad']['url']}">{$ads['ad']['title']}</a>
+{elseif($ads.set) /}
+	<a href="{:murl('qun/aduser/add',['aid'=>$info['qun']['id']])}">本__QUN__ 广告位招租：{$ads['set']['price']}元（{$ads['set']['day']}天），点击购买。</a>
+{else /}	
+	<a href="{:urls('qun/content/show',['id'=>$info['qun']['id'],'my_qid'=>$info['qun']['id']])}">{$info['qun']['notice']}</a>
+{/if}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                 
+            </div>
+        </td>
+        <td id="drk_colee_left2"></td>
+      </tr>
+    </table>
+</div>
+</div>
+<script type="text/javascript">
+var drk_colee_left2 = $("#drk_colee_left2").get(0);
+var drk_colee_left1 = $("#drk_colee_left1").get(0);
+var drk_colee_left0 = $("#drk_colee_left0").get(0);
+drk_colee_left2.innerHTML = drk_colee_left1.innerHTML; 
+function drk_Marquee3(){
+   if(drk_colee_left2.offsetWidth - drk_colee_left0.scrollLeft<=0)
+      drk_colee_left0.scrollLeft -= drk_colee_left1.offsetWidth
+   else{
+      drk_colee_left0.scrollLeft++
+   }
+}
+var drk_MyMar3 = setInterval(drk_Marquee3,50)
+drk_colee_left0.onmouseover = function() {clearInterval(drk_MyMar3)}
+drk_colee_left0.onmouseout  = function() {drk_MyMar3 = setInterval(drk_Marquee3,50)}
+</script>
+
+{/if}

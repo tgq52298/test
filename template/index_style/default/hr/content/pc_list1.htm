@@ -1,0 +1,115 @@
+﻿{extend name="$index_style_layout" /}
+
+<!--SEO相关-->
+{block name="head_title"}{$fid?($info['seo_title']?:$info['name']):$m_info['title']}{/block}
+{block name="head_keword"}{$fid?($info['seo_keywords']?:$info['name']):$m_info['title']}{/block}
+{block name="head_description"}{$info.seo_description}{/block}
+
+
+{block name="body_content"}
+
+<link rel="stylesheet" type="text/css" href="__STATIC__/hr/default/pc/listjob.css">
+
+<div style="margin:15px auto; width:1200px;"> <!-- WRAP S -->
+
+
+<div class="content_text " style="width:1200px; overflow:hidden; margin:15px auto;">
+
+	<div class="text_left" style="width:24%; float:left;">
+		<table style="width:100%; border:1px solid #1aa4ed;">
+			<tr>
+				<td class="jc_head"><div class="jc">{qb:tag name='pchr_list1_sort_title' type="text"}职位分类{/qb:tag}</div></td>
+			</tr>
+			<tr>
+				<td class="middle">
+					{volist name=":get_sons(get_sort())" id="rs"}
+						{if get_sort($rs['id'],mid)!=2}
+						<div class="big"><a href="{:urls('content/index','fid='.$rs['id'])}" {if input('fid')==$rs[id]} style="color:red;"{/if}>{$rs.name}</a></div>
+						<div class="small">
+							{volist name="$rs.sons" id="vs"}
+							<a href="{:urls('content/index','fid='.$vs['id'])}" {if input('fid')==$vs[id]} style="color:red;"{/if}>{$vs.name}</a>&nbsp;
+							{/volist}
+						</div>
+						{/if}
+					{/volist}
+					<div class="hj">{qb:tag name='pchr_list1_hot_title' type="text"}热门职位{/qb:tag}</div>
+					<div class="hjc">
+						{qb:listpage name="pchr_list1_page_listdata1" field="title" type="hr" rows="9" order="view" where="status>0"}
+						<a href="{$rs.url}" target="_blank">{$rs.title}</a>
+						{/qb:listpage}
+					</div>
+
+				</td>
+			</tr>
+		</table> 
+	</div>
+
+	<div class="text_right" style="width:76%; float:left; margin-bottom:75px;">
+		<div class="job_rep">
+			<!-- 筛选 -->
+			{volist name=":get_filter_fields($mid)" id="rs"}
+				<div>
+					<span class='title'>{$rs.title}:</span>
+					<span class='condition'>
+						<a href='{:urls("index","fid=$fid&$rs[opt_url]")}' {if input($rs['name'])==''}style="color:red;"{/if} class="ck">不限</a>  
+						{volist name="$rs.opt" id="vs"}
+						<a href='{:urls("index","fid=$fid&$vs[url]")}' {if input($rs['name'])==$vs['key']}style="color:red;"{/if}>{$vs.title}</a>
+						{/volist}
+					</span>
+				</div>
+			{/volist}
+		</div>
+
+		<table class="find_box" style="width:97%; margin-left:25px; border:1px solid #dfdfdf;">
+			<tr> 
+				<td class="dr_head">{qb:tag name='pchr_list1_job_hunting_head' type="text"}找工作{/qb:tag}</td>
+			</tr>
+			<tr> 
+				<td class="text_mar"> 
+					<table class="find_job">
+						<tr class="pos_head">
+							{qb:tag name='pchr_list1_job_hunting_title' type="text"}
+							<td>职位名称</td>
+							<td align="center">工作经验要求</td> <td align="center">学历要求</td>
+							<td>工作地点</td>
+							 <td align="center">薪水待遇</td>
+							 <td>发布人</td>
+							 {/qb:tag}
+						</tr>
+						
+						{qb:listpage name="pchr_list1_page_listdata2" field="title" type="hr" rows="18" union="fid" order="list" where="status>0"}
+							<tr> 
+							<td class="p_name"><a href="{$rs.url}" target="" title='{$rs.title}' style="color:;">{$rs.title}</a></td>
+							<td align="center">{$rs.wageyear} </td> <td align="center">{$rs.schoo_age} </td> 
+							<td>{$rs.workplace}</td>
+							<td align="center">{$rs.wage}</td>
+							<td class="company"><a href="{:get_hy_url($rs.uid)}" target="_blank">{:get_hy_name($rs.uid)}</a></td>
+							</tr>
+						{/qb:listpage}
+					</table>
+					<table width="100%" border="0" cellspacing="0" cellpadding="0" id="page">
+						<tr>
+							<td align="center">{$pages}</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+		</table>
+	</div>			
+	
+</div>
+
+
+</div> <!-- WRAP E -->
+
+
+
+
+
+
+
+
+
+
+
+{/block}

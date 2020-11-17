@@ -1,0 +1,367 @@
+﻿{extend name="$index_style_layout" /}
+
+<!--SEO相关-->
+{block name="head_title"}{$fid?($info['seo_title']?:$info['name']):$m_info['title']}{/block}
+{block name="head_keword"}{$fid?($info['seo_keywords']?:$info['name']):$m_info['title']}{/block}
+{block name="head_description"}{$info.seo_description}{/block}
+
+
+{block name="body_content"}
+
+<link rel="stylesheet" href="__STATIC__/vote/pc/list.css">
+<style>
+.Content{
+    width: 1200px;
+    margin: 0 auto;
+    overflow: hidden;
+}
+</style>
+<div class='Content'>
+
+<div class="TopContainer">
+	<div class="Votename"><span>{$info.name}</span></div>
+	<div class="BaseInfo">
+		<div class="times">
+			<div class="join">
+				报名时间：{if $info.joinbegintime}{:format_time($info.joinbegintime,'Y-m-d H:i')}{else /}不限时间{/if}至 
+				{if $info.joinendtime}{:format_time($info.joinendtime,'Y-m-d H:i')}{else /}不限时间{/if}
+			</div>
+			<div class="vote">
+				投票时间：{if $info.begintime}{:format_time($info.begintime,'Y-m-d H:i')}{else /}不限时间{/if}至 
+				{if $info.endtime}{:format_time($info.endtime,'Y-m-d H:i')}{else /}不限时间{/if}
+			</div>
+			<div class="tjcont">
+				<ul>
+					<ol>参与选手</ol>
+					<li>{$TotalNum}</li>
+				</ul>
+				<ul>
+					<ol>累计投票</ol>
+					<li>{$TotalVoteNum}</li>
+				</ul>
+				<ul>
+					<ol>访问量</ol>
+					<li>{$TotalViewNum}</li>
+				</ul>
+			</div>
+			<div class="joins"><a href="{:murl('add',['fid'=>$fid])}" class='_pop'>我要报名</a></div>
+		</div>
+		<div class="aboutVote">
+			<div class="tag">活动介绍</div>
+			<div class="cont2">
+				{$info.description}
+			</div>
+			<div class="showmore">更多 +</div>
+		</div>
+	</div>
+</div>
+<div class="Containers">
+	<!--
+	<ul class="ListType">
+		<li {if input()['order']=='list'}class='ck'{/if}><a href='{:url("","fid=$fid&order=list")}' class="default">默认</a></li>
+		<li {if input()['order']=='view'}class='ck'{/if}><a href='{:url("","fid=$fid&order=view")}'>人气</a></li>
+		<li {if input()['order']=='agree'}class='ck'{/if}><a href='{:url("","fid=$fid&order=agree")}'>票数</a></li>
+	</ul>
+	-->
+
+	<form name="formvote" name='formvote' id='formvote' method="post" action="vote.php?action=vote&fid=17">
+	<div class="ListVotes">
+		<div class="Lists Lists0"></div>
+		<div class="Lists"></div>
+		<div class="Lists"></div>
+
+		<div class="Lists"> <!-- R S -->
+			<div class="sideconts">
+				<div class="head">会员相关</div>
+				<div class="wxCode">
+					<div>微信扫一扫免费投票</div>
+					<p><img src="{:get_qrcode(get_url('location'))}"></p>
+				</div>
+			</div>
+			<div class="sideconts">
+				<div class="head">票数排行榜</div>
+				<div class="voteTop">
+				{qb:tag name="pc_vote_index_ranking_list" type='vote' rows="10" union='fid' order="agree" where="agree>0"}
+					<dl class="list list{$i}">
+						<dt><span>{$i}</span><a href="{:get_url('user',$rs.uid)}"><img src="{$rs.uid|get_user_icon}" onError="this.src='__STATIC__/images/noface.png'"/></a></dt>
+						<dd><a href="{$rs.url}">{$rs.title}</a><span>票数：{$rs.agree}</span></dd>
+					</dl>
+				{/qb:tag}
+				</div>
+			</div>
+		</div><!--  R E -->	
+
+	</div>
+	<input type="hidden" name='fid' value="{$fid}">
+	<input type="hidden" name='type' value="1">
+	<div class="submits"><span>投票</span></div>
+	</form>
+</div>
+
+<!-- 进入页面的投票选项数据 -->
+<div id='wrap_votelist' style='display:none;'>
+{qb:tag name="pc_vote_index_option_list" type='vote' rows="16" union='fid' order='agree'}
+	<dl class="sideVote">
+		<dt>
+			<a href="{$rs.url}"><img src="{$rs.picurl}" onerror="this.src='__STATIC__/images/nopic.png' "/></a>
+		</dt>
+		<dd>
+			<p>{$rs.title}</p><ul><ol><a href="{:get_url('user',$rs.uid)}"><img src="{$rs.uid|get_user_icon}" onError="this.src='__STATIC__/images/noface.png'"/></a></ol><li><a href="{:get_url('user',$rs.uid)}">{$rs.username}</a><span>{$rs.best_content}票数：<em>{$rs.agree}</em></span></li></ul><div>
+			{if get_sort($rs.fid,'type','','vote')==1}
+			<span onclick="ChangeSelect($(this))"><input type="checkbox" name="ids[]" value="{$rs[id]}"/> 给Ta一票</span>
+			{else /}
+				<a href="javascript:;" onclick="AgreeVote({$rs.id},{$rs.fid},0)">给Ta一票</a>
+			{/if}
+			</div>
+		</dd>
+		</dl>
+{/qb:tag}
+ </div>
+
+ <!-- 投票选项的分页数据 -->
+<div id='wrap_votelist_page' style='display:none;'></div>
+
+<div class="fullbg" id="fullbg1"></div>
+<div class="Showdescrip"></div>
+<div class="WebSeitUrl">{qb:url name='pc_vote_index_option_list'/}</div>
+
+<script type="text/javascript">
+
+//单选投票
+function AgreeVote(ids,fid,type){	
+	$.get("{:urls('content/agree_vote')}?ids="+ids+"&fid="+fid+"&type="+type+"&"+Math.random(),function(res){
+		if(res.code==0){
+			var num =  $('#topic_agree').html();
+			num++;
+			$('#topic_agree').html(num);
+			layer.msg("投票成功！",{time:1500});
+			window.location.reload();
+		}else{
+			// layer.msg('投票失败:'_res.msg);
+			layer.msg("投票失败:"+res.msg,{time:1500});
+		}	
+	});
+}
+
+function AgreeVotes(){
+	var form_data = $('.formvote').serialize();
+	postcontent(form_data);
+}
+
+$(document).ready(function(){
+	$('.submits span').click(function(){
+		// console.info($(this).serialize());
+		var form_data = $('#formvote').serialize();
+		// console.log(form_data);
+		postcontent(form_data);
+		// $('form[name="formvote"]').submit();
+	});
+});
+
+// $('.submits span').click(function(){
+// 	var form_data = $('.formvote').serialize();
+// 	console.log(form_data);
+// 	postcontent(form_data);
+// 	// $('form[name="formvote"]').submit();
+// });
+
+
+
+var havepost = false;
+var url = "{:urls('content/agree_votes')}"
+function postcontent(form_data){
+	if(havepost==true){
+		layer.msg('请不要重复提交');
+		return false;
+	}
+	havepost = true;
+
+            $.post(url, form_data).success(function (res) {
+            	console.log(res);
+  	      	havepost = false;
+                	if(res.code==0){
+			layer.msg("投票成功！");
+			window.location.reload();
+			// location.href="{:urls('content/show')}?id=" + res.data.id;
+		}else{
+			havepost = false;
+			layer.alert('投票失败:' + res.msg);
+		}
+            }).fail(function () {
+				havepost = false;
+				layer.open({title: '提示',content: '服务器发生错误'});
+            });
+}
+
+
+
+
+
+
+
+
+var Listvote = new Array(); 
+var iHeight,iTempHeight,thisrow;
+$("#wrap_votelist .sideVote").each(function(){
+	var new_str='<dl class="sideVote">'+$(this).html()+'</dl>';
+	Listvote.push(new_str);
+})
+// console.log(Listvote);
+// console.log(Listvote.length);
+for(var i=0; i<Listvote.length; i++){
+	iHeight = -1;
+	$('.ListVotes .Lists').each(function(){
+		iTempHeight = Number( $(this).height() );
+		if(iHeight==-1 || iHeight>iTempHeight){
+			iHeight = iTempHeight;
+			thisrow = $(this);
+		}
+	});
+	thisrow.append(Listvote[i]);
+}
+
+function ChangeSelect(objs){
+	var thisinput=objs.find('input');
+	// console.log(thisinput);
+	if (thisinput.attr('checked')){
+		thisinput.attr("checked",false);
+	}else{
+		thisinput.attr("checked",true);
+	}
+	$('.sideVote dd div input').each(function(){
+		var thedd=$(this).parent();
+		if($(this).attr('checked')){
+			thedd.addClass('select');
+		}else{
+			thedd.removeClass('select');
+		}
+	});
+}
+
+
+
+function show_nav(node,fullbg){
+	fullbg.css({'display':'block'}).stop().animate({'opacity':.6},300,function(){
+		node.css({'display':'block'}).stop().animate({'opacity':1},300);
+	});
+}
+
+function hide_nav(node,fullbg){
+	node.stop().animate({'opacity':0},300,function(){$(this).css({'display':'none'});});
+	setTimeout(function(){
+		fullbg.stop().animate({'opacity':0},300,function(){$(this).css({'display':'none'});});
+	}, 200)
+}
+
+function formatsize(node){	
+	node.css({'max-width':$(window).width()+'px','max-height':$(window).height()+'px'});
+	var LeftW=($(window).width()-node.width())/2;
+	var LeftH=($(window).height()-node.height())/2;
+	node.css({'left':LeftW+'px','top':LeftH+'px'});
+}
+
+function convertSpecialCharacter(str) {
+	var arrEntities={'lt':'<','gt':'>','nbsp':' ','amp':'&','quot':'"'};
+	return str.replace(/&(lt|gt|nbsp|amp|quot);/ig,function(all,t){return arrEntities[t];});
+}
+
+$('.aboutVote .showmore').click(function(){
+	var words=$('.aboutVote .cont2').html();
+	$('.Showdescrip').html(words);
+	formatsize($('.Showdescrip'));	
+	show_nav($('.Showdescrip'),$('#fullbg1'));
+});
+
+$('#fullbg1').click(function(){
+	hide_nav($('.Showdescrip'),$('#fullbg1'));
+});
+
+$(".WebSeitUrl").hide();
+var page=1,loading=1,WebSeitUrl=$(".WebSeitUrl").html();
+WebSeitUrl = convertSpecialCharacter(WebSeitUrl);
+$(window).scroll(function(){
+	// 当滚动到最底部以上100像素时， 加载新内容
+	if ($(document).height() - $(this).scrollTop() <1000 && loading==1){
+		// page++;
+		loading=0;
+		var urls=WebSeitUrl;
+		loadMore(urls);
+	} 	
+});
+function loadMore(urls){
+	var ListvotePage = new Array();
+	page++;
+	$('#wrap_votelist_page').html('');
+	$.get(urls+page+'&'+Math.random(),function(res){
+		if(res.code==0){
+			if(res.data==''){
+				loading=0;
+				layer.msg("已经显示完了！",{time:500});
+			}else{
+				loading=1;
+				$('#wrap_votelist_page').html(res.data);
+				$("#wrap_votelist_page .sideVote").each(function(){
+					var new_str2='<dl class="sideVote">'+$(this).html()+'</dl>';
+					ListvotePage.push(new_str2);
+				})
+				for(var i=0; i<ListvotePage.length; i++){
+					iHeight = -1;
+					$('.ListVotes .Lists').each(function(){
+						iTempHeight = Number( $(this).height() );
+						if(iHeight==-1 || iHeight>iTempHeight){
+							iHeight = iTempHeight;
+							thisrow = $(this);
+						}
+					});
+					thisrow.append(ListvotePage[i]);
+				}
+			}
+		}else{
+			layer.msg(res.msg,{time:2500});
+		}
+	});
+}
+</script>
+
+
+
+
+
+</div> <!-- Content  E-->
+
+
+
+
+
+
+
+
+
+
+<!-- 
+
+<link rel="stylesheet" href="__STATIC__/index/default/pclist.css">
+<div class="ArticlMainContainer">
+	<div class="LeftsCnt">
+		{include file="content/left" /}
+	</div>
+	<div class="RightCnt">
+		name是标签名，跟通用标签不能重名，rows取几条数据,order按什么方式排序，list代表可控排序，id即时间,view代表浏览量
+		{qb:listpage name="news_list_page_listdata0" rows="8" order="list"}
+			<ul class="qb_ui_ListArticleTimeTitleCnt">
+				<ol>
+					<dl><dt>{:date("d",$rs.create_time)}</dt><dd>{:date("Y-m",$rs.create_time)}</dd></dl>
+				</ol>
+				<li>
+					<h3><a href="{$rs.url}">{$rs.title|get_word=100}</a></h3>
+					<p>{$rs.content|get_word=200}</p>
+				</li>
+			</ul>
+		{/qb:listpage}
+		{$pages}
+	</div>
+</div>
+
+
+ -->
+{/block}

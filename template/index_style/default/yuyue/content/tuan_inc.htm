@@ -1,0 +1,118 @@
+<style type="text/css">
+.yidao_user{
+	margin:25px 0;
+	padding:15px 10px;
+	background:#fff;
+}
+.yidao_user .tag{
+	padding-top:10px; 
+	text-align:center;
+	border-bottom:1px solid #199ce8;
+	width:100%;
+	height:24px;
+}
+.yidao_user .tag span{
+	background:#4ab1e4;
+	color:#fff; 
+	font-weight:bold; 
+	padding:8px 12px;
+}
+.yidao_user .joinuser{
+	padding-top:10px;
+	text-align:center;
+}
+.yidao_user .joinuser img{
+	width:80px;
+	height:80px;
+	border-radius:10px;
+}
+.yidao_user .nowprice{
+	text-align:center;
+	font-size:15px;
+}
+.yidao_user .nowprice em{
+	color:red;
+	font-size:30px;
+	font-weight:bold;
+}
+.yidao_user .give{
+	text-align:center;
+	margin:10px;
+}
+.yidao_user .give span{
+	background:#F60;
+	color:#fff; 
+	padding:13px 80px;
+	border-radius:5px;
+	cursor:pointer;
+}
+.yidao_user .give span:hover{
+	background:#da9008;
+}
+.yidao_user .list{
+	width:49%;
+	display:inline-block;
+	margin:10px 0;
+	position:relative;
+}
+ 
+.yidao_user .list .more{ 
+	line-height:150%;
+	position:absolute;
+	left:50px;
+	top:0px;
+	font-size:13px;
+}
+.yidao_user .list .more em{
+	color:orange;
+	font-size:15px;
+	font-weight:bold;
+}
+.yidao_user .list .icon img{
+	width:40px;
+	height:40px;
+	border-radius:100%;
+	
+}
+
+.yidao_user .btn{
+	text-align:center;
+	margin:10px 0px ;
+}
+.yidao_user .btn a{
+	background:#199ce8;
+	padding:5px 10px;
+	color:#fff;
+	border-radius:3px;
+}
+.yidao_user .btn a.nopay{
+	background:#ccc;
+}
+.yidao_user .btn a:hover{
+	background:#147cb9;
+}
+
+</style>
+
+<ul class="yidao_user">
+ 
+	<li class="tag"><span>最近开团用户</span></li>
+	<li class="listuser wap_tun_list002">
+		{qb:tag name="wap_tun_list" js="wap_tun_list002" class="app\yuyue\model\Order@get_label" where="shopid=$id&few_ifpay=1&tun_type=-2" union="min_user=$info.min_user" order="id" by="desc" time="-1" rows="40"}
+
+		<div class="list">
+			<a href="{:get_url('user',$rs.uid)}" target="_blank" class="icon"><img src="{$rs.uid|get_user_icon}" onerror="this.src='__STATIC__/images/noface.png'"/></a>
+			<div class="more">
+				{$rs.uid|get_user_name|get_word=14}<br>
+				{if count_join_num($rs.id)+1<$_cfg.min_user}还差 <em class="nowprice-{$rs.uid}">{$_cfg.min_user-count_join_num($rs.id)-1}</em> 人
+				{else /}
+				<em>满人了</em>
+				{/if}
+			</div>
+			<div class="btn"><a href="{:urls('content/show',['id'=>$rs.shopid,'oid'=>$rs.id])}" class="fa fa-shopping-bag {if count_join_num($rs.id)+1>=$_cfg.min_user}nopay{/if}"> 参团</a></div>
+		</div>
+
+		{/qb:tag}
+	</li>
+</ul>
+

@@ -1,0 +1,103 @@
+{extend name="$index_style_layout" /}
+
+<!--SEO相关-->
+{block name="head_title"}{$webdb.mseo_title?:$webdb.seo_title}{/block}
+{block name="head_keword"}{$webdb.mseo_keyword?:$webdb.seo_keyword}{/block}
+{block name="head_description"}{$webdb.mseo_description?:$webdb.seo_description}{/block}
+
+{block name="body_Headcont"}
+<link rel="stylesheet" href="__STATIC__/bbs/list1.css">
+<link rel="stylesheet" href="__STATIC__/bbs/wap_index.css">
+<div class="qb_wap_header">
+	<div class="L" onclick="if($('.SearchBox').is(':hidden')){$('.SearchBox').show(500);}else{$('.SearchBox').hide(500)}"><i class="fa fa-search"> 搜索</i></div>
+	论坛主页
+	<div class="R" onclick="window.location.href='{:get_url('member')}'"><i class="fa fa-user-circle-o"> 会员</i></div>
+</div>
+	<div class="SearchBox" style="display:none;">
+		<form method="POST" action="{:urls('search/index')}">
+			<ul>
+				<ol><input name="keyword" type="text" placeholder="请输入关键字"/></ol>
+				<li><button type="submit"><i class="fa fa-search"></i></button></li>
+			</ul>
+		</form>
+	</div>
+{/block}
+
+{block name="body_content"}
+<!-- 滑动要用到的CSS与JS文件,他涉及到三个class类 swiper-container swiper-wrapper swiper-slide -->
+<link href="__STATIC__/libs/swiper/swiper.min.css" rel="stylesheet">
+<script src="__STATIC__/libs/swiper/swiper.min.js"></script>
+
+<div class="bbsContainer">
+
+	{qb:hy name="wap_bbs_index_model" where="index_style/default/bbs/index/wap_model/rollpic,index_style/default/bbs/index/wap_model/webmenu,index_style/default/bbs/index/wap_model/rollinfo" val="datas" type="labelmodel" time="600"}
+			{$datas}
+	{/qb:hy}
+	<!--
+	<ul class="topBoxs">
+		<li class="logo"><a href="/"><img src="__STATIC__/bbs/logo1.png"></a></li>
+		<li class="info"><span>齐博官方论坛</span><em>会员2540位</em></li>
+		<li class="atten"><a href="{:urls('content/add',['fid'=>$fid])}">发表</a></li>
+	</ul>	 
+	<div class="countInfo"><ul><ol><span>主题</span><em>2188</em>篇</ol><li><span>浏览</span><em>12312</em>次</li></ul></div>
+    <ul class="topBoxs"><li class="atten"><a href="{:urls('content/add',['fid'=>$fid])}">我要发表</a></li></ul>-->
+
+
+
+	<div class="ChangeShow">		
+		<ul class="types swiper-container" id="bbs_sort">
+			<div class="swiper-wrapper">
+				<li class="swiper-slide ck" data-type="list">新回复</li>
+				<li class="swiper-slide" data-type="id">新发表</li>
+				<li class="swiper-slide" data-type="status">推荐</li>
+				{volist name=":sort_config('',0)" id="name"}
+				<li class="swiper-slide" data-fid="{$key}">{$name}</li>
+				{/volist}
+			</div>
+		</ul>
+		{qb:hy name="wap_bbs_index_titles" where="index_style/default/bbs/index/wap_model/live_video,index_style/default/bbs/index/wap_model/qun_online" val="datas" type="labelmodel" time="600"}
+			{$datas}
+		{/qb:hy}
+	</div>	 
+	
+	<!--<div class="countPost"><ul><ol><i class="si si-calendar"></i>今日 <span id="div_today_post">0</span> 帖</ol><li><i class="fa fa-calendar"></i>昨日 <span id="div_yesterday_post">0</span> 帖</li></ul></div>--> 
+	
+	<div class="ListInfos">
+		<!--name是标签名，跟通用标签不能重名，rows取几条数据,order按什么方式排序，list代表可控排序，id即时间,view代表浏览量-->
+		{qb:listpage name="bbs_list_page_wap" where="fid=$fid" status="1" rows="20" order="list"}
+		<div class="lists">
+			<ul>
+				<ol><a href="{:get_url('user',['uid'=>$rs['uid']])}" target="_blank"><img style="border-radius:100%;" src="{:get_user_icon($rs['uid'])}" onerror="this.src='__STATIC__/images/nobody.gif'" ></a><div><span>{$rs.username|get_word=20}</span><em>{$rs.create_time|format_time=true} Re: {$rs.replyuser|get_word=8}</em></div></ol>
+				<li><i class="fa fa-commenting-o"></i><span>{$rs.replynum} </span> <label onclick="digg_topic({$rs.id},this)" style="margin-left:20px;"><i class="fa fa-thumbs-o-up"></i><em>{$rs.agree}</em></label> </li>
+			</ul>
+			<div class="title" onclick="window.location.href='{:urls('content/show',['id'=>$rs['id']])}'"><a href="{:urls('content/show',['id'=>$rs['id']])}">{if ($rs.list>time())}<span>顶</span> {elseif ($rs.status>1)}<em>精</em> {elseif ($rs.view>200)}<i>热</i>  {elseif (time()-$rs.create_time<3600*24)}<i>新</i> {/if} {$rs.title}</a></div>
+			{php}$pics=$rs['picurls']?:fun('content@get_images',fun('bbs@getContents',$rs['id']));{/php}
+			{if $pics}
+			<div class="pics" onclick="window.location.href='{:urls('content/show',['id'=>$rs['id']])}'">
+			{volist name="$pics" id="vs"}
+				{if $i<4}<dd style="background:url({$vs.picurl}) no-repeat;background-position:center center;background-size:100% auto;"></dd>{/if}
+			{/volist}
+			</div>
+			{/if}
+		</div>
+		{/qb:listpage} 		
+	</div>
+	<div class="ShowMoreInfo"><span onclick="ShowMoreInfo()">加载更多</span></div>
+</div>
+
+
+<script type="text/javascript">
+var digg_url = "{:urls('wxapp.post/agree')}";
+var more_url = '{qb:list_url name="bbs_list_page_wap" /}';
+</script>
+<script src="__STATIC__/bbs/wap_index.js"></script>
+<script src="__STATIC__/js/touchwipe.js"></script>
+
+<!-- 发布按钮 -->
+{include file="post_btn"}
+
+<!-- 微信分享 -->
+{php}$share=['title'=>$webdb['mseo_keyword'],'about'=>$webdb['mseo_description'],'picurl'=>tempdir($webdb['logo'])];{/php}
+{include file="index@share" /}
+
+{/block}

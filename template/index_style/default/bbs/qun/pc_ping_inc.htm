@@ -1,0 +1,125 @@
+<link rel="stylesheet" type="text/css" href="__STATIC__/group/hyshow/dianping.css">
+<div class="RightMainBox">
+    <div class="head"><span class="tag">顾客点评<em id='dianpingnum'>(0)</em></span><a target="_blank" class='postdp' href="{:murl('bbs/content/add',['mid'=>2,'ext_id'=>$id,'ext_sys'=>M('id')])}?fromurl={:urlencode(get_url('location'))}">发表点评</a>
+    </div>
+	<!--
+    <div class="SelectDpType">
+        <span onclick="getHyDianping('?myinfo=dianping&id=&showtype=moreshow&uid=1')" class='ck'>全部</span>
+        <span onclick="getHyDianping('?myinfo=dianping&id=&showtype=moreshow&uid=1&types=3')">好评</span>
+        <span onclick="getHyDianping('?myinfo=dianping&id=&showtype=moreshow&uid=1&types=2')">中评</span>
+        <span onclick="getHyDianping('?myinfo=dianping&id=&showtype=moreshow&uid=1&types=1')">差评</span>
+    </div>
+	-->
+    <div class="cont">
+        <div class="ListHyDianping">
+			{qb:tag name="qun_pcindex_bbs_model002" where="ext_id=$aid" type="bbs" mid="2" order="id" by="asc" rows="4"}
+            <div class='listdp'>
+                <div class='img'><a href='{$rs.user_url}' target='_blank'><span><img onerror="this.src='http://wx.php168.com/wz/images/default/noface.gif'" src='{$rs.user_icon}'/></span></a>
+                </div>
+                <div class='info'>
+                    <div class='name'><a href='{$rs.user_url}' target='_blank'>{$rs.username}</a>
+                    </div>
+                    <div class='fen'><span class='fen1'><em style="width:{:get_status($rs['star'],['-1'=>'0','0'=>'20','1'=>'100'])}%"></em></span> <span class="dp dp{:intval($rs['star']+2)}">{:get_status($rs['star'],['-1'=>'差评','0'=>'中评','1'=>'好评'])}</span> 
+                    </div>
+                    <a href="{$rs.url}" target="_blank"><p>{$rs.title}</p></a>
+                    <div class='other'><span class='time'>{$rs.create_time|format_time="Y-m-d H:i"}</span><span class='good' onclick='ActGood(4)'>赞(<em class='good4'>{$rs.agree}</em>)</span>
+                    </div>
+                </div>
+            </div>
+			{/qb:tag}
+        </div>
+		<!--
+        <div class='PostDianPing' id='PostDP'>
+            <div class='h'><span class='tag'>发布点评</span>
+            </div>
+            <div class='PostCont'>
+                <div class='fen5'>
+                    总体评价：
+                    <span class='dp3'><input type="radio" name="fen5" value="3" checked>好评</span>
+                    <span class='dp2'><input type="radio" name="fen5" value="2">中评</span>
+                    <span class='dp1'><input type="radio" name="fen5" value="1">差评</span>
+                </div>
+                <div class='fen1'>
+                    <input name='fen1' type='hidden' value='5' />
+                    <span>星 级：</span>
+                    <ul>
+                        <li></li>
+                        <li></li>
+                        <li></li>
+                        <li></li>
+                        <li></li>
+                    </ul>
+                </div>
+                <div class='c'>
+                    <textarea name='content' placeholder='请输入您的评论' /></textarea>
+                </div>
+                <div class='submits'><span onClick='post_dianpings();'><em>提交评论</em></span>
+                </div>
+            </div>
+        </div>
+		-->
+    </div>
+</div>
+
+
+<script type="text/javascript">
+
+function changefen5(num){
+	$('.PostCont .fen5 span').removeClass('ck');
+	$('.PostCont .fen5 span').eq(num).addClass('ck');
+	$('.PostCont .fen5 input').attr('checked',false);
+	$('.PostCont .fen5 input').eq(num).attr('checked',true);
+}
+changefen5(0);
+$('.PostCont .fen5 span').click(function(){
+	var thisnum=$(this).index();
+	changefen5(thisnum);
+});
+function changefen1(num){
+	var fennum=num+1;
+	$('.PostCont .fen1 input').val(fennum);
+	$('.PostCont .fen1 ul li').each(function(){
+		if($(this).index()<=num){
+			$(this).addClass('ck');
+		}else{
+			$(this).removeClass('ck');
+		}
+	});
+}
+changefen1(4);
+$('.PostCont .fen1 ul li').hover(function(){
+	var thisnum=$(this).index();
+	changefen1(thisnum);
+});
+
+
+var page=1;
+//显示更多
+function showMoreContent(){	
+	page++;
+	$.get('{qb:url name="qun_pcindex_bbs_model002"/}' + page,function(res){
+		if(res.code==0){
+			if(res.data==''){
+				layer.msg("已经显示完了！",{time:500});
+			}else{
+				$('.ListHyDianping').append(res.data);
+				scroll_get = true;
+			}
+		}else{
+			layer.msg(res.msg,{time:2500});
+		}
+	});
+}
+
+//滚动显示更多
+var scroll_get = true;	//做个标志,不要反反复复的加载
+$(document).ready(function () {
+	$(window).scroll(function () {
+		if (scroll_get==true &&  (400 + $(window).scrollTop())>($(document).height() - $(window).height())) {
+			scroll_get = false;			
+			layer.msg('内容加截中,请稍候',{time:1500});
+			showMoreContent();
+		}
+	});
+});
+</script>

@@ -1,0 +1,100 @@
+{extend name="$index_style_layout" /}
+{block name="head_title"}{$info.title} {:M('name')}{/block}
+
+{block name="body_content"}
+<link rel="stylesheet" href="__STATIC__/group/index.css">
+<div class="MainContainer">
+<!--包含的文件在此目录/template/index_style/default/hy/common/-->
+{include file="common/head" /}
+<script type="text/javascript">
+function joinGroup(id){
+	$.get("{:urls('wxapp.member/join',['id'=>$info.id])}?"+Math.random(),function(res){
+		if(res.code==0){
+			layer.alert("加入成功！");
+		}else{
+			layer.alert("加入失败:"+res.msg);
+		}	
+	});
+}
+</script>
+	<div class="MainAction">
+		<ul>
+			<ol><a href="#" onclick="joinGroup({$id})"><i class="fa fa-object-ungroup"></i> 加入会员</a></ol>
+			<li><a href="{:murl('shop/content/add',['mid'=>1,'ext_id'=>$info.id])}"><i class="fa fa-user-plus"></i> 发布商品</a></li>
+		</ul>
+	</div>
+	<div class="ShowContentType">
+		<div class="tags"><span class="ck">最新产品</span><span>热门产品</span><span>推荐产品</span></div>
+		<div class="Contents">
+			{qb:tag name="hy_wapindex_model003" union="order,by,ext_id=aid" mid="1" type="shop" rows="6"}
+			<div class="shops"><a href="{$rs.url}"><span><img src="{$rs.picurl}" onerror="this.src='__STATIC__/images/nopic.png'"></span><em>{$rs.title}</em><dl><dt>&yen;{$rs.price}</dt><dd>&yen;{$rs.price}</dd></dl></a></div>
+			{/qb:tag}
+		</div>
+		<div class="Contents"></div>		
+		
+		<div class="Contents"></div>			
+		
+		<div class="ShowMores"><span>查看更多</span></div>
+	</div>
+</div>
+
+<script type="text/javascript">
+var ajax_url_db = ['&order=id&by=desc&','&order=view&by=desc&','&order=status&by=desc&'];
+var choose_i = 0; //选中第几项
+var haveshowpage = []; //每一项,作个标志,已经已显示到第几页
+//    haveshowpage[0] = 1;
+
+//显示更多
+function showMoreContent(){	
+	var url = ajax_url_db[choose_i];	//第几项对应的网址
+	haveshowpage[choose_i]++;
+	$.get('{qb:url name="hy_wapindex_model003"/}' + haveshowpage[choose_i] + url + Math.random(),function(res){
+		if(res.code==0){
+			if(res.data==''){
+				layer.msg("已经显示完了！",{time:500});
+				$('.ShowMores').off("click");
+				$('.ShowMores span').html('显示完了');
+				$('.ShowMores span').css({'background':'#eee'});
+			}else{
+				if(haveshowpage[choose_i]==1){
+					$('.ShowContentType .Contents').eq(choose_i).html(res.data);
+				}else{
+					$('.ShowContentType .Contents').eq(choose_i).append(res.data);
+				}
+			}
+		}else{
+			layer.msg(res.msg,{time:2500});
+		}
+	});
+}
+
+//切换显示
+function showContentType(num){
+
+	choose_i = num;
+	$('.ShowMores').off("click");	//先移除,避免重复加多次click事件
+	$('.ShowMores').on("click",showMoreContent);
+	$('.ShowMores span').html('查看更多');
+
+	if(haveshowpage[num]==undefined){
+		haveshowpage[num] = 0;
+		showMoreContent();
+	}
+
+	$('.ShowContentType .tags span').removeClass('ck');
+	$('.ShowContentType .tags span').eq(num).addClass('ck');
+	$('.ShowContentType .Contents').hide();
+	$('.ShowContentType .Contents').eq(num).show();
+}
+$('.ShowContentType .tags span').click(function(){
+	var thisnum=$(this).index();
+	showContentType(thisnum);
+});
+showContentType(0);
+
+function addpost(){
+	var obj = $('.MorePost');
+	obj.is(':hidden') ? obj.show() : obj.hide();
+}
+</script>
+{/block}

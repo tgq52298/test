@@ -1,0 +1,42 @@
+<!--滚动幻灯片结束-->
+{qb:tag name="wap_bbs_rollpic001" type="images" val="picdb"}
+		<!--
+		<div class="swiper-container rollpic">
+			<div class="swiper-wrapper">
+				<div class="swiper-slide">
+					 <a href="#"><img src="__STATIC__/group/circle/wapbanner.jpg"></a>
+				</div>
+				<div class="swiper-slide">
+					 <a href="#"><img src="__STATIC__/group/circle/wapbanner.jpg"></a>
+				</div>
+			</div>
+			<div class="swiper-pagination"></div>
+		</div>
+		-->
+		<!--特别提醒，上面属于标签内的第一个注释符，会作为示例使用,也即用户没有设置标签时候的默认数据-->
+		<div class="swiper-container rollpic taglabel">
+			<div class="swiper-wrapper">
+				<!--用户自定义的幻灯片循环开始-->
+				{volist name="picdb" id="rs"}
+				<div class="swiper-slide">
+					 <a href="{$rs.url}"><img src="{$rs.picurl}"></a>
+				</div>
+				{/volist}
+				<!--用户自定义的幻灯片循环结束-->
+			</div>
+			<div class="swiper-pagination"></div>
+		</div>
+{/qb:tag}
+<script type="text/javascript">
+$(function () {
+	var swiper = new Swiper('.rollpic', {
+		loop:true,
+		autoplay: {
+			delay: 2500,
+		},
+		pagination: {
+			el: '.swiper-pagination', 
+		},
+	});
+})
+</script>

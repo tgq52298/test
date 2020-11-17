@@ -1,0 +1,330 @@
+{extend name="$index_style_layout" /}
+
+<!--SEO相关-->
+{block name="head_title"}附近的拼团{/block}
+{block name="head_keword"}{$webdb.mseo_keyword?:$webdb.seo_keyword}{/block}
+{block name="head_description"}{$webdb.mseo_description?:$webdb.seo_description}{/block}
+
+{block name="body_content"}
+<link rel="stylesheet" href="__STATIC__/booking/list.css">	
+<div class="MainContainer ShowContentType">
+
+<!--分类开始-->
+<style type="text/css">
+.MainMenu{
+	margin-top:8px;
+	background: #FFF;
+	padding: 15px 10px;
+}
+.MainMenu ul:after{
+	content: '';
+	display:block;
+	clear: both;
+}
+.MainMenu ul li{
+	width:25%;
+	float: left;
+	overflow: hidden;
+	position: relative;
+	margin-bottom:5px;
+}
+.MainMenu ul li span,.MainMenu ul li em{
+	display: block;
+	width:60px;
+	overflow: hidden;
+	margin: auto;
+	text-align: center;
+	position: relative;
+}
+.MainMenu ul li span{
+	border-radius: 50%;
+	background: #ccc;
+	color: #FFF;
+}
+.MainMenu ul li em{
+	height: 20px;
+	overflow: hidden;
+	font-size:14px;
+}
+.MainMenu ul li span:before{
+	content: '';
+	display: block;
+	padding-top: 100%;
+}
+.MainMenu ul li span i{
+	position: absolute;
+	left:50%;
+	top: 50%;
+	font-size:30px;
+  -webkit-transform: translate3D(-50%, -50%, 0);
+      -ms-transform: translate3D(-50%, -50%, 0);
+          transform: translate3D(-50%, -50%, 0);
+}
+.sort_button{
+	width:100%;
+}
+.sort_button .swiper-pagination{
+	bottom:0px !important;
+}
+</style>
+<!-- 滑动按钮要用到的CSS与JS文件,他涉及到三个class类 swiper-container swiper-wrapper swiper-slide -->
+<link href="__STATIC__/libs/swiper/swiper.min.css" rel="stylesheet">
+<script src="__STATIC__/libs/swiper/swiper.min.js"></script>
+<script>
+    $(function () {
+        var swiper = new Swiper('.sort_button', {
+			autoplay: {
+				delay: 2000,
+			 },
+			pagination: {
+				el: '.swiper-pagination', 
+			},
+        });
+    })
+</script>
+<div class="MainMenu">
+		<ul class="swiper-container sort_button">
+					<div class="swiper-wrapper">
+{volist name=":array_chunk(fun('Sort@son',$fid)?:fun('Sort@brother',$fid),8,true)" id="array"}
+
+<div class="swiper-slide">
+{volist name="$array" id="name"}
+				<li><a href="{:urls('near/index',['fid'=>$key])}"><span {if $key==$fid}style="background:#23C075;"{/if}><i class="{$key|get_sort='logo'|default='fa fa-leaf'}"></i></span><em>{$name}</em></a></li>
+				{/volist}
+</div>
+{/volist}
+					</div>
+					<div class="swiper-pagination"></div>
+		</ul>
+</div>
+<!--分类结束-->
+
+	<div class="ShowTypes">
+		<a href="#" class="ck">离我最近的</a>
+		<a href="#" style="font-size:12px;width:66%;" class="address" onclick='reload_map()'>...</a>
+	</div>
+	<div class="ListBox showlist">
+
+	</div>
+	<div class="ListBox"></div>
+	<div class="ListBox"></div>
+	<div class="ShowMores" onclick="showmorelist()">查看更多...</div>
+	<!--
+	<div class="addGroup">
+		<ul>
+			<ol><a href="{:murl('content/postnew')}"><i class="fa fa-plus"></i></a></ol>
+			<li>创建村庄</li>
+		</ul>
+	</div>-->
+</div>	
+
+<script type="text/javascript" src="https://api.map.baidu.com/api?v=2.0&ak=MGdbmO6pP5Eg1hiPhpYB0IVd"></script>
+<script type="text/javascript" src="https://developer.baidu.com/map/jsdemo/demo/convertor.js"></script>
+<script type="text/javascript" src="__STATIC__/js/map-gps.js"></script>
+<script type="text/javascript" src="https://res.wx.qq.com/open/js/jweixin-1.3.2.js"></script>
+
+<script type="text/javascript">
+
+//滚动显示更多
+var scroll_get = true;	//做个标志,不要反反复复的加载
+$(document).ready(function () {
+	$(window).scroll(function () {
+		if (scroll_get==true &&  (400 + $(window).scrollTop())>($(document).height() - $(window).height())) {
+			scroll_get = false;			
+			layer.msg('内容加截中,请稍候',{time:1500});
+			showmorelist();
+		}
+	});
+});
+
+
+function showmorelist(){
+	showMapPosition(map_x,map_y)
+}
+
+var page = 1;
+var j = 0;
+
+//根据当前坐标位置去数据库按位置远近排序读取
+function showMapPosition(longitude,latitude){
+	$.get("{:urls('wxapp.near/index')}?rows=5&fid={$fid}&point=" + longitude + ',' + latitude + "&page=" + page + '&' + Math.random(),function(res){
+		var d ='';
+	   if(res.code==0){
+		   if(res.data.length==0){			   
+			   layer.msg("已经显示完了！",{time:500});
+				$('.ShowMores').off("click");
+				$('.ShowMores').html('显示完了');
+				$('.ShowMores').css({'background':'#eee'});
+		   }else{
+				page++;
+			   res.data.forEach(function(rs){
+				   j++;
+				   var more = '';
+				   if(rs.mid==5){
+					   more = '<div class="cnt">兑换价:<span class="price">' + (rs.price-rs.limitmoney) + '</span>元 <span class="market_price">原价:' + rs.price + '元</span></div>';
+				   }else if(rs.mid==4){
+					   more = '<div class="cnt">秒杀价:<span class="price">' + rs.price + '</span>元 <span class="market_price">原价:' + rs.market_price + '元</span></div>';
+				   }else if(rs.mid==3){
+					   more = '<div class="cnt">起拍价:<span class="price">' + rs.bottom_price + '</span>元 <span class="market_price">原价:' + rs.market_price + '元</span></div>';
+				   }else if(rs.mid==2){
+					   more = '<div class="cnt">可砍价:<span class="price">' + rs.bottom_price + '</span>元 <span class="market_price">原价:' + rs.price + '元</span></div>';
+				   }else{
+						more = '<div class="cnt">拼团价:<span class="price">' + rs.price + '</span>元 <span class="market_price">原价:' + rs.market_price + '元</span></div>';
+				   }
+
+				   d +=	'<div class="list">'+
+						'<ul>'+
+							'<li class="img"><a href="'+rs.url+'"><img src="'+rs.picurl+'" onerror="this.src=\'__STATIC__/images/nopic.png\'"><span class="num'+j+'">'+j+'</span></a></li>'+
+							'<li class="info">'+
+								'<div class="title"><a href="'+rs.url+'">'+rs.title+'</a></div>'+ more +
+								'<div class="other">'+
+									'<span><i class="fa fa-user-o">'+rs.username+'</i></span>'+
+									'<em data-map="'+rs.map+'"><i class="fa fa-file-text-o"> 距离 0 米</i></em>'+
+								'</div>'+
+							'</li>'+
+						'</ul>'+
+					'</div>';
+			   });		   
+			   $(".showlist").append(d);
+			   show_distance(longitude,latitude);
+			   layer.closeAll();
+			   scroll_get = true;
+		   }			  
+	   }
+	});
+}
+
+//计算距离当前位置的公里数
+function show_distance(map_lat,map_lon){
+	$('.showlist .list').each(function(){
+		var this_map=$(this).find('em').data('map');
+		var thismap=this_map.split(",");
+		var this_lon = thismap[0];
+		var this_lat = thismap[1];
+		var show_map_str = GPS.distance(map_lat,map_lon,this_lon,this_lat);
+		var kilometres = Math.floor(show_map_str/1000);  
+		var metres=Math.floor(show_map_str%1000);
+		var show_word='距离';
+		if(kilometres>0){
+			show_word+='<font style="color:red;">'+kilometres+'</font>公里';
+		}
+		show_word += isNaN(metres)?'未知':'<font style="color:red;">'+metres+'</font>米';
+		$(this).find('em i').html(show_word);
+	});	
+}
+
+
+var map_x = 0;
+var map_y = 0;
+
+//百度地图获取当前坐标位置
+function reload_map(){
+	page = 1;
+	$(".showlist").html('');
+	var geolocation = new BMap.Geolocation();
+	geolocation.getCurrentPosition(function(result){
+		if(this.getStatus() == window.BMAP_STATUS_SUCCESS){
+		  map_x = result.point.lng;
+		  map_y = result.point.lat;
+
+			 //显示当前位置的街道名
+			var gpsPoint = new BMap.Point(map_x, map_y);
+			BMap.Convertor.translate(gpsPoint, 0, function(point){
+			//alert('x:'+point.lng+' y:'+point.lat);
+				var geoc = new BMap.Geocoder();
+				geoc.getLocation(point, function(rs){
+					var addComp = rs.addressComponents;
+					$('.ShowTypes .address').html('位置:'+addComp.district + addComp.street + addComp.streetNumber);
+				});
+			});
+
+		  showMapPosition(map_x,map_y);
+			//var geoc = new BMap.Geocoder();
+			//geoc.getLocation(result.point, function(rs){
+			//	var addComp = rs.addressComponents;
+			//	alert(addComp.district + addComp.street + addComp.streetNumber);
+			//});
+
+			//gg = GPS.bd_decrypt(result.point.lat, result.point.lng);	//百度转谷歌
+			//wgs = GPS.gcj_decrypt(gg.lat, gg.lon); //谷歌转GPS
+		    //showMapPosition(wgs.lon,wgs.lat);
+		} else {
+			alert('failed:'+this.getStatus());
+		}        
+	},{enableHighAccuracy: true})
+}
+
+//小程序获取当前坐标位置
+function load_wxmap(){ 
+	wx.getLocation({
+			type: 'gcj02', // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'' 
+      success: function (res) {
+		  var latitude = res.latitude; // 纬度，浮点数，范围为90 ~ -90
+          var longitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。
+			var obj = GPS.bd_encrypt(res.latitude,res.longitude);
+           map_x = obj.lon;//res.longitude;
+		   map_y = obj.lat;//res.latitude; 
+		  
+		  $.get("{:iurl('near/point_address')}?x=" + map_y +  "&y=" + map_x  ,function(res){
+			  $('.ShowTypes .address').html('位置:'+res.data);
+		  });
+
+		  showMapPosition(map_x,map_y);
+      },
+      cancel: function (res) {
+        alert('用户拒绝授权获取地理位置');
+      }
+    }); 
+}
+
+{if in_weixin()}
+
+	//在小程序或公众中访问
+	wx.miniProgram.getEnv(function(res) {
+		if(res.miniprogram==true){	//在小程序中,用不了百度地图定位
+			wx.config({
+				debug: false,
+				appId: '{:weixin_share("appId")}',
+				timestamp: {:weixin_share("timestamp")?:0},
+				nonceStr: '{:weixin_share("nonceStr")}',
+				signature: '{:weixin_share("signature")}',
+				jsApiList: [
+						'openLocation',
+						'getLocation'
+				]
+			});
+			wx.ready(function () {
+				load_wxmap();
+			});
+			wx.error(function (res) {
+				alert(res.errMsg);
+			});		
+		}else{
+			reload_map(); //在公众号里
+		}
+	});
+
+{else /}
+
+//不在小程序与公众号中访问
+reload_map();
+
+{/if}
+
+</script>
+
+
+<script type="text/javascript">
+
+function joinGroup(id){
+	$.get("{:urls('wxapp.member/join')}?id=" + id ,function(res){
+		if(res.code==0){
+			layer.alert("加入成功！");
+		}else{
+			layer.alert("加入失败:"+res.msg);
+		}	
+	});
+}
+</script>
+
+{/block}

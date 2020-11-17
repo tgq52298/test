@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>会员中心</title>
+    <link rel="stylesheet" href="__STATIC__/kit_layui/plugins/layui/css/layui.css">
+    <link rel="stylesheet" href="__STATIC__/kit_layui/src/css/welcome.css">
+	<link rel="stylesheet" href="__STATIC__/icon/icon.css">
+
+<SCRIPT LANGUAGE="JavaScript" src="__STATIC__/admin/default/jquery-1.2.6.min.js"></SCRIPT>
+<script LANGUAGE="JavaScript" src="__STATIC__/layer/layer.js"></script>
+
+</head>
+<body class="phptwo-body">
+    <!-- <script src="layui.js"></script>
+    <script src="js/form.js"></script> -->
+    <!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
+    <!--[if lt IE 9]>
+    <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+    <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <div class="panel_box row">
+        <div class="panel col">
+            <a href="javascript:;" data-url="#">
+                <div class="panel_icon">
+                    <i class="fa fa-fw fa-database"></i>
+                </div>
+                <div class="panel_word newMessage">
+                    <span>{$userdb.rmb}</span>
+                    <cite>可用余额</cite>
+                </div>
+            </a>
+        </div>
+        <div class="panel col">
+            <a href="javascript:;" data-url="#">
+                <div class="panel_icon" style="background-color:#FF5722;">
+                    <i class="fa fa-fw fa-snowflake-o"></i>
+                </div>
+                <div class="panel_word userAll">
+                    <span>{$userdb.rmb_freeze}</span>
+                    <cite>冻结余额</cite>
+                </div>
+            </a>
+        </div>
+        <div class="panel col">
+            <a href="javascript:;" data-url="#">
+                <div class="panel_icon" style="background-color:#009688;">
+                    <i class="fa fa-fw fa-gift"></i>
+                </div>
+                <div class="panel_word userAll">
+                    <span>{$userdb.money}</span>
+                    <cite>可用积分</cite>
+                </div>
+            </a>
+        </div>
+        <div class="panel col">
+            <a href="javascript:;" data-url="#">
+                <div class="panel_icon" style="background-color:#5FB878;">
+                    <i class="fa fa-fw fa-book"></i>
+                </div>
+                <div class="panel_word imgAll">
+                    <span>{:query('cms_content1',['where'=>['uid'=>$userdb['uid']],'count'=>'id'])}</span>
+                    <cite>我发的文章</cite>
+                </div>
+            </a>
+        </div>
+        <div class="panel col">
+            <a href="javascript:;" data-url="#">
+                <div class="panel_icon" style="background-color:#F7B824;">
+                    <i class="fa fa-fw fa-image"></i>
+                </div>
+                <div class="panel_word waitNews">
+                    <span>{:query('cms_content2',['where'=>['uid'=>$userdb['uid']],'count'=>'id'])}</span>
+                    <cite>我发的图片</cite>
+                </div>
+            </a>
+        </div>
+{if modules_config('shop')}
+        <div class="panel col max_panel">
+            <a href="javascript:;" data-url="#">
+                <div class="panel_icon" style="background-color:#2F4056;">
+                    <i class="fa fa-fw fa-shopping-cart"></i>
+                </div>
+                <div class="panel_word allNews">
+                    <span>{:query('shop_content1',['where'=>['uid'=>$userdb['uid']],'count'=>'id'])}</span>
+                    <em>我发的商品</em>
+                </div>
+            </a>
+        </div>
+{/if}
+    </div>
+<!--
+    <div class="alert-warning">
+        本提示模块，有绿色success  蓝色 info  浅黄 warning 警告 danger
+        <span class="alert-close"><i class="layui-icon">&#x1006;</i></span>
+        <p style="float:right;margin-right:15px;">本提示在 <span class="alert-close-time">5</span> 秒后关闭</p>
+    </div>
+-->
+    <div class="layui-row layui-col-space10">
+        <div class="layui-col-md6">
+            <div class="layui-collapse">
+                <div class="layui-colla-item">
+                    <h2 class="layui-colla-title" id="map1title">最近积分赚取记录</h2>
+                    <div class="layui-colla-content layui-show main-coll">
+                        <div id="c1"></div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="layui-col-md6">
+            <div class="layui-collapse">
+                <div class="layui-colla-item">
+                    <h2 class="layui-colla-title">我的信息</h2>
+                    <div class="layui-colla-content layui-show main-coll">
+                        <table class="layui-table main-table">
+                            <colgroup>
+                                <col width="80">
+                                <col width="200">
+                            </colgroup>
+                            <tbody>
+							<tr>
+                                    <td>我的UID:</td>
+                                    <td>{$userdb.uid}</td>
+                                </tr>
+                                <tr>
+                                    <td>我的帐号:</td>
+                                    <td>{$userdb.username}</td>
+                                </tr>
+                                <tr>
+                                    <td>我的昵称:</td>
+                                    <td>{$userdb.nickname}</td>
+                                </tr>
+                                <tr>
+                                    <td>注册时间:</td>
+                                    <td>{$user.regdate|format_time}</td>
+                                </tr>
+								<tr>
+                                    <td>上次访问时间:</td>
+                                    <td>{$user.lastvist|date="Y-m-d H:i:s",###}</td>
+                                </tr>
+
+                                <tr>
+                                    <td>可用余额:</td>
+                                    <td>{$userdb.rmb} 元 　<a href="{:purl('marketing/rmb/add')}"><i class="fa fa-hand-o-right"></i> 充值</a>  　<a href="{:purl('marketing/rmb/index')}"><i class="fa fa-table"></i> 明细</a>　<a href="{:purl('marketing/rmb/getmoney')}"><i class="fa fa-shopping-bag"></i> 提现</a></td>
+                                </tr>
+                                <tr>
+                                    <td>冻结余额:</td>
+                                    <td>{$userdb.rmb_freeze} 元 　</td>
+                                </tr>
+                                <tr>
+                                    <td>可用{$webdb.MoneyName}:</td>
+                                    <td>{$userdb.money} 个　<a href="{:purl('marketing/jifen/add')}"><i class="fa fa-hand-o-right"></i> 充值</a>  　<a href="{:purl('marketing/money/index')}"><i class="glyphicon glyphicon-retweet"></i> 兑换</a></td>
+                                </tr>
+                                
+                                
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        
+    </div>
+    
+    <div class="layui-row">
+        <div class="layui-col-md12">
+            <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
+                <ul class="layui-tab-title">
+                    <li class="layui-this" id="map2title">我的财务信息</li>
+  <!--                  <li>按周统计</li>
+                    <li>按月份统计</li>
+                    <li>按季度统计</li>
+                    <li>按年份统计</li>
+                     <span class="layui-badge-rim" onclick="tabChart('default')">白色主题</span>
+                    <span class="layui-badge layui-bg-black" onclick="tabChart('dark')">黑色主题</span> -->
+                </ul>
+                    
+                <div class="layui-tab-content">
+                    <div class="layui-tab-item layui-show">
+                        <div id="mountNode"></div>
+                    </div>
+                    <div class="layui-tab-item">待加入</div>
+                    <div class="layui-tab-item">待加入</div>
+                    <div class="layui-tab-item">待加入</div>
+                    <div class="layui-tab-item">待加入</div>
+                </div>
+            </div> 
+        </div>
+    </div>
+
+<script src="__STATIC__/kit_layui/plugins/layui/layui.js"></script>
+<script src="__STATIC__/kit_layui/src/js/chart.min.js"></script>
+<script src="__STATIC__/kit_layui/src/js/data-set.min.js"></script>
+<script>
+layui.config({
+    base: '__STATIC__/kit_layui/src/js/' //设定扩展的Layui模块的所在目录，一般用于外部模块扩展
+}).use(['element','common'],function(){
+    var $ = layui.$, element = layui.element;
+});
+
+//month 参数可以换成按天 day 统计或按 week 周 而 nums 是周期参数可以自由设置更多的数值 money_type 是积分的种类 in_out为空就统计赚取与消费设置i就只统计赚取,设置o就只统计支付
+$.get("{:url('wxapp.jifen/index')}?type=month&money_type=0&in_out=i&nums=1,2,3,4,5,6",function(res){
+	if(res.code==0){
+		var listdb = new Array();
+		$.each(res.data,function(i,v){
+			var name;
+			if(i==0){
+				name = '本月';
+			}else if(i==1){
+				name = '上月';
+			}else{
+				name = i+'月前';
+			}
+			listdb.push({ genre: name, sold: Math.abs(v)  });			
+		});
+		yuanzu(listdb)
+		//console.log(listdb);
+	}else{
+		layer.msg('获取数据失败!');
+	}
+});
+function yuanzu(data){
+	//var data = [{ genre: '前1个月', sold: 10 },{ genre: '前2个月', sold: 20 },{ genre: '前3个月', sold: 14 },{ genre: '前4个月', sold: 15 }]; 
+	//document.getElementById('map1title')='最近积分赚取记录';
+	//下面这个是扩展钩子，可以对 data 重新赋值	
+	{:hook_listen('member_welcome_map1',$userdb,$webdb,true)}
+	// G2 对数据源格式的要求，仅仅是 JSON 数组，数组的每个元素是一个标准 JSON 对象。
+    // Step 1: 创建 Chart 对象
+    const chart = new G2.Chart({
+        container: 'c1', // 指定图表容器 ID
+        // width : 600, // 指定图表宽度
+        forceFit: true,
+        padding: [ 30, 30, 80, 50],
+        height : 305 // 指定图表高度
+    });
+    const { Global } = G2; // 获取 Global 全局对象
+    Global.setTheme('default'); // 传入值为 'default'、'dark' 的一种，如果不是，那么使用 default 主题
+
+    // Step 2: 载入数据源
+    chart.source(data);
+    // Step 3：创建图形语法，绘制柱状图，由 genre 和 sold 两个属性决定图形位置，genre 映射至 x 轴，sold 映射至 y 轴
+    chart.interval().position('genre*sold').color('genre')
+    // Step 4: 渲染图表
+    chart.render();
+    G2.track(false);
+}
+
+
+
+//month 参数可以换成按天 day 统计或按 week 周 而 nums 是周期参数可以自由设置更多的数值
+$.get("{:url('wxapp.rmb/index')}?type=month&nums=1,2,3,4,5,6,7,8,9,10,11,12,13,14,15",function(res){
+	if(res.code==0){
+		var listdb = new Array();
+		$.each(res.data,function(i,rs){
+			var name;
+			if(i==0){
+				name = '本月';
+			}else if(i==1){
+				name = '上月';
+			}else{
+				name = i+'月前';
+			}
+			listdb.push({ month: name, '入帐': rs[0], '出帐': Math.abs(rs[1])  });			
+		});
+		tabChart(listdb)
+		//console.log(listdb);
+	}else{
+		layer.msg('获取数据失败!');
+	}
+});
+//双曲线
+function tabChart(data){
+    //var data = [{ month: '本周', '收入': 10, '支出': 20  },{ month: '上周', '收入': 20, '支出': 10 } ];
+	  var title_1='入帐',title_2='出帐';
+	  const ds = new DataSet();
+      const dv = ds.createView().source(data);
+      const { Global } = G2; // 获取 Global 全局对象
+      Global.setTheme('default'); // 传入值为 'default'、'dark' 的一种，如果不是，那么使用 default 主题
+      dv.transform({
+        type: 'fold',
+        fields: [ title_1, title_2  ], // 展开字段集
+        key: 'city', // key字段
+        value: 'temperature', // value字段
+      });
+      const chart = new G2.Chart({
+        container: 'mountNode',
+        forceFit: true,
+        padding: [ 30, 30, 80, 50],
+        height: 300
+      });
+      chart.source(dv, {
+        month: {
+          range: [ 0, 1 ]
+        }
+      });
+      chart.tooltip({
+        crosshairs: {
+          type: 'line'
+        }
+      });
+      chart.axis('temperature', {
+        label: {
+          formatter: val => {
+            return val + '';	//单位
+          }
+        }
+      });
+      chart.line().position('month*temperature').color('city').shape('smooth');
+      chart.point().position('month*temperature').color('city').size(4).shape('circle').style({
+        stroke: '#fff',
+        lineWidth: 1
+      });
+      chart.render();
+      G2.track(false);
+}
+
+</script>
+</body>
+</html>

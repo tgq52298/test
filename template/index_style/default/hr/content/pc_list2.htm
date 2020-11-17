@@ -1,0 +1,115 @@
+﻿{extend name="$index_style_layout" /}
+
+<!--SEO相关-->
+{block name="head_title"}{$fid?($info['seo_title']?:$info['name']):$m_info['title']}{/block}
+{block name="head_keword"}{$fid?($info['seo_keywords']?:$info['name']):$m_info['title']}{/block}
+{block name="head_description"}{$info.seo_description}{/block}
+
+
+{block name="body_content"}
+
+<link rel="stylesheet" type="text/css" href="__STATIC__/hr/default/pc/listjob.css">
+
+<div style="margin:15px auto; width:1200px;"> <!-- WRAP S -->
+
+<div class="content_text " style="width:1200px; overflow:hidden; margin:15px auto;">
+	<div class="text_left" style="width:24%; float:left;">
+		<table style="width:100%; border:1px solid #1aa4ed;">
+			<tr>
+				<td class="jc_head"><div class="jc">{qb:tag name='pchr_list2_left_head' type="text"}相关信息{/qb:tag}</div></td>
+			</tr>
+			<tr>
+				<td class="middle">
+					<div class="content_ad">
+						{qb:tag name='pchr_list2_banner_ad1' type='image'}<!-- <a href="#" target='_blank'><img src="__STATIC__/hr/default/demo/list2_ad1.gif"   border='0' /></a> --><a href="{$url}" target='_blank'><img src="{$picurl}"   border='0' /></a>{/qb:tag}
+					</div>
+					<div class="hj">{qb:tag name='pchr_list2_hot_head' type="text"}热门职位{/qb:tag}</div>
+					<div class="hjc">
+						{qb:tag name="pchr_list2_page_listdata1" field="title" type="hr" mid='1' rows="9" order="view" where="status>0"}
+						<a href="{$rs.url}" target="_blank">{$rs.title}</a>
+						{/qb:tag}
+					</div>
+				</td>
+			</tr>
+		</table> 
+	</div>
+
+<div class="text_right" style="width:76%; float:left; margin-bottom:75px;">
+	<div class="job_rep">
+
+			<!-- 筛选 -->
+			{volist name=":get_filter_fields($mid)" id="rs"}
+				<div>
+					<span class='title'>{$rs.title}:</span>
+					<span class='condition'>
+						<a href='{:urls("index","mid=$mid&$rs[opt_url]")}' {if input($rs['name'])==''}style="color:red;"{/if} class="ck">不限</a>  
+						{volist name="$rs.opt" id="vs"}
+						<a href='{:urls("index","mid=$mid&$vs[url]")}' {if input($rs['name'])==$vs['key']}style="color:red;"{/if}>{$vs.title}</a>
+						{/volist}
+					</span>
+				</div>
+			{/volist}
+	</div>
+	
+
+
+	<table class="find_box" style="width:97%; margin-left:25px; border:1px solid #dfdfdf;">
+		<tr> 
+		<td class="dr_head">{qb:tag name='pchr_list2_vita_head' type="text"}找人才{/qb:tag}</td>
+		</tr>
+		<tr> 
+		<td class="text_mar"> 
+			<table class="find_job">
+			<tr class="pos_head">
+				{qb:tag name='pchr_list2_vita_title' type="text"}
+				 <td align="center">姓名</td> 
+				 <td align="center">性别</td> 
+				 <td align="center">年龄</td> 
+				 <td align="center">工作年限</td>
+				<td>更新日期</td>
+				<td>查看</td>
+				{/qb:tag}
+			</tr>
+		
+			{qb:listpage name="pchr_list2_vita_listdata1"  type="hr" rows="18" mid='2' union="fid" order="list" where="status>0"}
+			<tr>
+				 <td align="center">{$rs.truename} </td> <td align="center">{$rs.sex} </td> <td align="center">{$rs.age}</td> <td align="center">{$rs.workyear} </td>
+				<td class="company">{:format_time($rs.update_time,'Y-m-d')}</td>
+				<td><a href="{$rs.url}" target=_blank>查看</a></td>
+			</tr>
+			{/qb:listpage}
+
+			</table>
+			<table width="100%" border="0" cellspacing="0" cellpadding="0" id="page">
+              <tr>
+                <td align="center"></td>
+              </tr>
+            </table>
+		</td>
+		</tr>
+	</table>
+</div>			
+	
+</div>
+
+
+
+
+
+
+
+
+
+</div> <!-- WRAP E -->
+
+
+
+
+
+
+
+
+
+
+
+{/block}

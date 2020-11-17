@@ -1,0 +1,103 @@
+{extend name="$member_style_layout" /}
+
+{block name="title"}
+我发布的文件
+{/block}
+{block name="content"}
+
+<style>
+.smallPic{width:120px; height:90px; overflow:hidden; text-align:center; line-height:90px;}
+.smallPic img{max-width:100%; max-height:100%;}
+.datilNewsList ul{overflow:hidden;}
+.datilNewsList ul li{width:100%; float:left; text-align:left; height:25px; line-height:25px; margin-bottom:10px; overflow:hidden;}
+.newsTitme{margin-bottom:0;}
+.newsDatil span{float:left;margin-right:10px;}
+.newsDatil span.f_title a{color:#00a3ff;}
+.newsDatil span a{font-size:12px;}
+.do_something{width:10%;}
+.do_something a{float:left; font-size:12px; margin-right:10px;}
+.do_something a.edited{font-size:20px;color:green;}
+.do_something a.delate{font-size:20px;color:red;}
+
+.editmore{display:inlie-block; position:relative;}
+.editmore em{
+	display:block;
+	position:absolute;
+	width:80px;
+	border:#CCC solid 1px;
+	background:#FFF;
+	right:0;
+	top:0;
+	display:none;
+	border-radius:3px;
+	padding:3px 0;
+	z-index:1000;
+}
+.editmore em a{
+	display:block;
+	line-height:20px;
+	text-align:center;
+}
+</style>
+
+<div class="MainCont">
+	<div class="head"><div class="tag">
+		{switch name=":input('mid')" }
+			{case value="1" }职位管理{/case}
+			{case value="2"}申请职位简历管理{/case}
+			{default /}内容管理
+		{/switch}
+	</div></div>
+    <div class="cont">
+    	<table width="100%" border="0" cellspacing="0" cellpadding="0" class="ListTable">
+{volist name="listdb" id="rs"}
+          <tr>
+            <td class="tL">{$rs.cid}</td>
+            	{if $rs.picurl}
+			<td>
+				<div class="smallPic"><a href="{$rs.url}" target="_blank"/><img src="{$rs.picurl}" onerror="this.src='__STATIC__/images/nopic.png';"/></a></div>
+			</td>
+		{/if}
+			<td class="datilNewsList">
+				<ul>
+					<li class="newsTitle">应聘职位：<a href="{$rs.app_url}" target="_blank">{$rs.app_title}</a></li>
+					<li class="newsDatil"><span class="f_title">姓名：<a href="{$rs.url}" target="_blank">{$rs.truename}</a></span>
+					<span>年龄：{$rs.age}</span>
+					<span>性别：{$rs.sex}</span>
+					<span class="sates">联系电话：<font color='#fd8256'>{$rs.mobphone}</font></span>
+
+					
+
+					<span>毕业院校：<font color='#fd8256'>{$rs.alma_mater}</font></span>
+
+					{if $rs.mid==1}<span>应聘人数：<font color='#FF0000'>{$rs.applynum} 人</font></span>{/if}
+
+					</li>
+					<li class="newsTitme"><span>申请时间：<em>{$rs.time}</em></span></li>
+				</ul>
+			</td>
+			<td class="do_something">
+				<a href="{:urls('delapply',['ids'=>$rs['cid']])}" onclick="return confirm('你确认要删除吗?不可恢复');" class="delate"><i class="fa fa-trash-o"></i></a>
+			</td>
+          </tr>
+{/volist}
+        </table>
+        <div class="Showpage">{$pages}</div>
+    </div>
+</div>
+
+
+<script>
+$('.editmore').hover(
+	function(){
+		$(this).find('em').show();
+	},
+	function(){
+		$(this).find('em').hide();
+	}
+)
+</script>
+
+
+			 
+{/block}

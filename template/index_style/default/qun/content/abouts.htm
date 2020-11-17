@@ -1,0 +1,31 @@
+{extend name="$index_style_layout" /}
+
+<!--SEO相关-->
+{block name="head_title"}{$info.title}{/block}
+{block name="head_keword"}{$info.keywords?:$info.title}  {$s_info.name} {/block}
+{block name="head_description"}{:get_word(del_html($info['content']),300)}{/block}
+
+
+{block name="body_content"}
+	<link rel="stylesheet" href="__STATIC__/qun/default/abouts.css">
+	<div class="AboutUs">
+		<div class="AboutPic">
+			{qb:hy name="qun_wapcontent_abouts_pic001" type="image"}
+			<!-- <img src="__STATIC__/qun/default/aboutbg1.jpg"/> -->
+			<img src="{$picurl}" onError="this.src='__STATIC__/images/nopic.png'"/>
+			{/qb:hy}
+		</div>
+		<div class="AboutDetails">
+			<div class="AboutTitle">
+				<h3>{$info.title}</h3>
+			</div>
+			<div class="AboutContent">
+				{$info.content}
+			</div>
+		</div>
+	</div>
+
+	{include file="qun@set" /}
+	{include file="index@share" /}
+{/block}
+

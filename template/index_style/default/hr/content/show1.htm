@@ -1,0 +1,60 @@
+{extend name="$index_style_layout" /}
+
+<!--SEO相关-->
+{block name="head_title"}{$info.title}{/block}
+{block name="head_keword"}{$info.title} {:get_sort($info.fid)}  {:M('name')}{/block}
+{block name="head_description"}{:get_word(del_html($info['content']),300)}{/block}
+
+{block name="body_content"}
+<link rel="stylesheet" type="text/css" href="__STATIC__/hr/default/wap/job.css">
+
+
+<dl class="zhiwei">
+	<dt>
+    	<h3>{$info.title}</h3>
+    </dt>
+    <dd>
+    	<p>{:get_hy_name($info.uid,$info.ext_id,$info.ext_sys)}</p>
+        <ul>
+                      {qb:showpage field="picurl,title,content,keywords,maps,videourl"}
+                      <li>{$rs.title}：<em>{$rs.value}</em> </li>
+                      {/qb:showpage}  
+        </ul>
+    </dd>
+</dl>
+
+{qb:tag name="waphr_show1_join_job" type="text"}<a class="btn" href="javascript:;" onclick="apply_job();">申请职位</a>{/qb:tag}
+
+<div class="miaoshu">
+	{qb:tag name="waphr_show1_showdescription_head" type="text"}<div class="title">职位描述</div>{/qb:tag}
+	<div class="conts">{$info.content}</div>
+</div>
+
+<div class="miaoshu">
+	{qb:tag name="waphr_show1_companyintroduce_head" type="text"}<div class="title">公司介绍</div>{/qb:tag}
+	<div class="conts">{:get_hy_contents(1,['uid'=>$info['uid']])['content']}</div>
+	<ul>
+		<li>电话：<em>{:get_hy_contents(1,['uid'=>$info['uid']])['telphone']} </em></li>
+		<li> 地址：<em> {:get_hy_contents(1,['uid'=>$info['uid']])['address']} </em></li>
+	</ul>
+</div>
+
+
+
+<script>
+//申请职位
+function apply_job(){  
+  $.get("{:urls('applyjob',['id'=>$id])}?"+Math.random(),function(res){
+    console.log(res);
+    if(res.code==0){
+      layer.msg("申请职位成功！",{time:1500});
+    }else{
+      layer.msg("申请失败:"+res.msg,{time:1500});
+    } 
+  });
+}
+</script>
+
+
+
+{/block}

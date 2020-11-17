@@ -1,0 +1,64 @@
+{extend name="$member_style_layout" /}
+
+{block name="title"}我的分销客户{/block}
+{block name="content"}
+
+<!-- <link rel="stylesheet" href="__STATIC__/layui/css/layui.css"> -->
+<!-- <link rel="stylesheet" href="__STATIC__/layui/css/admin.css"> -->
+<style>
+.c_b{color:blue;}
+.c_g{color:green;}
+.c_p{color:pink;}
+.c_r{color:red;}
+</style>
+<div style="margin-top:10px;margin-left:5px">
+<a href="{:urls('index')}" class='layui-btn layui-btn-xs layui-btn-normal'>全部</a>
+<a href="{:urls('index',['level'=>1])}" class='layui-btn  layui-btn-xs layui-btn-normal' >一级分销客户</a>
+<a href="{:urls('index',['level'=>2])}" class='layui-btn  layui-btn-xs layui-btn-normal' >二级分销客户</a>
+<a href="{:urls('index',['level'=>3])}" class='layui-btn  layui-btn-xs layui-btn-normal' >三级分销客户</a>
+<legend> <span class='c_8'>累计到账佣金：</span><span class='c_r'>{$total_money}元</span> </legend> 
+</div>
+<table class="layui-table" lay-even="" lay-skin="nob">
+
+	<tbody>
+		{volist name='listdb' id='rs'}
+			<tr>
+				<td>
+				<p>
+					商品名称:<a href="{:iurl('content/show',['id'=>$rs['shopid']])}" target="_blank"><em class='c_g'>{$rs.title}</em></a> 
+				</p>
+				<p>
+					价格:<em class='c_r'>{$rs.price} 元</em>
+					数量:<em class='c_r'>{$rs.buynum}</em>
+					总价:<em class='c_r'>{$rs.totalmoney}</em>
+
+				</p>
+				<p>
+					购买时间:<em class='c_p'>{$rs.create_time}</em>
+					购买者:<a href="{:get_url('user',$rs['buid'])}" target="_blank"><em class='c_p'>{:get_user_name($rs.buid)}</em></a>
+				</p>
+				<p>
+					分销级别:<em class='c_b'>{$rs.distribution_level}</em>
+					分销提成:<em class='c_b'>{$rs.distribution_money}</em>
+				</p>
+				<p>
+					佣金状态:
+					<em class='c_r'>
+					{switch name="$rs.status" }
+					{case value="1"}已支付{/case}
+					{default /}没支付
+					{/switch}	
+					</em>	
+					佣金结算:<em class='c_r'>{$rs.truemoney}</em>
+					到账时间:<em class='c_r'>{$rs['transfer_time']?=date('Y-m-d H:i:s',$rs['transfer_time'])}</em>
+				</p>
+				</td>
+			</tr>
+		{/volist}
+	</tbody>
+
+</table> 
+
+<div id="Showpage">{$pages}</div>
+
+{/block}

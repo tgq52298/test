@@ -1,0 +1,187 @@
+{extend name="$index_style_layout" /}
+{block name="head_keword"}{$webdb.mseo_keyword}{/block}
+{block name="head_description"}{$webdb.mseo_description}{/block}
+{block name="head_title"}{$webdb.mseo_title}{/block}
+ {block name="body_ContactSearch"}{/block}
+{block name="nav"}{/block}
+{block name="body_content"}
+<style>
+	input,textarea,select,button,option{font-family:inherit;font-size:inherit;font-weight:inherit}
+	input,button,select,textarea{outline:0}
+#top{height:1px;line-height:1px;background-color:#ebebeb;}
+.searchbox{width:600px;height:38px;margin:30px auto 20px auto}
+.searchbox .q{display:inline-block;background:#FFF;width:484px;height:38px;font-size:16px;color:#CCC;margin:0;padding:0 10px 0 10px;border:0;float:left;line-height:38px;border:1px solid #cfc7c8;border-right:0;-moz-box-shadow:inset 0 1px 6px #e1e1e1;-webkit-box-shadow:inset 0 1px 6px #e1e1e1;box-shadow:inset 0 1px 6px #e1e1e1}
+.searchbox .btn{width:95px;width:94px\9\0;height:40px;line-height:40px;border:0;background-color:#fc8c1d;cursor:pointer;float:right;display:inline-block;color:#FFF;text-align:center;font-size:16px;-webkit-appearance:none;border-radius:0}
+.searchbox .btn:hover{background-color:#fc9f38;-webkit-appearance:none;border-radius:0}
+.hotsearch{clear:both;width:598px;margin:10px auto 30px auto;border:1px solid #fff0c6;background-color:#FFF}
+.hotsearch .hothead{height:28px;background-color:#fffae9;border-bottom:1px solid #fff0c6}
+.hotsearch .hothead a{display:inline-block;float:left;height:28px;width:100px;text-align:center;line-height:28px;border-right:1px solid #fff0c6;font-size:14px;color:#999}
+.hotsearch .hothead a:hover{text-decoration:none;color:#F60}
+.hotsearch .hothead a.current{background-color:#fff;height:29px;color:#F60}
+.hotsearch ul{margin:10px 0 0 10px}
+.hotsearch h2{color:#CCC;font-size:16px;line-height:40px;text-align:center}
+.hotsearch li{height:20px;line-height:20px;width:180px;_width:175px;margin:5px 0 0 10px;display:inline-block;float:left;overflow:hidden}
+.hotsearch li a{color:#113aaa;font-size:14px;display:inline-block;float:left;margin-left:5px;width:140px;overflow:hidden}
+.hotsearch li a:hover{color:#f70615}
+.hotsearch li .num{display:inline-block;float:left;width:16px;height:16px;margin-top:2px;background-color:#609;line-height:16px;text-align:center;color:#FFF;font-size:12px;-moz-border-radius:3px;-webkit-border-radius:3px;border-radius:3px}
+.hotsearch li .top1{background-color:#F90}
+.hotsearch li .top2{background-color:#8ca6dc}
+</style>
+<div id="top"></div>
+<div class="content">
+  <div class="searchbox">
+    <form action="{:url('search/index/lists')}" method="get" onsubmit="return subck();">
+      
+      <input align="middle" name="keyword" class="q" id="kw" value="请输入关键字搜索" onfocus="javascript:if(this.value=='请输入关键字搜索'){this.value='';this.style.color='#333';this.style.borderColor='#FC8105';}" onblur="javascript:if(this.value==''){this.value='请输入关键字搜索';this.style.color='#CCC';this.style.borderColor='#CFC7C8';}" maxlength="100" size="50" autocomplete="off" baidusug="1" style="color: rgb(204, 204, 204); border-color: rgb(207, 199, 200);">
+       <input id="btn" class="btn" align="middle" value="搜索一下" type="submit">
+    {if plugins_config('image_search')}
+      <!--纳沃纳插件图片搜索开始-->  
+      <div class="soimgdiv"><span class="si si-camera soimg">
+         <input type="file" name="imgfiles" class="file-input" id="shituimg" multiple="multiple" accept="image/*">
+      </span></div>
+<style>
+.soimg{
+  color: #fc8c1d;
+}
+/*
+图片搜索样式定义
+ */
+.soimgdiv{
+      z-index: 1;
+    position: absolute;
+    margin-top: 3px;
+    margin-left: 470px;
+    font-size: 28px;
+    height: 18px;
+    width: 18px;
+}
+.soimg .file-input {
+    -moz-opacity: 0;
+    -khtml-opacity: 0;
+    opacity: 0;
+    width: 28px;
+    height: 28px;
+    position: absolute;
+    top: 3px;
+    cursor: pointer;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+</style>
+<script type="text/javascript">
+ {if plugins_config('image_search')}
+ $('.opt_cls_imgsearchtips_close_btn,.imgSearchBox').click(function() {
+    $('.opt_cls_imgsearchtips_block').hide();
+});
+$(document.body).on('change', "#shituimg", function() {
+    var filepath = $(this).val();
+    var extStart = filepath.lastIndexOf(".");
+    var ext = filepath.substring(extStart, filepath.length).toUpperCase();
+    if (ext != ".PNG" && ext != ".JPG" && ext != ".BMP" && ext != ".JPEG") {
+        layer.msg('仅支持JPG、JPEG、PNG、BMP格式图片');
+        $(this).attr('value', '');
+        return false;
+    }
+    gen_base64();
+});
+
+function gen_base64() {
+    if (typeof(FileReader) === 'undefined') {
+        layer.msg('抱歉，你的浏览器不支持 FileReader，不能将图片转换为Base64，请使用现代浏览器操作');
+        return false;
+    } else {
+        var file = $('#shituimg')[0].files[0];
+        reader = new FileReader(); //本地预览
+        reader.onload = function() {
+            dealImage(reader.result, {
+                width: 500,
+                height: 500
+            }, function(base) {
+                var jsonimg = {
+                    'imgs': base
+                };
+                postCurrent('{:url('search/soimg/imgurl')}', jsonimg);
+            })
+        }
+        reader.readAsDataURL(file);
+    }
+}
+
+function postCurrent(url, params) {
+    var form = $("<form method='post'></form>");
+    var input;
+    form.attr({
+        "action": url
+    });
+    $.each(params, function(key, value) {
+        input = $("<input type='hidden'>");
+        input.attr({
+            "name": key
+        });
+        input.val(value);
+        form.append(input);
+    });
+    $(document.body).append(form);
+    form.submit();
+}
+
+function dealImage(base64Str, obj, callback) {
+    var img = new Image();
+    img.src = base64Str;
+    img.onload = function() {
+        var that = this;
+        var w = that.width,
+            h = that.height,
+            scale = w / h;
+        w = obj.width || w;
+        h = obj.height || (w / scale);
+        var quality = 0.7; 
+        var canvas = document.createElement('canvas');
+        var ctx = canvas.getContext('2d');
+        var anw = document.createAttribute("width");
+        anw.nodeValue = w;
+        var anh = document.createAttribute("height");
+        anh.nodeValue = h;
+        canvas.setAttributeNode(anw);
+        canvas.setAttributeNode(anh);
+        ctx.drawImage(that, 0, 0, w, h);
+        if (obj.quality && obj.quality <= 1 && obj.quality > 0) {
+            quality = obj.quality;
+        }
+        var base64 = canvas.toDataURL('image/jpeg', quality);
+        callback(base64, w, h);
+    }
+}
+{/if}
+</script> 
+      <!--结束-->
+    {/if} 
+
+    </form>
+  </div>
+</div>
+<script type="text/javascript">
+function subck(){
+	var q = document.getElementById("kw").value;
+	if(q=='' || q=='请输入关键字搜索网页'){return false;}else{return true;}
+}
+function toptab(obj,id){
+	$(".hothead a").removeClass("current");
+	$("#tab"+id).addClass("current");
+    $(".hotsearch ul").hide();
+	$("#toplist"+id).show();
+}
+</script>
+<div class="hotsearch">
+  <div class="hothead"><a href="javascript:void(0)" id="tab1" onmouseover="toptab(this,'1');" class="current">实时热搜</a></div>
+  <ul id="toplist1">
+    {volist name="resou" id="rs" key="k"}
+    <li><span class="num {lt name="k" value="4"}top1{else/}top2{/lt}">{$k}</span><a href="{:url('search/index/lists','html',true)}?keyword={$rs.keyword}">{$rs.keyword}</a></li>
+    {/volist}
+    <div style=" clear: both"></div>
+  </ul>
+  <div style="margin-top: 10px"></div>
+</div>
+<script charset="gbk" src="http://www.baidu.com/js/opensug.js"></script> 
+{/block}

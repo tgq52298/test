@@ -1,0 +1,110 @@
+<!--栏目分类-->
+<style type="text/css">
+.MainMenu{
+	margin-top:8px;
+	background: #FFF;
+	padding: 15px 10px;
+}
+.MainMenu ul:after{
+	content: '';
+	display:block;
+	clear: both;
+}
+.MainMenu ul li{
+	width:25%;
+	float: left;
+	overflow: hidden;
+	position: relative;
+	margin-bottom:5px;
+}
+.MainMenu ul li span,.MainMenu ul li em{
+	display: block;
+	width:60px;
+	overflow: hidden;
+	margin: auto;
+	text-align: center;
+	position: relative;
+}
+.MainMenu ul li span{
+	border-radius: 50%;
+	background: #23C075;
+	color: #FFF;
+}
+.MainMenu ul li em{
+	height: 20px;
+	overflow: hidden;
+	font-size:14px;
+}
+.MainMenu ul li:nth-child(2) span{
+	background: #F90;
+}
+.MainMenu ul li:nth-child(3) span{
+	background: #B01FE0;
+}
+.MainMenu ul li:nth-child(4) span{
+	background: #133CD7;
+}
+.MainMenu ul li:nth-child(5) span{
+	background: #119BB8;
+}
+.MainMenu ul li:nth-child(6) span{
+	background: #998C1A;
+}
+.MainMenu ul li:nth-child(7) span{
+	background: #E01F9E;
+}
+.MainMenu ul li:nth-child(8) span{
+	background: #A6561B;
+}
+.MainMenu ul li span:before{
+	content: '';
+	display: block;
+	padding-top: 100%;
+}
+.MainMenu ul li span i{
+	position: absolute;
+	left:50%;
+	top: 50%;
+	font-size:30px;
+  -webkit-transform: translate3D(-50%, -50%, 0);
+      -ms-transform: translate3D(-50%, -50%, 0);
+          transform: translate3D(-50%, -50%, 0);
+}
+.sort_button{
+	width:100%;
+}
+.sort_button .swiper-pagination{
+	bottom:0px !important;
+}
+</style>
+
+<script>
+    $(function () {
+        var swiper = new Swiper('.sort_button', {
+			autoplay: {
+				delay: 3000,
+			 },
+			pagination: {
+				el: '.swiper-pagination', 
+			},
+        });
+    })
+</script>
+<!--加上taglabel类,不给复制-->
+<div class="MainMenu taglabel">
+		<ul>
+			<div class="swiper-container sort_button">
+					<div class="swiper-wrapper">
+<!--每行4个,可以把4改成8即变成两行-->
+{volist name=":array_chunk(get_sort(),8,true)" id="array"}
+<div class="swiper-slide">
+{volist name="$array" id="rs"}
+						<li><a href="{:urls('content/index',['fid'=>$rs.id])}"><span><i class="{$rs.logo|default='fa fa-leaf'}"></i></span><em>{$rs.name}</em></a></li>
+{/volist}
+</div>
+{/volist}
+					</div>
+					<div class="swiper-pagination"></div>
+			</div>
+		</ul>
+</div>

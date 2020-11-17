@@ -1,0 +1,115 @@
+﻿        <div class="PostComment">
+            <div class="head">我要留言</div>
+            <dl>
+                <dt>内容:</dt>
+                <dd>
+                    <textarea name="textfield" id="comment_content"></textarea>
+                </dd>
+            </dl>
+            <div class="sub">
+                <input type="button" name="Submit" value="发表留言" onclick="post_commentPc()">
+            </div>
+        </div>
+        <div class="ShowComment">
+            <div class="head">用户留言</div>            
+            <div id="show_comment">
+			{volist name="listdb" id="rs"}
+                <div class="ListComment">
+                    <dl>
+                        <dt><a href="{:get_url('user',$rs.uid)}" target="_blank"><img src="{$rs.icon}" onerror="this.src='__STATIC__/images/nobody.gif'"></a></dt>
+                        <dd>{$rs.content}</dd>
+                    </dl>
+                    <div class="moreinfo">
+                        称呼:{$rs.username} 日期:{$rs.time}
+                        {if ($this->admin||$this->user['uid']==$rs['uid'])} <a href="javascript:" onclick="deletes({$rs.id},this)">删除</a>{/if}
+                    </div>
+                </div>
+			{/volist}
+            </div>
+			<div class="ShowMoreComment" style="text-align:center;margin:10px;"><button style="padding:8px;background:Orange;border:1px solid #fff;color:#fff;" type="butter" onclick="Show_MoreComment()">更多评论 <i class="fa fa-angle-double-down"></i></button></div>
+        </div>
+		<br>
+
+<script type="text/javascript">
+
+function deletes(id,that){
+	var url ='{apiurl}';
+	$.get(url+'?type=delete&id='+id,function(res){
+		if(res.code==0){
+			layer.msg('删除成功');
+			$(that).parent().parent().hide();
+		}else{
+			layer.alert(res.msg);
+		}
+	});
+}
+
+	var posturl = "{posturl}"; //POST数据到指定网址
+	var commentpage = 1; //默认显示第一页的数据
+	var havepost = false;	//做个标志,不要重复提交数据
+	
+	//POST评论内容
+	function post_commentPc(){
+		if(havepost===true){
+			layer.alert("请不要重复提交数据");
+			return ;
+		}
+		var contents = $('#comment_content').val();  //获取评论内容
+		if(contents==''){
+			layer.alert("请输入评论内容！");
+		}else{
+			havepost = true;  //做个标志,不要重复提交
+			$.post(
+				posturl,     //提交到指定网址
+				{content:contents},  //提交的评论内容
+				function(res,status){					
+					if(res.code==0){   //评论成功
+						$('#comment_content').val('');		//清空评论区的内容
+						$('#show_comment').html(res.data);	//把返回的新的评论数据重新显示在网页上
+						commentpage = 1;  //恢复到第一页
+						layer.msg('发表成功！');
+						HiddenShowMoreComment();  //这里统计是否有分页,这个可删除
+					}else{	//评论失败
+						layer.alert('评论发表失败:'+res.msg);
+					}
+					havepost = false; //允许再次发表评论
+				}
+			);				
+		}
+	}
+
+	//显示更多数据
+	function Show_MoreComment(){
+		commentpage++;  //第几页
+		$.get('{pageurl}?page='+commentpage,function(res){
+			if(res.code==0){
+				if(res.data==''){
+					layer.msg('显示完了！');
+					$('.ShowMoreComment button').hide();;
+				}else{			
+					$('#show_comment').append(res.data);  //更多评论数据调用成功,追加显示
+				}
+			}else{
+				layer.msg(res.msg,{time:2500});
+			}
+		});
+	}
+	
+	//判断是否有更多页数据 , 并不重要
+	function HiddenShowMoreComment(){
+			var Comments = $('#show_comment .ListComment').length;
+			if(Comments==0){
+				$('.ShowComment').hide();
+				return ;
+			}else{
+				$('.ShowComment').show();
+			}
+			if(parseInt(Comments/{$cfg_array.rows})<1){
+				$('.ShowMoreComment').hide();
+			}else{
+				$('.ShowMoreComment').show();
+			}
+	}
+
+	HiddenShowMoreComment();
+</script>

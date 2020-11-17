@@ -1,0 +1,110 @@
+{extend name="$member_style_layout" /}
+
+{block name="title"}我购买的商品{/block}
+{block name="content"}
+<link rel="stylesheet" href="__STATIC__/css/pcorder.css">
+{empty name="listdb"}<div style="padding:50px;font-size:14px;">你还没有购买任何商品</div>{/empty}
+{volist name="listdb" id="rs"}
+<div class="ListOrder">
+  <div class="company">
+    <span>{$rs.create_time}</span>
+    <a target="_blank" href="{:get_url('user',['uid'=>$rs['shop_uid']])}">
+      <em>
+        <img src="{$rs.shop_uid|get_user_icon}" onerror="this.src='__STATIC__/index/base/noface.gif'"/></em>{$rs.shop_uid|get_user_name}</a>
+  </div>
+  <ul class="orderinfo">
+    <li class="shops">
+{volist name="rs.shop_db" id="vs"}
+		<div class='list'>
+			<div class='listtable'>
+			  <div class='img'>
+				<a href="{:iurl('content/show',['id'=>$vs['id']])}" target="_blank"><img src="{$vs.picurl}" onerror="this.src='__STATIC__/images/nopic.png'"/></a>
+			  </div>
+			  <div class='t'>
+				<a href="{:iurl('content/show',['id'=>$vs['id']])}" target="_blank">{$vs.title}</a>
+				{if $rs.order_day}<br>预约日期:{:format_order_time($rs)} {/if}
+			  </div>
+			  <div class='price'>
+				<s>&yen;{$vs._price}</s>
+				<span>&yen;{$vs._price}</span></div>
+			  <div class='num'>X {$vs._num}</div></div>
+		  </div>
+{/volist}
+    </li>
+    <li class="totalmoney" style="font-size:15px;">
+		{if $vs._paytype>0}
+		金额:&yen;{$rs.fewmoney}
+		{else /}
+		余款:&yen;{$rs.pay_money}<br><br>订金:&yen;{$rs.fewmoney}
+		{/if}
+	</li>
+    <li class="state">
+      <div>
+	{if (is_numeric($vs._paytype)&&$vs._paytype==0)||(is_numeric($vs.paytype)&&$vs.paytype==0)}
+
+		<!--分期付款-->
+		{if $rs.receive_status==1}
+			<font color="red">交易完毕</font>
+		{else /}
+			{eq name="$rs.pay_status" value="1"}
+			  <span style="color:blue;">已付余款</span> <br> <br>
+			{else /}
+			 <a style="border:1px solid #ddd;padding:5px;" href="{:urls('pay',['id'=>$rs['id']])}" title="点击在线支付">未付余款</a> <br><br>
+			{/eq}
+
+			{eq name="$rs.few_ifpay" value="1"}
+			  <a style="color:blue;border:1px solid #ddd;padding:5px;" href="javascript:tui_ding('{:urls('tui_ding',['id'=>$rs['id']])}');" title="点击退订金"> 已付订金</a> 
+			{elseif $rs.few_ifpay==-1 /}
+			 退订受理中 
+			{else /}
+			 <a style="border:1px solid #ddd;padding:5px;" href="{:urls('pay_few',['id'=>$rs['id']])}" title="点击在线支付">未付订金</a> 
+			{/eq}
+		{/if}
+		
+	{else /}
+		<!--非分期付款-->
+		{if $rs.receive_status==1}
+			<font color="red">交易完毕</font>
+		{else /}
+			{eq name="$rs.few_ifpay" value="1"}
+			  <a style="color:blue;border:1px solid #ddd;padding:5px;"> 已付全款</a> 
+			{elseif $rs.few_ifpay==-1 /}
+			 退款受理中 
+			{else /}
+			 <a style="border:1px solid #ddd;padding:5px;" class="more-menu" url='<a href="{:urls('pay_few',['id'=>$rs['id']])}">立即付款</a>'>未付款</a> 
+			{/eq}
+		{/if}
+	{/if}
+	</div>
+      
+	  <div></div>
+
+    </li>
+    <li class="action">
+      <a href="{:urls('show',['id'=>$rs['id']])}">查看</a>
+	  <!--
+      <span style='display:none;'>
+        <a href="{:urls('edit',['id'=>$rs['id']])}">修改</a>
+		</span>-->
+
+		{if $rs.pay_status==0&&$vs.mid==2}<a style="background:#52ace2;color:#fff;" href="{:iurl('content/show',['id'=>$rs['shopid'],'oid'=>$rs['id']])}" target="_blank">砍价</a>{/if}
+		{if empty($rs.few_ifpay)&&empty($rs.pay_status)}<a href="{:urls('delete',['id'=>$rs['id']])}" class="alert">删除</a>{/if}
+       
+    </li>
+  </ul>
+  <div class="otheraction">订单号：{$rs.order_sn}</span></div>
+</div>
+{/volist}
+
+<script type="text/javascript">
+function tui_ding(url){
+	layer.confirm('你确认要退订金吗？', {
+            btn : [ '确认', '取消' ]//按钮
+        }, function(index) {
+            layer.close(index);
+            location.href = url;
+        });
+}
+</script>
+<div class="OrderPage">{$pages}</div>
+{/block}

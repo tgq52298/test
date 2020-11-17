@@ -1,0 +1,2 @@
+ALTER TABLE  `qb_shop_order` ADD  `ifolpay` TINYINT NOT NULL COMMENT  '付款方式,线上还是线下';
+INSERT INTO `qb_shop_field` (`id`, `name`, `title`, `type`, `field_type`, `value`, `options`, `about`, `show`, `mid`, `ajax_url`, `next_items`, `param`, `format`, `table`, `level`, `key`, `option`, `pid`, `list`, `listshow`, `ifsearch`, `ifmust`) VALUES(0, 'ifolpay', '付款方式', 'radio', 'tinyint(1) NOT NULL', '1', '0|货到付款\r\n1|线上付款', '', 1, -1, '', '', '', '', '', 2, '', '', '', 0, 0, 0, 0);

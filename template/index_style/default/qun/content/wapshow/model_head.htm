@@ -1,0 +1,95 @@
+<!--圈子头部-->
+<style type="text/css">
+.qun-head{
+	background:#fff;
+	position:relative;
+}
+.qun-head .qun-icon{
+	position:absolute;
+	z-index:1;
+	left:5px;
+	bottom:0px;
+	width:90px;
+	height:90px;
+	border-radius: 100%;
+}
+.qun-head .qun-v{
+	position:absolute;
+	width:20px;
+	height:20px;
+	z-index:2;
+	left:80px;
+	bottom:0px;
+}
+.qun-head .word{
+	padding-top:5px;	
+	height:35px;
+}
+.qun-head span{
+	display:block;
+	float:right;
+	border:1px solid #3897F1;
+	padding:0px 16px 0px 16px;
+	margin-right:15px;
+	font-size:13px;
+	border-radius: 3px;
+}
+.qun-head span.join{
+	color:#fff;
+	background:#3897F1;
+}
+.qun-head .banner{
+	background:url({$info.banner}) no-repeat;	
+	background-position:center center;
+}
+.qun-head .banner img{
+	width:100%;
+}
+</style>
+<script type="text/javascript">
+var load_err_pic = false;
+function load_banner(o){
+	if(load_err_pic==true){
+		return ;
+	}
+	if(o.width>o.height){
+		if(o.height<120){
+			$(o).parent().css({'background-size':'auto 120px','height':'120px'});
+		}else{
+			$(o).parent().css({'background-size':'auto '+o.height+'px','height':o.height+'px'});
+		}
+	}else{
+		if(o.height>250){
+			$(o).parent().css({'background-size':'100% auto','height':'250px'});
+		}else{
+			$(o).parent().css({'background-size':'100% auto','height':o.height+'px'});
+		}		
+	}
+	$(o).hide();
+}
+function load_err_banner(o){
+	load_err_pic = true;
+	o.src='__STATIC__/group/qun-bg.jpg';
+	$(o).show();
+}
+</script>
+	<div class="qun-head">
+	     <img class="qun-icon" src="{$info.picurl}" onerror="this.src='__STATIC__/images/nopic.png'"> 
+		{if $info.status==2}<img class="qun-v" src="__STATIC__/group/v.png">{/if}
+		<div class="banner"><img onload="load_banner(this)" onerror="load_err_banner(this);" src="{$info.banner}"></div>
+		<div class="word">
+		{if ($gid=="1"||$gid=="-1")&&fun('qun@get_group',4,$info.mid)}
+			 <span class="join" onclick="qun_api({$id},'up')">升级</span>
+		{elseif $gid=="" /}
+			<span class="join" onclick="qun_api({$id})">加入</span>
+		{else /}
+			<span class="join" onclick="qun_api({$id},'quit')">退出</span> 
+		{/if} 
+		<span><a href="javascript:" onclick='KF.chat_win({uid:"{$info.uid}",username:"{$info.uid|get_user_name}",icon:"{$info.uid|get_user_icon}",});'>私聊</a><!--<a href="{:murl('member/msg/add',['uid'=>$info.uid])}" class="_pop">发消息</a>--></span> 
+						{if ($info.status<2&&$info.uid!=$userdb.uid&&in_array($info.uid,explode(',',$webdb.qun_user_show_claim)))}<span><a href="{:murl('qun/claim/add',['aid'=>$id])}">认领</a></span> {/if}
+		</div>
+	</div>
+
+<!--加入圈子-->
+<script type="text/javascript">var qun_api_url = "{:urls('qun/wxapp.member/api')}";</script>
+<script type="text/javascript" src="__STATIC__/qun/qun.js?f"></script>

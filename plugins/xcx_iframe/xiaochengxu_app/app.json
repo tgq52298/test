@@ -1,0 +1,16 @@
+{
+  "pages": [
+    
+    "pages/start/index",
+    "pages/index/index"
+        
+  ],
+  "window": {
+    "navigationBarBackgroundColor": "#479de6",
+    "navigationBarTextStyle": "white",
+    "navigationBarTitleText": "齐博微圈",
+    "backgroundColor": "#f8f8f8",
+    "backgroundTextStyle": "dark"
+  },
+  "debug": false
+}

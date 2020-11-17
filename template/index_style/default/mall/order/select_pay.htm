@@ -1,0 +1,66 @@
+﻿{extend name="$index_style_layout" /}
+{block name="head_title"}余额支付{/block}
+{block name="body_content"}
+<style>
+.b{font-weight:bold;}
+.red{color:#ff3333;}
+.blue{color:blue;}
+.RmbPayCont{background:#f3f3f3;}
+.payAdd h3{height:65px; text-align:center; line-height:65px; color:#fff;  font-size:22px; background:#32a5f0;}
+.payAdd h3 span{position:relative; width:100px; display:block; margin:0 auto; padding-left:60px;}
+.payAdd h3 span:before{content:''; position:absolute; display:block; width:26px; height:31px; top:16px; left:32px; background:url('wpay.png') 0 -105px no-repeat;}
+.RmbPayCont .m-payT{
+    width: 96%;
+    height: 25px;
+    line-height: 25px;
+    font-size: 14px;
+    background: #F3F3F3;
+    padding: 10px 0;
+}
+.m-payT span{height:20px; line-height:20px;}
+.m-payT span:first-child{float:left; padding-left:22px;}
+.m-payT span:last-child{float:right; color:#868686;}
+.RmbPayCont .ws-pay{background:#fff; padding:0 3%;}
+.ws-pay .m-payAll{padding-top:25px; padding-bottom:25px; font-size:22px; border-bottom:1px dashed #e5e5e5; text-align:center;}
+.ws-pay .m-payUse{margin:30px 0 30px 0; overflow:hidden;}
+.ws-pay .m-payUse div:first-child{float:left; font-size:18px;}
+
+.ws-pay .m-payPw{font-size:18px; padding-bottom:40px;}
+.ws-pay .m-payPw input{max-width:400px; width:67%; height:50px; border:1px solid #e5e5e5; border-radius:5px; background:#fafafa; text-align:center; line-height:50px; font-size:16px;}
+.RmbPayCont .m-payBt{text-align:center; padding-bottom:40px;}
+.RmbPayCont .m-payBt input{max-width:400px; width:67%; height:66px; border:0; border-radius:5px; background:#ff3333; text-align:center; line-height:66px; color:#fff; font-size:18px;}
+.RmbPayCont .m-payInfo{height:25px; line-height:25px; font-size:14px; margin:20px 3%;}
+.RmbPayCont .m-otherPay{padding-bottom:20px; padding-top:10px;}
+.RmbPayCont .m-otherPay span{position:relative; display:block; width:312px; height:45px; margin:0 auto;}
+.RmbPayCont .m-otherPay a{width:245px; height:45px; margin-left:45px; letter-spacing:5px; font-size:18px; line-height:45px; display:block; color:#fff; background:#ff9933; border-radius:5px; text-align:center; font-family: microsoft yahei;}
+.fa-money {
+    color: #72B9E8;
+    font-size: 16px;
+}
+.fa-check{color: #F6B400;font-size: 30px;}
+.fa-arrow-right{color: #1AAF99;font-size: 20px;}
+</style>
+
+<div class="RmbPayCont payAdd">
+	<form name="form1" method="post" action="{:urls('rmb_pay')}">
+		<div class="m-payT">
+			<span><i class='fa fa-fw fa-money'></i>您正在使用余额支付</span><span>{:date('Y-m-d H:i:s',time())}</span>
+		</div>
+		<div class="ws-pay wx-pay">
+			<div class="m-payAll">本次共需支付：<span class="b red">{$total_money}</span> 元</div>
+			<div class="m-payUse"><div>您当前帐户可用余额为：<span class="b red">{$userdb[rmb]}</span> 元</div></div>
+			<div class="m-payPw">支付密码：<input type="password" name="pwd" size="8" placeholder="使用余额支付密码"/></div>
+			<div class="m-payBt"><input type="submit" name="Submit" value="确认支付"/></div>
+			<input type="hidden" name="ids" value="{$ids}"/>
+			<input type="hidden" name="total_money" value="{$total_money}"/>
+		</div>
+		<div class="m-payInfo"><i class='fa fa-fw fa-check'></i>您若不使用余额支付,可以选择支付宝支付,请点击</div>
+		<div class="m-otherPay"><span><a href="{$ali_url}">使用支付宝付款</a></span></div>
+	</form>
+</div>
+
+
+
+{/block}
+
+

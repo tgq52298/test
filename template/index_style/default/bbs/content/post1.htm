@@ -1,0 +1,434 @@
+{extend name="$index_style_layout" /}
+{block name="head_title"}{:M('name')}{/block}
+
+{block name="body_content"}
+<link rel="stylesheet" href="__STATIC__/bbs/post.css?a">
+<div class="bbsContainer">
+<!--
+	<ul class="topBoxs">
+		<li class="logo"><a href="/"><img src="__STATIC__/bbs/logo1.png"></a></li>
+		<li class="info"><span>齐博官方论坛</span><em>会员2540位</em></li>
+		<li class="atten"><a href="{:get_url('member')}"><i class="si si-user"></i></a></li>
+	</ul>
+	<div class="quideBox"><a href="{:urls('index/index')}">社区主页</a> -&gt; {notempty name="fid"}<a href="{:urls('content/index',['fid'=>$fid])}">{:get_sort($fid)}</a> &gt;{/notempty} 发表帖子</div>
+-->
+	<form class="ajax-post" action="" method="post">
+	<div class="PostBox">
+		{:hook_listen('template_form_head',$info,null,true)}
+		<ul>
+			<ol>标题</ol>
+			<li><input type="text" value="{$info.title}" name="title" placeholder="请输入标题" required/></li>
+		</ul>
+
+		<ul>
+			<ol>所属分类</ol>
+			<li>
+			<select name="fid">
+				<option value="0">请选择栏目</option>
+				{volist name="''|sort_config" id="rs"}
+				<option value="{$rs.id}" {eq name="$fid" value="$rs.id"}selected{/eq}>{$rs.title_prefix}{$rs.name}</option>
+				{/volist}
+			</select>
+			
+{if (!isset($webdb['M__qun']['modules_show_select_qun'])||in_array(config('system_dirname'),$webdb['M__qun']['modules_show_select_qun']))&&((empty($id)&&empty($ext_id))||$id)&&getArray($qun=fun('qun@myjoin'))}	 
+			<select name="ext_id" style="margin-left:10px;">
+					<option value="{$info.ext_id|default=0}">归属__QUN__</option>
+					{volist name="$qun" id="rs"}
+					<option value="{$rs.id}" {eq name="$info.ext_id" value="$rs.id"}selected{/eq}>{$rs.title}</option>
+					{/volist}
+				</select>			 
+{/if}
+
+{if (!isset($webdb['M__qun']['modules_show_select_topic'])||in_array(config('system_dirname'), $webdb['M__qun']['modules_show_select_topic']) )&&empty($info)&&$qun=fun('qun@myjoin')}
+				<select name="topic_aid">
+					<option value="{$info.ext_id|default=0}">归属专题</option>
+					{volist name="$qun" id="rs"}
+					{if $rs.uid==$userdb.uid}
+					<option value="{$rs.id}" {eq name="$info.ext_id" value="$rs.id"}selected{/eq}>{$rs.title}</option>
+					{/if}
+					{/volist}
+				</select>
+{/if}
+
+			</li>
+		</ul>
+
+		<ul>
+			<ol>内容</ol>
+			<li>
+				<link rel="stylesheet" href="__STATIC__/libs/summernote/bootstrap.min.css" />
+				<script type="text/javascript" src="__STATIC__/libs/summernote/bootstrap.min.js"></script>
+				<link rel="stylesheet" href="__STATIC__/libs/summernote/summernote.css">
+				<script type="text/javascript" src="__STATIC__/libs/summernote/summernote.js"></script>
+				<script type="text/javascript" src="__STATIC__/libs/summernote/lang/summernote-zh-CN.js"></script>
+				<script type="text/javascript">
+				var v_summernote;
+					$(function() {
+					  v_summernote = $('.summernote').summernote({
+						lang: 'zh-CN',
+						height: 200,
+						callbacks: {
+								onImageUpload: function (files) {
+									sendFile(v_summernote, files[0]);
+								}
+						},
+						toolbar: [
+									['codeview',['fullscreen','undo','redo', 'clear','codeview']],                
+									['style', ['bold', 'italic', 'underline','strikethrough','hr','link']],
+								],
+					  });
+
+					  var sendFile = function(o,files){
+							  var formData = new FormData();
+								formData.append("file", files);
+								$.ajax({
+								url: "{:urls('index/attachment/upload','dir=images&from=ueditor&module=bbs')}?action=uploadimage",
+									data: formData,
+									cache: false,
+									contentType: false,
+									processData: false,
+									type: 'POST',
+									success: function (data) {
+										o.summernote('insertImage', data.url);
+									}
+								});							  
+						  }
+					});
+				</script>
+				<textarea name="content" class="summernote" placeholder="请输入内容">{$info.content}</textarea>
+				{include file="index@editor/wap_btn" /}
+<div class="slectEditMode"><a href="javascript:showEditMode();">布局模板</a> <a href="javascript:add_other_mv();">站外视频</a> <a href="javascript:set_reply_view()" style="background:orange;">回复可见</a> <a href="javascript:set_group_view()" style="background:orange;">分组查看</a></div>
+
+<div class="slectEditMode"><a href="javascript:set_password_view()" style="background:orange;">密码查看</a> <a href="javascript:set_paymoney_view()" style="background:orange;">积分查看</a>  <a href="javascript:set_qun_view()" style="background:orange;">圈内可见</a></div>
+{include file="content/post_set" /}<!--浏览权限功能-->
+			</li>
+		</ul>
+		<ul class="uploadImg" style="position:relative;">
+		    <div style="display:none;">
+				<input type="file" name="fileToUpload" id="fileToUpload" accept="image/*" multiple/>
+				<input type="text" name="picurl" value="{$info.picurl}" id="compressValue"  style="width:100%;" /> 
+			</div>
+			<ol>上传图片</ol>
+			<li onclick='$("#fileToUpload").click()'><i class="si si-camera"></i></li>
+			
+			<em class="postmv">
+			<input type="hidden" name="mvurl" value="{:input('mvurl')?input('mvurl'):$info.mvurl}">
+			<ol style="position:absolute;right:10px;top:0px;">上传视频</ol>
+			<li style="position:absolute;right:0px;top:30px;{if input('mvurl')!=''}color:red;{/if}" onclick="post_mv()"><i class="fa fa-video-camera"></i></li>
+			</em>
+<script src="__STATIC__/js/jweixin.js"></script>
+<script type="text/javascript">
+var view_type = "";
+
+if(typeof(window.inApk)=='object'){		//在APP中访问网站
+	$(".postmv").show();
+	view_type = 'qbapp';
+}else{
+	wx.miniProgram.getEnv(function(res) {	
+		if(res.miniprogram==true){		//在小程序中访问
+			$(".postmv").show();
+			view_type = 'wxapp';
+		}
+	});
+}
+
+function post_mv(){
+	if(typeof(api)=='object'){
+		api_choose_mv();
+	}else if(view_type == 'qbapp'){
+		layer.msg('请稍候...');
+		$.get("{:urls('index/ajax/get_token')}",function(res){
+			if(res.code==0){
+				window.inApk.app_postmv(window.location.href,res.data);	//在APP中打开
+			}else{
+				layer.alert('TOKEN获取失败,'+res.msg);
+			}
+		});
+	}else if(view_type == 'wxapp'){
+		wxapp_up_mv();
+	}else{
+		$('.MoreInfoBox').fadeIn();
+		$('.MoreInfoBox').css({'display':'flex'});
+	}
+}
+
+function api_choose_mv(){
+	var fs = api.require('fs');
+
+	api.getPicture({
+		sourceType: 'library',
+		encodingType: 'jpg',
+		mediaValue: 'video',
+		destinationType: 'url',
+		videoQuality:'medium',
+		allowEdit: true,
+		quality: 50,
+		targetWidth: 100,
+		targetHeight: 100,
+		saveToPhotoAlbum: false
+	}, function(ret, err) {
+		if (ret) {
+			//alert(JSON.stringify(ret));
+			var mvtime = ret.duration; //视频时长
+			if(mvtime<0){
+				alert("视频时长获取失败");
+				return false;
+			}
+			var mvpath = ret.data;	//视频地址
+			var ret = fs.getAttributeSync({
+				path: mvpath
+			});
+			if (ret.status) {
+				var mvsize = (ret.attribute.size/(1024*1024)).toFixed(2); //视频大小,单位M
+				if(mvtime<0){
+					alert("视频大小获取失败");
+					return false;
+				}
+				if(mvsize>20){	//大于20M的视频就要提示压缩,否则就不能上传
+					var qiboBase = api.require('qiboBase');
+					if(qiboBase==undefined){
+						alert("当前视频 "+mvsize+" M，大于20M的视频，请用微信转发好友压缩另存后，再重新选择上传.");
+						return false;
+					}else{
+						compressVideo(qiboBase,mvpath);
+					}
+				}else{
+					$.get("{:urls('index/ajax/get_token')}",function(res){
+						if(res.code==0){
+							api_post_mv(mvpath,res.data,mvsize);
+						}else{
+							layer.alert('无法上传,TOKEN获取失败,'+res.msg);
+						}
+					});
+				}				
+			}
+		} else {
+			alert(JSON.stringify(err));
+		}
+	});
+}
+
+function compressVideo(qiboBase,mvpath){
+	var param = {path:mvpath};
+	var resultCallback = function(ret, err){
+		//alert( JSON.stringify(ret) )
+		if(ret.size>0){
+			var size = ret.size;
+			var path = ret.path;
+			layer.msg("视频压缩后是："+size+" M");
+			$.get("{:urls('index/ajax/get_token')}",function(res){
+				if(res.code==0){
+					api_post_mv(path,res.data,size);
+				}else{
+					layer.alert('压缩后无法上传,TOKEN获取失败,'+res.msg);
+				}
+			});			
+		}else{
+			layer.alert("视频压缩失败!");
+		}
+	}
+	qiboBase.compressMv(param,resultCallback);
+}
+
+function api_post_mv(path,u_token,size){
+	layer.msg("视频大小尺寸是："+size+" M，正在上传当中,请稍候...",{time:10000});
+	console.log("{:get_url(urls('bbs/wxapp.post/postFile'))}");
+	api.ajax({
+		url: "{:get_url(urls('bbs/wxapp.post/postFile'))}",
+		method: 'post',
+		timeout:180,	//3分钟超时
+		data: {
+			values: {
+				token: u_token,
+			},
+			files: {
+				file: path,
+			}
+		}
+	}, function(res, err) {
+		if (res) {
+			//api.alert({ msg: JSON.stringify(res) });
+			if(res.code==0){
+				$("input[name='mvurl']").val(res.data.url);
+				$(".postmv li").css('color','red');
+				layer.msg("上传成功"+res.data.url);
+			}else{
+				layer.alert(res.msg);
+			}
+		} else {
+			api.alert({ msg: JSON.stringify(err) });
+		}
+	});
+}
+
+function wxapp_up_mv(){
+	wx.miniProgram.navigateTo({ url: "/pages/bbs/postmv/index?uids={:mymd5($userdb['uid'].','.time())}&weburl={:urlencode(str_replace('?sec_up=1','',get_url('location')).'?havelogin=1')}"});
+}
+
+//秒传,提醒要立即上传,主要来自二维码识别
+{if input('sec_up')==1} wxapp_up_mv(); {/if}
+</script>
+
+
+		</ul>
+		<div class="ListImgs"></div>
+		{:hook_listen('template_form_foot',$info,null,true)}
+		<div class="button"><button type="submit">{empty name='id'}发表帖子{else /}修改帖子{/empty}</button></div>		
+	</div>
+	</form>
+</div>
+
+<!-----提示进入小程序----->
+<style type="text/css">
+.MoreInfoBox {
+	position: fixed;
+	width: 100%;
+	height: 100%;
+	z-index: 10000000;
+	left: 0px;
+	top: 0px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	display: none
+}
+
+.MoreInfoBox .BackBox {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	background: rgba(0,0,0,0.6);
+	left: 0;
+	top: 0
+}
+
+.MoreInfoBox .ShowinfoBox {
+	background: #FFF;
+	position: relative;
+	border-radius: 5px
+}
+
+.MoreInfoBox .ShowinfoBox img {
+	width: 200px;
+	margin: 10px
+}
+</style>
+<div class="MoreInfoBox">
+	<div class="BackBox" onclick="$('.MoreInfoBox').fadeOut();"></div>
+	<div class="ShowinfoBox">
+{if (config('webdb.wxapp_appid')&&config('webdb.wxapp_appsecret'))}
+	<img src="{:fun('wxapp@qun_code','bbs@add_'.intval(input('fid')).'_'.intval(input('ext_id')))}">
+{/if}<br>长按识别，进小程序才能发视频
+	</div>
+</div>
+<!-----提示进入小程序----->
+
+<script type="text/javascript" src="__STATIC__/js/base64uppic.js"></script>
+<script type="text/javascript">
+		var severUrl = "{:urls('index/attachment/upload','dir=images&from=base64&module=bbs')}";
+		var pics = [];
+        //图片上传change事件
+        $('#fileToUpload').change(function(){			
+            uploadBtnChange($(this).attr("id"),'compressValue',pics,viewpics);
+        });
+
+		function viewpics(url,pic_array){
+			var html = '';
+			pic_array.forEach(function(f){
+				if(f.indexOf('://')==-1 && f.indexOf('/public/')==-1){
+					f = '/public/'+f;
+				}
+				html += '<div><span><img src="'+f+'"></span><em class="del"><i class="fa fa-minus-circle"></i></em><a href="javascript:" ><em class="insert"><i class="fa fa-plus-circle"></i></em></a></div>';
+			});
+			$(".ListImgs").html(html);
+			del_pic();
+			insert_pic();
+		}
+
+		if($("#compressValue").val()!='')pics = $("#compressValue").val().split(',');
+		viewpics('',pics);		
+		
+
+		function del_pic(){
+			$(".ListImgs .del").click(function(e){
+				//这里删除的图片没有真正从服务器删除
+				$(this).parent().remove();
+				pics = [];
+				var obj = $(".ListImgs img");
+				obj.each(function(e){
+					var img = $(this).attr("src");
+					img = img.replace('/public/','');
+					pics.push(img);
+					$("#compressValue").val( pics.join(',') );
+				});
+				if(obj.length==0){
+					$("#compressValue").val('');
+				}			
+			});
+		}
+		//del_pic();
+
+		function insert_pic(){	//往文中插入组图
+			$(".ListImgs .insert").click(function(e){
+				var url = $(this).parent().parent().find('img').attr('src');
+				v_summernote.summernote('insertText', ' ');	//焦点获取失败,避免下面的报错
+				v_summernote.summernote('pasteHTML', '<!--#@#@#@#@#-->');
+				var cache_summernote_code = v_summernote.summernote('code');
+				if(cache_summernote_code.indexOf('<!--#@#@#@#@#-->')==-1){
+					layer.alert("焦点获取失败,请重新点击选择位置,要在哪插入图片!");
+					return false;
+				}
+				v_summernote.summernote('code','');
+				cache_summernote_code = cache_summernote_code.replace(/<!--#@#@#@#@#-->/, '<br><img style="max-width:100%;" src="'+url+'"><br><br>');
+				cache_summernote_code = cache_summernote_code.replace(/<p>/, '');
+				cache_summernote_code = cache_summernote_code.replace(/<\/p>/, '');
+				v_summernote.summernote('pasteHTML',cache_summernote_code);
+				v_summernote.summernote('focus');
+				$('.panel-body').scrollTop(8000);
+			});
+		}
+		//insert_pic();
+
+var havepost = false;
+var url = "{empty name='id'}{:urls('wxapp.post/add',['ext_sys'=>$ext_sys,'ext_id'=>$ext_id])}{else /}{:urls('wxapp.post/edit',['id'=>$id])}{/empty}";
+	
+	$(document).ready(function(){
+        $('.ajax-post').submit(function () {
+            var form_data = $(this).serialize();
+			if(havepost==true){
+				layer.msg('请不要重复提交');
+				return false;
+			}
+			havepost = true;
+            $.post(url, form_data).success(function (res) {				
+                if (res.code==0) {
+					layer.msg(res.msg);
+                    setTimeout(function () {
+                        location.href = "{:urls('show')}?id=" + res.data.id;
+                    }, 500);
+                } else {
+					havepost = false;
+					layer.open({title: '提示',content: res.msg});
+                }
+            }).fail(function () {
+				havepost = false;
+				layer.open({title: '提示',content: '服务器发生错误'});
+            });
+            return false;
+        });
+    });
+
+
+//记录上次选择的哪个圈子
+$("select[name=ext_id]").change(function(){
+	$.cookie('choose_qun_id', $(this).val(), { expires: 60*24*30, path: '/' });
+});
+$(document).ready(function(){
+	var value = $.cookie('choose_qun_id');
+	if(value>0  && parseInt("{$id|intval}")<1){
+		$("select[name=ext_id] option[value='"+value+"']").attr("selected",true)
+	}
+});
+
+</script>
+{/block}

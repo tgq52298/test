@@ -1,0 +1,79 @@
+{extend name="$index_style_layout" /}
+
+<!--SEO相关-->
+{block name="head_title"}{$webdb.mseo_title?:$webdb.seo_title}{/block}
+{block name="head_keword"}{$webdb.mseo_keyword?:$webdb.seo_keyword}{/block}
+{block name="head_description"}{$webdb.mseo_description?:$webdb.seo_description}{/block}
+
+{block name="body_content"}
+
+<link rel="stylesheet" href="/public/static/bbs/list.css?f">
+<div class="MainContainer">
+
+	<div class="bbsindexbanner">
+	{qb:hy name="pc_bbs_index_1200" where="" val="datas" type="labelmodel" time="600"}
+		{$datas}
+	{/qb:hy}
+	</div>
+
+	<!-- 栏目列表 -->
+	{include file="scroll_sort" /}
+
+	<div class="Container">
+		<div class="LeftCnt"> 
+			{qb:hy name="pc_bbs_index_860" where="index_style/default/bbs/index/pc_model/bbsinfo" val="datas" type="labelmodel" time="600"}
+				{$datas}
+			{/qb:hy}			
+			<div class="ListBox">
+				<div class="head">
+					<span onclick="listbbs(0,'list')" class="ck">最新回复</span>
+					<span onclick="listbbs(1,'id')">最新帖子</span>
+					<span onclick="listbbs(2,'status')">推荐帖子</span>
+					<span onclick="listbbs(3,'view')">热门帖子</span>					 
+				</div>
+				<div class="ShowLists">
+
+				{qb:hy name="pc_bbs_index_860_titles" where="index_style/default/bbs/index/pc_model/live_video,index_style/default/bbs/index/pc_model/qun_online" val="datas" type="labelmodel" time="600"}
+					{$datas}
+				{/qb:hy}
+
+				<!--name是标签名，跟通用标签不能重名，rows取几条数据,order按什么方式排序，list代表可控排序，id即时间,view代表浏览量-->
+				{qb:listpage name="bbs_list_page_pc" status="1" rows="20" order="list"}
+					<ul class="list">
+						<li class="icon"><a href="{:get_url('user',['uid'=>$rs['uid']])}" target="_blank"><img src="{:get_user_icon($rs['uid'])}" onerror="this.src='__STATIC__/images/nobody.gif'" ></a></li>
+						<li class="info">
+							<div class="title"><a target="_blank" href="{:urls('content/show',['id'=>$rs['id']])}">{$rs.title}</a>
+							{if $rs.list>time()}<span class="top">顶</span>{/if} {eq name="rs.status" value="2"}<span class="com">精</span>{/eq} {gt name="rs.view" value="200"}<span class="hot">热</span>{/gt}  {if (time()-$rs.create_time<3600*24)}<span class="hot">新</span> {/if}</div>
+							<div class="more"><a href="{:get_url('user',['uid'=>$rs['uid']])}" target="_blank">{$rs.username}</a> <span><i class="fa fa-clock-o"></i>{$rs.create_time|format_time=true} <i class="fa fa-fw fa-user-o"></i>回复: {$rs.replyuser} {$rs.update_time|format_time=true}</span></div>
+						</li>
+						<li class="hits"><i class="si si-eye"></i>{$rs.view}</li>
+						<li class="reply"><i class="fa fa-commenting-o"></i>{$rs.replynum}</li>
+					</ul>
+				{/qb:listpage} 
+				</div>
+				<div style="display:none;">传统分页 {$pages}</div> 
+				<div class="ShowMoreBBs"><button type="button" onclick="ShowMoreBBs()">查看更多</button></div>
+			</div>
+		</div>
+		<div class="RightCnt">
+			<div class="RightSide">
+			{qb:hy name="pc_bbs_index_side" where="index_style/default/bbs/index/pc_model/post_info,chat,goodbbslist,goodqun,bbssort,friendlink,imgcode" val="datas" type="labelmodel" time="600"}
+					{$datas}
+			{/qb:hy}				
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="topUpCont">
+    <ul>
+    	<ol><i class="fa fa-angle-double-up"></i></ol>
+        <li>回到顶部</li>
+    </ul>
+</div>
+
+<script type="text/javascript">
+var page_url = '{qb:list_url name="bbs_list_page_pc" /}';
+</script>
+<script type="text/javascript" src="__STATIC__/bbs/pc_index.js"></script>
+{/block}

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>{$info.title}</title>
+<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<link rel="stylesheet" href="__STATIC__/css/base.css">
+<link rel="stylesheet" href="__STATIC__/css/qb_ui.css">
+<link rel="stylesheet" href="__STATIC__/icon/icon.css">
+<script type="text/javascript" src="__STATIC__/js/core/jquery.min.js"></script>
+<script type="text/javascript" src="__STATIC__/layer/layer.js"></script>
+</head>
+<body onload="share_btn()">
+
+
+<script type="text/javascript">
+var load_err_pic = false;
+function load_banner(o){
+	if(load_err_pic==true){
+		return ;
+	}
+	if(o.width>o.height){
+		if(o.height<120){
+			$(o).parent().css({'background-size':'auto 120px','height':'120px'});
+		}else{
+			$(o).parent().css({'background-size':'auto '+o.height+'px','height':o.height+'px'});
+		}
+	}else{
+		if(o.height>250){
+			$(o).parent().css({'background-size':'100% auto','height':'250px'});
+		}else{
+			$(o).parent().css({'background-size':'100% auto','height':o.height+'px'});
+		}		
+	}
+	$(o).hide();
+}
+function load_err_banner(o){
+	load_err_pic = true;
+	o.src='__STATIC__/group/hyshow/pc_banner.jpg';
+	$(o).show();
+}
+</script>
+
+{include file="$haibao" /}
+</body>
+</html>

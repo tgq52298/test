@@ -1,0 +1,219 @@
+{extend name="$member_style_layout" /}
+
+{block name="title"}订单资料详情{/block}
+
+{block name="content"}
+<style type="text/css">
+<!--
+.FormTable,.FormTable td{
+	border:#DDD solid 1px;
+}
+.FormTable td.tdL{
+	font-weight:bold;
+}
+.FormTable td.tdR{
+	padding:5px;
+	vertical-align:middle;
+	line-height:20px;
+}
+-->
+</style>
+<div class="MainCont">
+	<div class="head"><div class="tag">用户订单资料详情如下</div></div>
+    <div class="cont">
+     	<table width="100%" border="0" cellspacing="0" cellpadding="0" class="FormTable">
+          <tr><th>订购产品</th></tr>
+        </table>
+        <table width="100%" border="0" cellspacing="0" cellpadding="0" class="ListTable mtop10">
+          <tr>
+            <th width="60%">名称</th>
+            <th width="20%">订购数量</th>
+            <th width="20%">单价</th>
+          </tr>
+{volist name="info.shop_db" id="rs"}
+          <tr>
+            <td class="tL"><a href="{:iurl('content/show',['id'=>$rs['id']])}" target="_blank">{$info.shoptitle?:$rs.title}</a></td>
+            <td>X{$rs._num}</td>
+            <td>{if $rs.qun_money>0} {$rs.qun_money}币 {else /} &yen;{$rs._price} {/if}</td>
+          </tr>
+{/volist}
+        </table>
+    	<table width="100%" border="0" cellspacing="0" cellpadding="0" class="FormTable mtop10">
+		<tr>
+            <td class="tdL">订单号:</td>
+            <td class="tdR">{$info.order_sn}</td>
+          </tr>
+{if $info.shipping_code!=''}
+		  <tr>
+            <td class="tdL">序列号:</td>
+            <td class="tdR">{$info.shipping_name}{$info.shipping_code}</td>
+          </tr>
+{/if}
+          <tr>
+            <td class="tdL">订购者ID:</td>
+            <td class="tdR"><a href="{:get_url('user',['uid'=>$info['uid']])}" target="_blank">{$info.uid|get_user_name}</a></td>
+          </tr>
+          <tr>
+            <td class="tdL">订购时间:</td>
+            <td class="tdR">{$info.create_time}</td>
+          </tr>
+{if $info.order_day}
+		  <tr>
+            <td class="tdL">预约日期:</td>
+            <td class="tdR">{:format_order_time($info)} </td>
+          </tr>
+          <tr>
+{/if}
+{if $info.qun_money>0}
+		<tr>
+            <td class="tdL">应付圈币:</td>
+            <td class="tdR"> {$info.qun_money} 币</td>
+         </tr>
+		 <tr>
+            <td class="tdL">支付与否:</td>
+            <td class="tdR">
+			{if $info.receive_status==1}
+				<font color="red">已消费,交易完毕</font>
+			{else /}
+				{eq name="$info.pay_status" value="1"}
+					已支付
+				{else /}
+					未支付 
+				{/eq}
+			{/if}
+           </td>
+         </tr>
+{elseif (is_numeric($rs._paytype)&&$rs._paytype==0)||(is_numeric($rs.paytype)&&$rs.paytype==0)}
+		<!--分期付款-->
+		  <tr>
+            <td class="tdL">应付订金:</td>
+            <td class="tdR">&yen;{$info.fewmoney}</td>
+          </tr>
+		  <tr>
+            <td class="tdL">应付余款:</td>
+            <td class="tdR">&yen;{$info.totalmoney}</td>
+          </tr>           
+		   <tr>
+            <td class="tdL">付订金与否:</td>
+            <td class="tdR">
+			{eq name="$info.few_ifpay" value="1"}
+				已付订金
+			{elseif $info.few_ifpay==-1 /}
+				<a style="border:1px solid #ddd;padding:5px;color:red;" class="tui_ding" data-id="{$info.id}" href="#" title="点击操作">请求退订</a> 
+			{else /}
+				{if $info.receive_status==1}
+					已线下付订金
+				{else /}
+					未付订金
+				{/if}
+			{/eq}     
+           </td>
+          </tr>
+          <tr>
+            <td class="tdL">付余款与否:</td>
+            <td class="tdR">
+			{if $info.receive_status==1}
+				{eq name="$info.pay_status" value="1"}
+					<font color="red">已消费,交易完毕,已线上付余款({$info.pay_money}元)</font>
+				{else /}
+					<font color="red">已消费,交易完毕,已线下付余款({$info.pay_money}元)</font>
+				{/eq}
+			{else /}
+				{eq name="$info.pay_status" value="1"}
+					已付余款
+				{else /}
+					未付余款 
+				{/eq}
+			{/if}
+			</td>
+          </tr>
+{else /}
+		<!--非分期付款-->
+		<tr>
+            <td class="tdL">应付金额:</td>
+            <td class="tdR">&yen;{$info.fewmoney}</td>
+          </tr>
+		  <tr>
+            <td class="tdL">付款与否:</td>
+            <td class="tdR">
+			{if $info.receive_status==1}
+				{if $info.few_ifpay==1}
+					<font color="red">已消费,交易完毕,线上付款({$info.fewmoney}元)</font>
+				{else /}
+					<font color="red">已消费,交易完毕,线下付款({$info.fewmoney}元)</font>
+				{/if}
+			{else /}
+				{eq name="$info.few_ifpay" value="1"}
+					已付全款
+				{elseif $info.few_ifpay==-1 /}
+				  <a style="border:1px solid #ddd;padding:5px;color:red;" class="tui_ding" data-id="{$info.id}" href="#" title="点击同意退全款">同意退全款</a> 
+				{else /}
+					未付款 
+				{/eq}
+			{/if}
+           </td>
+          </tr>
+{/if}		  
+
+{if $info.admin_note!=''}
+		<tr>
+            <td class="tdL">备注信息:</td>
+            <td class="tdR"> {$info.admin_note} </td>
+         </tr>
+{/if}
+{if $info.hx_uid}
+		<tr>
+            <td class="tdL">受指派任务:</td>
+            <td class="tdR"> {:get_user($info.hx_uid)['qun_group'][$rs['ext_id']]['nickname']} </td>
+         </tr>
+{/if}
+
+ <!--
+          <tr>
+            <td class="tdL">支付方式:</td>
+            <td class="tdR">{$info.pay_name}</td>
+          </tr> -->
+{qb:showpage field="picurl,title"}
+          <tr>
+            <td class="tdL">{$rs.title}:</td>
+            <td class="tdR">{$rs.value}</td>
+          </tr>
+{/qb:showpage}
+ 
+{volist name=":json_decode($info.order_field,true)" id="rs"}
+          <tr>
+            <td class="tdL">{$rs.title}:</td>
+            <td class="tdR">{$rs.value}</td>
+          </tr>
+{/volist}
+
+		  <tr>
+            <td class="tdL"><br/></td>
+            <td class="tdR">
+			{if $show_code||$webdb.force_hexiao}
+				{if $info.receive_status}
+					<a href="#" style="background:red;padding:5px 15px 5px 15px;color:#fff;">已经消费</a>
+				{else /}
+					<a href="{:url('receive',['id'=>$id])}?pwd={$pwd}" style="background:orange;padding:5px 15px 5px 15px;color:#fff;">确认消费</a>
+				{/if}
+			{else /}
+				<a href="javascript:history.go(-1);">返回</a>  
+			{/if}
+			</td>
+          </tr>
+        </table>
+    </div>
+</div>
+
+<script type="text/javascript">
+$('.tui_ding').on('click', function() {
+	var url ="{:urls('tui_ding')}?id="+$(this).data('id')+"&type="
+   layer.tips('<a href="'+url+'agree" style="color:#fff;">同意退订</a><br><a href="'+url+'unagree" style="color:#fff;">拒绝退订</a>',$(this), {
+                 tips: [3, '#0FA6D8'],
+                 tipsMore: false,
+                 time:5000,
+       });
+});
+</script>
+
+{/block}

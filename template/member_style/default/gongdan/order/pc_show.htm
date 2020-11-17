@@ -1,0 +1,137 @@
+{extend name="$member_style_layout" /}
+
+{block name="title"}工单资料详情{/block}
+
+{block name="content"}
+<style type="text/css">
+<!--
+.FormTable,.FormTable td{
+	border:#DDD solid 1px;
+}
+.FormTable td.tdL{
+	font-weight:bold;
+}
+.FormTable td.tdR{
+	padding:5px;
+	vertical-align:middle;
+	line-height:20px;
+}
+-->
+</style>
+<link rel="stylesheet" href="__STATIC__/layui/css/layui.css">
+<div class="MainCont">
+	<div class="head"><div class="tag">用户工单资料详情如下</div></div>
+    <div class="cont">
+     	<table width="100%" border="0" cellspacing="0" cellpadding="0" class="FormTable">
+          <tr><th>下单信息</th></tr>
+        </table>
+        <table width="100%" border="0" cellspacing="0" cellpadding="0" class="ListTable mtop10">
+          <tr>
+            <th>工单名称</th> 
+          </tr>
+{volist name="info.shop_db" id="rs"}
+          <tr>
+            <td class="tL"><a href="{:urls('content/show',['id'=>$rs['id']])}">{$rs.title}</a></td> 
+          </tr>
+{/volist}
+        </table>
+    	<table width="100%" border="0" cellspacing="0" cellpadding="0" class="FormTable mtop10">
+		<tr>
+            <td class="tdL">工单号:</td>
+            <td class="tdR">{$info.order_sn}</td>
+          </tr><!--
+		  <tr>
+            <td class="tdL">物流单号:</td>
+            <td class="tdR">{$info.shipping_code}</td>
+          </tr>-->
+          <tr>
+            <td class="tdL">客户ID:</td>
+            <td class="tdR"><a href="{:get_url('user',['uid'=>$info['uid']])}" target="_blank">{$info.uid|get_user_name}</a></td>
+          </tr>
+          <tr>
+            <td class="tdL">下单时间:</td>
+            <td class="tdR">{$info.create_time}</td>
+          </tr> 
+
+{qb:showpage field="fid,title" f_array="$f_array"}
+          <tr>
+            <td class="tdL">{$rs.title}:</td>
+            <td class="tdR">{$rs.value}</td>
+          </tr>
+ {/qb:showpage}
+		
+		{if $info['shop_db'][0]['robtype']}
+		 <tr>
+            <td class="tdL">接单者</td>
+            <td class="tdR">
+			{if $info.robuid}
+				<a href="{:get_url('user',$info.robuid)}" target="_blank" class="fa fa-user-circle">{$info.robuid|get_user_name}</a> 
+			{elseif $info.roblist /}
+				<a url="{volist name=":explode(',',$info.roblist)" id="uid"}<a href='{:urls('choose_rober',['id'=>$info.id,'uid'=>$uid])}'>{$uid|get_user_name}</a><br>{/volist}" style="border-radius:3px;color:#fff;background:orange;padding:8px 10px;margin-left:15px;" class="more-menu si si-user-follow">当前共 {:count(explode(',',$info.roblist))} 个候选人,请点击确认</a>
+			{else /}
+				还没人接单
+			{/if}
+			</td>
+          </tr>
+		{/if}
+
+		<tr>
+            <td class="tdL">满意度评分</td>
+            <td class="tdR"><div id="star"></div></td>
+          </tr>
+		  <tr>
+            <td class="tdL"><br/></td>
+            <td class="tdR"><a href="{:urls('index')}">返回</a> </td>
+          </tr>
+        </table>
+		{qb:comment name="gongdan_commentpc01" rows='5'}
+			{include file="comment_pc" /}
+		{/qb:comment}
+    </div>
+</div>
+<script type="text/javascript">
+if(typeof(layui)=='undefined'){
+	document.write('<script type="text/javascript" src="__STATIC__/layui/layui.js"><\/script>');
+}
+</script>
+<script type="text/javascript">
+layui.use(['rate'], function(){
+  var rate = layui.rate;
+  rate.render({
+    elem: '#star'
+    //,half: true //开启半星
+	,readonly: {$info.pingfen?'true':'false'}
+	,text: true
+	,value: {$info.pingfen?:3}
+    ,setText: function(value){ //自定义文本的回调
+      var arrs = {
+        '1': '极差'
+        ,'2': '差'
+        ,'3': '一般'
+        ,'4': '好'
+        ,'5': '极好'
+      };
+      this.span.text(arrs[value] || ( value + "星"));
+    },choose: function(value){
+		layer.confirm("你确认提交评分吗?",{},function(){
+			$.get("{:urls('wxapp.order/pingfen',['id'=>$info.id])}?num="+value,function(res){
+				if(res.code==0){
+					if(value == 5){
+						layer.msg( '么么哒，爱你唷，感谢对我们的认可！' ,{icon:6});
+					}else if(value == 4){
+						layer.msg( '感谢支持，我们会继续努力的!' ,{icon:6});
+					}else if(value == 3){
+						layer.msg( '谢谢，我们争取下次做好点!' ,{icon:1});
+					}else{
+						layer.msg( '亲，哪里不满意，请致电我们客服' ,{icon:5});
+					}
+				}else{
+					layer.alert(res.msg);
+				}
+			});			
+		});		
+	}
+  });
+});
+</script>
+{/block}

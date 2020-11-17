@@ -1,0 +1,52 @@
+<!--滚动消息-->
+<style type="text/css">
+.auto-roll{
+	height:35px;
+	overflow:hidden;
+	background:#fff;
+	margin-top:10px;
+}
+.auto-roll li{
+	padding-left:8px;
+	line-height:35px;
+}
+.auto-roll li i:nth-child(1){
+	color:orange;
+	margin-right:7px;
+}
+.auto-roll li a{
+	color:orange;
+}
+</style>
+<!--加上taglabel类,不给复制-->
+	<div class="auto-roll taglabel">
+		<ul class="qun_wapindex_r001"></ul>
+	</div>
+<script type="text/javascript"> 
+$.get("{:iurl('index/wxapp.msg/newmsg')}",function(res){
+	if(res.code==0){
+		var str = '';
+		res.data.forEach((rs)=>{
+			str += `<li><i class="fa fa-volume-up"></i>${rs.time} <a href="${rs.user_url}">${rs.username}</a> 在 <a href="${rs.qun_url}">${rs.qun_name}</a> 留言了 ${rs.title}</li>`;
+		});
+		$(".qun_wapindex_r001").html(str);
+	}
+});
+
+    function autoScroll(obj){  
+		$(obj).find("ul").animate({  
+			marginTop : "-35px"  
+		},1000,function(){  
+			$(this).css({marginTop : "0px"}).find("li:first").appendTo(this);  
+		})  
+	}  
+	$(function(){ 
+		var scroll=setInterval('autoScroll(".auto-roll")',2500);
+         $(".auto-roll").hover(function(){
+            console.log("aaa");
+            clearInterval(scroll);
+         },function(){
+            scroll=setInterval('autoScroll(".auto-roll")',2500);
+         });
+	}); 
+</script> 

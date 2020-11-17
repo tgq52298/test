@@ -1,0 +1,1 @@
+INSERT INTO `qb_exam_field` (`id`, `name`, `title`, `type`, `field_type`, `value`, `options`, `about`, `show`, `mid`, `ajax_url`, `next_items`, `param`, `format`, `table`, `level`, `key`, `option`, `pid`, `list`, `listshow`, `ifsearch`, `ifmust`) VALUES(0, 'money', '售价多少积分', 'number', 'smallint(4) NOT NULL', '', '', '', 0, -3, '', '', '', '', '', 2, '', '', '', 0, 0, 0, 0);

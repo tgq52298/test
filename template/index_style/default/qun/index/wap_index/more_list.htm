@@ -1,0 +1,287 @@
+<!--各频道的数据滑动列表-->
+
+
+<style type="text/css">
+.title-btn .tag{
+	height:50px;
+	line-height:50px;
+	border-bottom:1px solid #eee;
+}
+.title-btn .tag span{
+	padding-left:25px;
+	padding-right:25px;
+}
+.title-btn .tag span.ck{
+	border-bottom:2px solid #1FB582;
+}
+.title-btn .Contents{
+	display:none;
+}
+.title-btn .cnt_bbs{
+	display:block;
+}
+.swiper-move .swiper-slide{width: auto!important;}	/*滑动按钮必须的设置,其中swiper-slide类名不能更换*/
+</style>
+<script>
+    $(function () {
+        var swiper = new Swiper('.swiper-move', {
+            spaceBetween: 0,
+            slidesPerView:'auto',
+            freeMode: true
+        });
+    })
+
+</script>
+
+{qb:hy name="wap_qun_index_set" type="myform" conf="index_style/default/qun/index/wap_index/more_list.php"}
+<script>
+$(function(){
+	setTimeout(function(){
+		let that = $(".title-btn .swiper-slide[data-type='{$_cfg.showtype}']");
+		that.trigger("click");
+		let left = that.offset().left+that.width();
+		if(left>$(window).width()){
+			$(".title-btn .swiper-wrapper").css("transform","translate3d(-"+(left-300)+"px, 0px, 0px)");
+		}
+	},500);
+
+	$(".title-btn .swiper-slide[data-type='cnt_bbs']").html("{$_cfg.title_cnt_bbs}");
+	$(".title-btn .swiper-slide[data-type='cnt_qun']").html("{$_cfg.title_cnt_qun}");
+	$(".title-btn .swiper-slide[data-type='cnt_appstore']").html("{$_cfg.title_cnt_appstore}");
+	$(".title-btn .swiper-slide[data-type='cnt_booking']").html("{$_cfg.title_cnt_booking}");
+	$(".title-btn .swiper-slide[data-type='cnt_shop']").html("{$_cfg.title_cnt_shop}");
+	$(".title-btn .swiper-slide[data-type='cnt_news']").html("{$_cfg.title_cnt_news}");
+	$(".title-btn .swiper-slide[data-type='cnt_photo']").html("{$_cfg.title_cnt_photo}");
+});
+</script>
+{/qb:hy}
+
+<!--加上taglabel类,不给复制-->
+<div class="ShowContentType title-btn  taglabel">
+		<!--按钮开始-->
+		<div class="tag">
+			<div class="swiper-container swiper-move">
+				<div class="swiper-wrapper">
+					<span class="swiper-slide ck" data-type="cnt_bbs">__QUN__话题</span>
+					<span class="swiper-slide" data-type="cnt_qun">活跃__QUN__</span>
+					{if modules_config('appstore')}<span class="swiper-slide" data-type="cnt_appstore">{:modules_config('appstore')['name']}</span>{/if}
+					{if modules_config('booking')}<span class="swiper-slide" data-type="cnt_booking">{:modules_config('booking')['name']}</span>{/if}
+					{if modules_config('shop')}<span class="swiper-slide" data-type="cnt_shop">{:modules_config('shop')['name']}</span>{/if}
+					{if modules_config('cms')}<span class="swiper-slide" data-type="cnt_news">{:model_config(1,'cms')['title']}</span>{/if}
+					{if modules_config('cms')}<span class="swiper-slide" data-type="cnt_photo">{:model_config(2,'cms')['title']}</span>{/if}
+				</div>
+			</div>
+		</div>
+		<!--按钮结束-->
+		<!--论坛开始-->
+		<div class="Contents cnt_bbs">
+			{qb:tag name="qun_wapindex_bbs001" type="bbs" where="ext_id>0" order="id" by="desc" rows="8" js="cnt_bbs"}
+			{php} if(fun('qun@getByid',$rs['ext_id'])['viewlimit']==1)continue; {/php}<!--私密圈不显示-->
+			<div class="lists">
+				<ul>
+					<li class="img"><a href="{:fun('qun@getByid',$rs.ext_id)['url']}"><img src="{:fun('qun@getByid',$rs.ext_id)['picurl']}" onerror="this.src='__STATIC__/images/nopic.png'"></a></li>
+					<li class="info"><span><a href="{:fun('qun@getByid',$rs.ext_id)['url']}" style="color:#666;">{:fun('qun@getByid',$rs.ext_id)['title']}</a></span><em><a href="{:get_url('user',$rs.uid)}" style="color:#666;">{$rs.username}</a> {$rs.create_time|format_time="H:i"} {$rs.create_time|format_time=true}</em></li>
+					<li class="more"><span>{if ($rs.status>1)}精{elseif (time()-$rs.create_time<3600*24)}新{elseif ($rs.view>10)}热{/if}</span></li>
+				</ul>
+				<a href="{$rs.url}">
+				<dl>
+					<dt>{$rs.title}</dt>
+					{if (count($rs['picurls'])>2)}
+					<dd>
+						{volist name="rs.picurls" id="vs"}
+						{lt name="i" value="4"}<div><span><img src="{$vs.picurl}" onerror="this.src='__STATIC__/images/nopic.png'"></span></div>{/lt}
+						{/volist}
+					</dd>
+					{/if}
+				</dl>
+				</a>
+				<div class="others">
+					<span><i class="fa fa-thumbs-o-up">{$rs.agree}</i></span>
+					<em><i class="fa fa-commenting-o">{$rs.replynum}</i></em>
+				</div>
+			</div>
+			{/qb:tag}
+		</div>
+		<!--论坛结束-->
+		<!--圈子开始-->
+<style type="text/css">
+.cnt_qun .qlist{
+	position:relative;
+	padding:8px;
+	border-bottom:1px dotted #eee;
+	font-size:13px;
+}
+.cnt_qun .qlist img{
+	width:120px;
+	max-height:120px;
+	min-height:90px;
+}
+.cnt_qun .qlist .qcnt{
+	position:absolute;
+	left:140px;
+	top:8px;
+	color:#666;
+}
+.cnt_qun .qlist .qcnt .title{
+	font-weight:bold;
+	color:#333;
+}
+</style>
+		<div class="Contents cnt_qun">
+			{qb:tag name="qun_wapindex_qun001" type="qun" mid="-1" order="list" by="desc" rows="6" js="cnt_qun"}
+			<div class="qlist">
+				<a href="{:get_url('msg',-$rs.id)}"><img src="{$rs.picurl}" onerror="this.src='__STATIC__/images/nopic.png'"></a>
+				<div class="qcnt">
+					<a class="title" href="{$rs.url}">{$rs.title}</a><br>
+					<i class="glyphicon glyphicon-map-marker"></i> {$rs.address?:'未知'}<br>
+					<i class="fa fa-phone"></i> 电话：<a href="tel:{$rs.telphone}">{$rs.telphone?:'未知'}</a> 
+				</div>
+			</div>
+			{/qb:tag}
+		</div>
+		<!--圈子结束-->
+		<!--文章开始-->
+		{if modules_config('cms')}
+		<div class="Contents cnt_news">
+			{qb:tag name="qun_wapindex_news001" type="cms" mid="1" where="status>0" order="id" by="desc" rows="8" js="cnt_news"}
+			<div class="lists">
+				{if ($qun=fun('qun@getByuid',$rs['uid'])[0])}
+				<ul>
+					<li class="img"><a href="{:urls('qun/content/show',['id'=>$qun.id])}"><img src="{:tempdir($qun.picurl)}" onerror="this.src='__STATIC__/images/nopic.png'"></a></li>
+					<li class="info"><span><a href="{:urls('qun/content/show',['id'=>$qun.id])}" style="color:#666;">{$qun.title}</a></span><em><a href="{:get_url('user',$rs.uid)}" style="color:#666;">{$rs.username}</a> {$rs.create_time|format_time="H:i"} {$rs.create_time|format_time=true}</em></li>
+					<li class="more"><span>{if ($rs.status>1)}精{elseif (time()-$rs.create_time<3600*24)}新{elseif ($rs.view>10)}热{/if}</span></li>
+				</ul>
+				{/if}
+				<a href="{$rs.url}">
+				<dl>
+					<dt>{$rs.title}</dt>
+					{if (count($rs['picurls'])>2)}
+					<dd>
+						{volist name="rs.picurls" id="vs"}
+						{lt name="i" value="4"}<div><span><img src="{$vs.picurl}" onerror="this.src='__STATIC__/images/nopic.png'"></span></div>{/lt}
+						{/volist}
+					</dd>
+					{/if}
+				</dl>
+				</a>
+			</div>
+			{/qb:tag}
+		</div>
+		{/if}
+		<!--文章结束-->
+		<!--图片开始-->
+		{if modules_config('cms')}
+		<div class="Contents cnt_photo">
+			{qb:tag name="qun_wapindex_photo001" type="cms" where="status>0" mid="2" order="id" by="desc" rows="6" js="cnt_photo"}
+			<div class="imgs"><a href="{$rs.url}"><span><img src="{$rs.picurl}" onerror="this.src='__STATIC__/images/nopic.png'"></span><em>{$rs.title}</em></a></div>
+			{/qb:tag}
+		</div>
+		{/if}
+		<!--图片结束-->
+		<!--商品开始-->
+		{if modules_config('shop')}
+		<div class="Contents cnt_shop">
+			{qb:tag name="qun_wapindex_shop001" type="shop" where="status>0" mid="1" order="id" by="desc" rows="6" js="cnt_shop"}
+			<div class="shops"><a href="{$rs.url}"><span><img src="{$rs.picurl}" onerror="this.src='__STATIC__/images/nopic.png'"></span><em>{$rs.title}</em><dl><dt>&yen;{$rs.price}</dt><dd>&yen;{$rs.market_price}</dd></dl></a></div>
+			{/qb:tag}
+		</div>
+		{/if}
+		<!--商品结束-->
+		<!--拼团开始-->
+		{if modules_config('booking')}
+		<div class="Contents cnt_booking">
+			{qb:tag name="qun_wapindex_booking001" type="booking" where="status>0" mid="1" order="id" by="desc" rows="6" js="cnt_booking"}
+			<div class="shops"><a href="{$rs.url}"><span><img src="{$rs.picurl}" onerror="this.src='__STATIC__/images/nopic.png'"></span><em>{$rs.title}</em><dl><dt>&yen;{$rs.price}</dt><dd>&yen;{$rs.market_price}</dd></dl></a></div>
+			{/qb:tag}
+		</div>
+		{/if}
+		<!--拼团结束-->
+		<!--应用市场开始-->
+		{if modules_config('appstore')}
+		<div class="Contents cnt_appstore">
+			{qb:tag name="qun_wapindex_appstore001" type="appstore" where="status>0" mid="-1" order="id" by="desc" rows="6" js="cnt_appstore"}
+			<div class="shops"><a href="{$rs.url}"><span><img src="{$rs.picurl}" onerror="this.src='__STATIC__/images/nopic.png'"></span><em>{$rs.title}</em><dl><dt>&yen;{$rs.price}</dt><dd style="text-decoration:none;">积分:{$rs.jifen}个</dd></dl></a></div>
+			{/qb:tag}
+		</div>
+		{/if}
+		<!--应用市场结束-->
+</div>
+
+<script type="text/javascript">
+//切换按钮
+$(function(){
+	$(".title-btn .swiper-slide").click(function(){
+		choose_sys_type($(this));
+	});
+});
+
+function choose_sys_type(that){
+	$(".title-btn .swiper-slide").removeClass('ck');
+	that.addClass('ck');
+	now_type = that.data('type');
+	$('.title-btn .Contents').hide();
+	$('.title-btn .'+now_type).show();
+	scroll_get = true;
+	//showMoreCnt();
+}
+
+$(function(){
+	choose_sys_type($(".title-btn .swiper-slide[data-type='cnt_qun']"));	//默认显示圈子黄页
+});
+
+
+var now_type = 'cnt_bbs';	//当前显示的模块
+//加载每个频道的分页地址
+var url_db = {
+	cnt_bbs:"{qb:url name='qun_wapindex_bbs001' /}",
+	cnt_qun:"{qb:url name='qun_wapindex_qun001' /}",
+	cnt_shop:"{qb:url name='qun_wapindex_shop001' /}",
+	cnt_booking:"{qb:url name='qun_wapindex_booking001' /}",
+	cnt_news:"{qb:url name='qun_wapindex_news001' /}",
+	cnt_photo:"{qb:url name='qun_wapindex_photo001' /}",
+	cnt_appstore:"{qb:url name='qun_wapindex_appstore001' /}",
+};
+
+var page_db = {};	//每个频道的页码数
+function showMoreCnt(){
+	if(typeof(page_db[now_type])=='undefined'){
+		page_db[now_type] = 1;
+	}
+	page_db[now_type]++;
+	var url = url_db[now_type] + page_db[now_type];
+	$.get(url,function(res){	
+		if(res.code==0){
+			if(res.data==''){
+				if(page_db[now_type]>3)layer.msg("已经显示完了！",{time:500});
+				//$('.ShowMore2').hide();
+			}else{
+				$('.title-btn .'+now_type).append(res.data);
+				scroll_get = true;
+			}
+		}else{
+			layer.msg(res.msg,{time:2500});
+		}
+	});
+}
+
+
+//滚动显示更多
+var scroll_get = true;	//做个标志,不要反反复复的加载
+$(document).ready(function () {
+	$(window).scroll(function () {
+		if (scroll_get==true &&  (400 + $(window).scrollTop())>($(document).height() - $(window).height())) {
+			scroll_get = false;
+			if(typeof(page_db[now_type])>1)layer.msg('内容加截中,请稍候',{time:1500});
+			showMoreCnt();
+		}
+	});
+});
+
+//异步处理,对应的数据不存在,就隐藏其按钮
+function cnt_shop(res){if(res.paginate.total==0){$(".swiper-slide[data-type='cnt_shop']").hide();}}
+function cnt_booking(res){if(res.paginate.total==0){$(".swiper-slide[data-type='cnt_booking']").hide();}}
+function cnt_appstore(res){if(res.paginate.total==0){$(".swiper-slide[data-type='cnt_appstore']").hide();}}
+function cnt_news(res){if(res.paginate.total==0){$(".swiper-slide[data-type='cnt_news']").hide();}}
+function cnt_photo(res){if(res.paginate.total==0){$(".swiper-slide[data-type='cnt_photo']").hide();}}
+
+</script>

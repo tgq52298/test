@@ -1,0 +1,34 @@
+<!--圈子在线显示-->
+<script type="text/javascript">
+var show_qun_member = 1;	//圈子有多少会员在线才显示
+var show_qun_totaluser = 2;	//圈子有多少人,包含游客在线才显示.与上面的条件满足一个即可
+var hide_qun_ids = ",{$webdb['M__qun']['hide_online_qunid']},"; //隐藏某些圈子,多个用逗号隔开
+//var show_chat_type = 0;  //0显示第一个在线圈子的聊天窗口,1永久只显示某个,2有在线就显示在线的第一个,没在线就显示固定的某个
+//var show_chat_id = 0;	//指定显示某个圈子的聊天窗口
+</script>
+{qb:hy name="wap_bbs_index_qunonline" type="myform" conf="index_style/default/bbs/index/wap_model/qun_online.php"}
+<script type="text/javascript">
+show_qun_member = "{$_cfg.member_num}";
+show_qun_totaluser = "{$_cfg.total_num}";
+hide_qun_ids = ",{$_cfg.hide_qun},";
+//show_chat_type = "{$_cfg.show_type}";
+//show_chat_id = "{$_cfg.show_qunid}";
+</script>
+{/qb:hy}
+	<ul class="ListType list_qun_num taglabel">
+		<li v-for="rs in listdb" style="position: relative;">
+			<a :href="'/index.php/index/msg/index.html#/public/static/libs/bui/pages/chat/chat?uid=-'+rs.id">
+				<em>{{rs.num}}人在线</em>{{rs.title}}
+			</a>			
+			<div class="play_voice">
+				<span class="line1"></span><span class="line2"></span><span class="line3"></span><span class="line4"></span>
+			</div>
+		</li>				
+	</ul>
+<script type="text/javascript">
+var ws_url = "{:fun('Gatewayclient@client_url')}";
+var ws_bad_qid=",{$webdb['M__qun']['hide_online_qunid']},";
+var qun_list_url="{:urls('qun/wxapp.qun/getbyids')}";
+</script>
+<script src="__STATIC__/js/core/vue.js"></script>
+<script src="__STATIC__/bbs/qun_online.js"></script>

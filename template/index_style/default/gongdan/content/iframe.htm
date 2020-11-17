@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>{$info.title}</title>
+<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<link rel="stylesheet" href="__STATIC__/css/base.css">
+<link rel="stylesheet" href="__STATIC__/css/qb_ui.css">
+<link rel="stylesheet" href="__STATIC__/icon/icon.css">
+<script type="text/javascript" src="__STATIC__/js/core/jquery.min.js"></script>
+
+<script type="text/javascript" src="__STATIC__/layer/layer.js"></script>
+<script type="text/javascript" src="__STATIC__/layui/layui.js"></script>
+  <link rel="stylesheet" href="__STATIC__/layui/css/layui.css">
+</head>
+<body>
+<style type="text/css">
+.wn_form{
+	border:1px solid #eee;
+	margin:auto;
+	width:80%;
+	margin-top:20px;
+	padding:30px;
+	background:#f9fafb;
+	box-shadow: 3px 2px 5px #888;
+}
+.wn_form:hover{
+	box-shadow: 3px 2px 5px #333;
+}
+.wn_form ol{
+	border-bottom:1px solid #f1eded;
+	line-height:30px;
+	margin-bottom:8px;
+	color:#458ebd;
+	font-weight:bold;
+}
+.wn_form .btn{
+	width:100%;
+	text-align:center;
+	margin-top:30px;
+}
+.wn_form .btn button{
+	background:orange;
+	padding:8px 30px;
+	border-radius:5px;
+	border:0;
+	color:#fff;
+}
+.wn_form .btn button:hover{
+	background:#d68d08;
+}
+.layui-tab-content .layui-tab-item img{
+	max-width:98%;
+}
+.layui-tab-item .title{
+	font-size:14px;
+	color:red;
+}
+</style>
+<div class="layui-tab layui-tab-brief">
+  <ul class="layui-tab-title">
+    <li class="layui-this">表单项目</li>
+    <li>注意事项</li>
+  </ul>
+  <div class="layui-tab-content">
+	<div class="layui-tab-item layui-show">
+	<div class="title"><i class="fa fa-hand-o-right"></i> {$info.title}</div>
+<!--表单部分开始-->
+<form action="{:urls('order/add')}" class="wn_form ajax_post" method="post" onsubmit="return check_post($(this));">
+{qb:form name="xxx" field="linkman" mid="-1" f_array="$f_array"}
+		<ul class="{$rs.ifmust?'must-choose':''} {$rs.customize}" data-name="{$rs.name}" data-type="{$rs.type}" data-title="{$rs.title}">
+			<ol>{$rs.title} {$rs.ifmust?'(必填)':''}</ol>
+			<li>{$rs.value}</li>
+		</ul>
+{/qb:form}
+	<input type="hidden" name="order_field" id="order_field">
+	<div class="btn"> <button type="submit">提交</button> </div>
+</form>
+<!--表单部分结束-->
+	</div>
+	<div class="layui-tab-item">{$info.content}</div>
+  </div>
+</div>
+
+<script type="text/javascript" src="__STATIC__/js/order.js"></script>
+<script type="text/javascript">
+function post_order(type){
+	if(type=='ok'){
+		$(".wn_form").hide(1000);
+		setTimeout(function(){
+			//$(".layui-tab-title li").eq(1).trigger("click");
+			parent.layer.close(parent.layer.getFrameIndex(window.name));
+		},1300);
+	}
+}
+</script>
+<script type="text/javascript">
+$(function(){
+	$.get("{:urls('car/act')}?shopid={$id}&num=1&"+Math.random(),function(res){
+		if(res=='ok'){
+			layer.msg('亲!请认真填写表单!',{icon:6,time:1500, shift: 2});
+		}else{
+			layer.alert(res);
+			$(".wn_form").hide(1000);
+		}
+	});
+});
+</script>
+
+<script>
+layui.use('element', function(){
+  var element = layui.element;
+});
+</script>
+
+</body>
+</html>

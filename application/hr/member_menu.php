@@ -1,0 +1,39 @@
+<?php
+
+return array(
+		'hr'=>array(
+				'title'=>'hr',
+				'sons'=>array(
+							array(
+								'title'=>'招聘模块',
+								'sons'=>array(
+									array(
+										'title'=>'查看简历',
+										'link'=>['content/checkVita',['mid'=>2,'type'=>1]],
+									),
+									array(
+										'title'=>'更新简历',
+										'link'=>['content/checkVita',['mid'=>2]],
+									),
+									array(
+										'title'=>'我应聘的职位',
+										'link'=>['content/jobvita',['mid'=>1]],
+									),
+									array(
+										'title'=>'职位管理',
+										'link'=>['content/index',['mid'=>1]],
+									),
+									array(
+										'title'=>'收到的简历',
+										'link'=>['content/jobvita',['mid'=>2]],
+									),						
+									array(
+										'title'=>'发布职位',
+										'link'=>['content/postnew',['mid'=>1]],
+									),
+								),
+							),
+				),
+		),
+);
+ 

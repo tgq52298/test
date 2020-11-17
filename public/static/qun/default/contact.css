@@ -1,0 +1,174 @@
+.AboutMeCont{
+	max-width:640px;
+	margin:auto;
+}
+.AboutMeCont .topBox{
+	width:100%;
+	height:1px;
+	padding-top:58%;
+	background:url(topbg.png) no-repeat;
+	background-size:100% 100%;
+	position:relative;
+}
+.AboutMeCont .topBox span{
+	display:block;
+	position:absolute;
+	width:12%;
+	background:url(icon.png) no-repeat;
+	background-size:100% 100%;
+	left:45%;
+	bottom:-8%;
+}
+.AboutMeCont .topBox span:before{
+	content:'';
+	display:block;
+	padding-top:86%;
+}
+.AboutMeCont .ContBox{
+	margin:auto 20px;
+	position:relative;
+}
+.AboutMeCont .ContBox .head{
+	width:40px;
+	background:#FFAF23;
+	position:absolute;
+	left:0;
+	top:0;
+	color:#FFF;
+	padding:15px 0 35px 0;
+}
+.AboutMeCont .ContBox .head span{
+	display:block;
+	padding:0 10px;
+	line-height:20px;
+	text-align:center;
+}
+.AboutMeCont .ContBox .head:after{
+	content:'';
+	display:block;
+	width:40px;
+	height:40px;
+	background:#FFF;
+	border-radius:20px;
+	position:absolute;
+	left:0;
+	bottom:-20px;
+}
+.AboutMeCont .ContBox .Member{
+	padding-top:10%;
+	padding-bottom:5%;
+}
+.AboutMeCont .ContBox .Member ol{
+	width:60px;
+	height:60px;
+	overflow:hidden;
+	margin:auto;
+	border:#F5B558 solid 2px;
+	border-radius:30px;
+	background:#FFF;
+}
+.AboutMeCont .ContBox .Member ol div{
+	width:56px;
+	height:56px;
+	overflow:hidden;
+	margin:2px auto 0 auto;
+	border-radius:28px;
+	background:#999;
+}
+.AboutMeCont .ContBox .Member ol div span{
+	display:table;
+	width:100%;
+	height:100%;
+}
+.AboutMeCont .ContBox .Member ol div span em{
+	display:table-cell;
+	text-align:center;
+	vertical-align:middle;
+}
+.AboutMeCont .ContBox .Member ol div span em img{
+	max-width:100%;
+	max-height:100%;
+}
+.AboutMeCont .ContBox .Member li{
+	text-align:center;
+	height:30px;
+	line-height:30px;
+	overflow:hidden;
+}
+.AboutMeCont .ContBox .company{
+	text-align:center;
+	padding:8px;
+	line-height:20px;
+	color:#FFF;
+	background:#FFAF23;
+	margin-bottom:10px;
+}
+
+.AboutMeCont .ContBox .MoreInfo li{
+	margin:5px auto;
+	position:relative;
+	min-height:30px;
+	line-height:25px;
+	color:#666;
+}
+.AboutMeCont .ContBox .MoreInfo li.tel,.AboutMeCont .ContBox .MoreInfo li.address{
+	padding-right:40px;
+}
+.AboutMeCont .ContBox .MoreInfo li a em{
+	display:block;
+	position:absolute;
+	right:0;
+	top:0;
+	overflow:hidden;
+	font-size:20px;
+}
+.AboutMeCont .ContBox .MoreInfo li.tel a em{
+	color: #fff;
+	background: #FFAF23;
+	padding: 6px;
+	border-radius: 50%;
+}
+.AboutMeCont .ContBox .MoreInfo li.address a em{
+	color: #fff;
+	background: #18BD69;
+	padding: 6px;
+	border-radius: 50%;
+}
+.AboutMeCont .ContBox .wxcode ol{
+	text-align:center;
+	padding-top:20px;
+}
+.AboutMeCont .ContBox .wxcode ol span{
+	display:inline-block;
+	line-height:25px;
+	position:relative;
+	color:#666;
+}
+.AboutMeCont .ContBox .wxcode ol span:before,.AboutMeCont .ContBox .wxcode ol span:after{
+	content:'';
+	display:block;
+	width:25px;
+	height:25px;
+	position:absolute;
+}
+.AboutMeCont .ContBox .wxcode ol span:before{
+	left:-10px;
+	top:-3px;
+	border-left:#FFAF23 solid 1px;
+	border-top:#FFAF23 solid 1px;
+}
+.AboutMeCont .ContBox .wxcode ol span:after{
+	right:-10px;
+	bottom:-3px;
+	border-right:#FFAF23 solid 1px;
+	border-bottom:#FFAF23 solid 1px;
+}
+.AboutMeCont .ContBox .wxcode li{
+	text-align:center;
+	padding-top:20px;
+	padding-bottom:30px;
+}
+.AboutMeCont .ContBox .wxcode li img{
+	width:200px;
+	height:200px;
+}

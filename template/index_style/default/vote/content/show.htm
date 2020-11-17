@@ -1,0 +1,169 @@
+{extend name="$index_style_layout" /}
+
+<!--SEO相关-->
+{block name="head_title"}{$info.title}{/block}
+{block name="head_keword"}{$info.keywords?:$info.title}  {$s_info.name} {/block}
+{block name="head_description"}{:get_word(del_html($info['content']),300)}{/block}
+
+{block name="body_content"}
+
+<link rel="stylesheet" href="__STATIC__/vote/wap/bencandy.css">
+
+<article class="article-container">
+	<div class="head">
+    	<h1>{$info[title]}</h1>
+		<div class="lists">
+			<div><span id='vote_agree'>{$info.agree}</span><em>总票数</em></div>
+			<div><span id='vote_ranking'>{:get_option_ranking($info.mid,$info.id)}</span><em>当前排名</em></div>
+			<div><span id='vote_view'>{$info.view}</span><em>围观人次</em></div>
+		</div>
+    </div>
+    <section>
+    	{$info.content}
+    </section>
+</article>
+
+<div class="ActionCont">
+	<!-- <div class="note" style='display:none;'>备注：投票数据每10分钟更新一次</div> -->
+	<div class="butter">
+		<a href="javascript:;" onclick="AgreeVote({$info.id},{$info.fid},0)">我要投票</a>
+	</div>
+</div>
+
+<style>
+.aticle_cont img{
+max-width:95%;
+}
+</style>
+<section class="aticle">
+  <div class="aticle_head">投票项目详情</div>
+  <h3>{$s_info.name}</h3>
+  <div class="aticle_cont">{$s_info.description}</div>
+  <div class="look_bt">查看全文</div>
+  <div class="time">
+	<p>报名结束时间：<time>{if $s_info.joinendtime}{:format_time($s_info.joinendtime,'Y-m-d H:i')}{else /}不限时间{/if}</time></p>
+	<p>投票结束时间：<time>{if $s_info.endtime}{:format_time($s_info.endtime,'Y-m-d H:i')}{else /}不限时间{/if}</time></p>
+  </div>
+  <div class="aticle_bt"><a href="{:urls('content/index',['fid'=>$fid])}">查看所有参与者</a><a href="{:murl('add',['fid'=>$fid])}">我要报名</a></div>
+</section>
+
+	<section class="t_list">
+		<div class="h_list"><h3>最近前10位你的支持者</h3></div>
+		<div class="t_contLits">
+			{qb:tag name="vote_member_wapshow" class="app\vote\model\Member@get_label" rows="10" union="aid=id" order="create_time" }
+			<dl>
+				<dt><p><span><em><img src="{$rs.icon}"/></em></span></p></dt>
+				<dd><span>投票人：{$rs.username}</span></dd>
+				<dd><time>{$rs.create_time}</time></dd>
+			</dl>
+			{/qb:tag}
+		</div>
+	</section>
+
+<script>
+	setInterval(function(){
+		var id = {$info.id},mid = {$info.mid};
+		$.get("{:urls('content/info')}?id="+id+'&'+Math.random(),function(res){
+			var oldVoteAgree = $('#vote_agree').html();
+			var voteAgree = res.agree;
+			var voteView = res.view;
+			$('#vote_agree').html(voteAgree);
+			$('#vote_view').html(voteView);
+			//投票变动更新投票人记录
+			if(oldVoteAgree != voteAgree){
+				getUserVote(res.fid,res.id);
+			}
+		})
+		$.get("{:urls('content/voteRanking')}?id="+id+'&mid='+mid+'&'+Math.random(),function(res){
+			$('#vote_ranking').html(res);
+		})
+
+	}, 3000);
+
+	function getUserVote(fid,aid){
+		$.get("{:urls('content/userVoteList')}?fid="+fid+'&aid='+aid+'&'+Math.random(),function(res){
+			if(res.data.length>0){
+				var html = '';
+				res.data.forEach(function(rs){
+					html +="<dl>";
+					html +="<dt><p><span><em><img src='"+rs.icon+"'/></em></span></p></dt>";
+					html +="<dd><span>投票人1："+rs.username+"</span></dd>";
+					html +="<dd><time>"+rs.show_time+"</time></dd>";
+					html +="</dl>";
+					html +="</dl>";
+                			});
+				$('.t_contLits').html(html);
+			}
+		})
+	}
+
+var H=$(".aticle_cont").height();
+if(H>200){
+	$(".aticle_cont").addClass("aticle_more")
+	$(".look_bt").show();
+	$(".look_bt").click(function(){
+		$(".aticle_cont").removeClass("aticle_more");
+		$(".look_bt").hide("slow");
+	});
+}else{
+	$(".look_bt").hide();
+}
+</script>
+</section>
+<script>
+//单选投票
+function AgreeVote(ids,fid,type){	
+	console.log(ids);
+	layer.confirm('是否给该用户进行投票?', {icon: 3, title:'投票确认'}, function(index){
+		$.get("{:urls('content/agree_vote')}?ids="+ids+"&fid="+fid+"&type="+type+"&"+Math.random(),function(res){
+			if(res.code==0){
+				var num =  $('#topic_agree').html();
+				num++;
+				$('#topic_agree').html(num);
+				layer.msg("投票成功！",{time:1500});
+				window.location.reload();
+			}else{
+				// layer.msg('投票失败:'_res.msg);
+				layer.msg("投票失败:"+res.msg,{time:1500});
+			}	
+		});  
+	  layer.close(index);
+	});
+}
+</script>
+
+
+
+
+
+
+<link rel="stylesheet" href="__STATIC__/index/default/article.css">
+<div class="ArticleContBox" style='display:none;'>
+<!--显示自定义字段内容 field="picurl,title,content,keywords" 就是过滤掉不在里边重复显示的字段-->
+<style type="text/css">.OtherInfos .SideBox{clear:both;}.OtherInfos img{height:100px;float:left;margin:3px;}</style>
+  	<div class="OtherInfos">
+{qb:showpage field="picurl,title,content,keywords,mv_url"}
+		<div class="SideBox">
+		{if in_array($rs['type'],['images','images2','image','file','files','files2'])}
+			<!-- 组图及多文件的显示方法\template\index_style\default\index\common\field.htm,其实不建议放在这里,影响布局,更多请查阅 http://help.php168.com/665693/  -->
+			<div class="tag"><span>{$rs.title}</span></div>
+			{include file="index@common/field" /}
+		{else /}
+			<div class="tag"><span>{$rs.title}</span></div>
+			<div class="cont">{$rs.value}</div>
+		{/if}
+		</div>
+{/qb:showpage}
+	</div>
+
+	<!--引用评论
+	{qb:comment name="commentwap01" rows='5'}
+		{include file="content/comment" /}
+	{/qb:comment}-->
+</div>
+
+
+
+<!-- 微信分享 -->
+{include file="index@share"/}
+{/block}

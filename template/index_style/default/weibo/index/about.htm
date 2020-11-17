@@ -1,0 +1,7 @@
+								{if $rs.type=='visit'}
+									访问了 {:get_user_name($rs.bloguid)} 的空间
+								{elseif $rs.type=='addfans'}
+									申请成为 {:get_user_name($rs.bloguid)} 的粉丝
+								{else /}
+									$rs.about
+								{/if}

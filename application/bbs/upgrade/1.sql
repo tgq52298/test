@@ -1,0 +1,1 @@
+ALTER TABLE  `qb_bbs_contents` CHANGE  `content`  `content` MEDIUMTEXT CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT  '文章内容';

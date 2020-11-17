@@ -1,0 +1,7 @@
+INSERT INTO `qb_config` (`id`, `type`, `title`, `c_key`, `c_value`, `form_type`, `options`, `ifsys`, `htmlcode`, `c_descrip`, `list`, `sys_id`) VALUES('', -1, 'AccessKey', 'ak', '', 'text', '', 1, '', '登录七牛平台，访问 <a href="https://portal.qiniu.com/user/key" target="_blank">https://portal.qiniu.com/user/key</a> 查看', 99, -1);
+INSERT INTO `qb_config` (`id`, `type`, `title`, `c_key`, `c_value`, `form_type`, `options`, `ifsys`, `htmlcode`, `c_descrip`, `list`, `sys_id`) VALUES('', -1, 'SecretKey', 'sk', '', 'text', '', 1, '', '', 98, -1);
+INSERT INTO `qb_config` (`id`, `type`, `title`, `c_key`, `c_value`, `form_type`, `options`, `ifsys`, `htmlcode`, `c_descrip`, `list`, `sys_id`) VALUES('', -1, 'Bucket', 'bucket', '', 'text', '', 1, '', '', 97, -1);
+INSERT INTO `qb_config` (`id`, `type`, `title`, `c_key`, `c_value`, `form_type`, `options`, `ifsys`, `htmlcode`, `c_descrip`, `list`, `sys_id`) VALUES('', -1, 'Domain', 'domain', '', 'text', '', 1, '', '空间绑定的域名，以 http://开头，以 / 结尾', 96, -1);
+ 
+INSERT INTO `qb_hook_plugin` (`id`, `hook_key`, `plugin_key`, `hook_class`, `about`, `ifopen`, `list`, `author`, `author_url`) VALUES
+('', 'upload_driver', 'qiniu', 'plugins\\qiniu\\index\\Qiniu', '', 1, 0, '', '');

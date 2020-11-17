@@ -1,0 +1,23 @@
+<?php
+return array(
+    'plugin'=>array(
+        'title'=>'插件',
+        'sons'=>array(
+            array(
+                'title'=>'敏感词过滤',
+                'sons'=>array(
+                    array(
+                        'title'=>'参数选项',
+                        'link'=>'setting/index',
+                        'power'=>[],
+                    ),
+                    array(
+                        'title'=>'自定义关键词',
+                        'link'=>'diywords/add_words',
+                        'power'=>[],
+                    ),
+                ),
+            ),
+        ),
+    ),
+);

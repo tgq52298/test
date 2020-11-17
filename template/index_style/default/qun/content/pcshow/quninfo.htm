@@ -1,0 +1,67 @@
+<!--圈子介绍-->
+			<div class="main">
+				<div class="showimg" style="width:500px;">
+					<div class="img" style="width:150px;position:relative;">{if $info.status==2}<img src="__STATIC__/group/v.png" style="position:absolute;width:20px;height:20px;z-index:9;">{/if}<img onerror="this.src='__STATIC__/images/nopic.png'" src="{$info.picurl}" width="125" height="125" /></div>
+					<div class="word" style="width:300px;">
+						<div class="join"><a href="#">{$info.title}</a>
+						{if $info.uid==$userdb.uid}
+							<a href="{:murl('qun/content/edit',['id'=>$id])}" class="fa fa-cog a_nav _pop"> 管理</a>
+						{elseif ($info.status<2&&$userdb&&in_array($info.uid,explode(',',$webdb.qun_user_show_claim))) /}
+							<a href="{:murl('qun/claim/add',['aid'=>$id])}" class="fa fa-handshake-o a_nav"> 认领</a>
+						{/if}
+						</div>
+						<div class="who">管理员：<a href="{:get_url('user',$info.uid)}" target="_blank"><em class="green">{$info.uid|get_user_name}</em></a> 
+						<!--<a href="{:murl('member/msg/add',['uid'=>$info.uid])}" class="fa fa-comments-o _pop"></a>-->
+						<a href="javascript:" onclick='KF.chat_win({uid:"{$info.uid}",username:"{$info.uid|get_user_name}",icon:"{$info.uid|get_user_icon}",});' class="fa fa-comments-o"></a>
+						</div>
+						<div class="text" style="max-height:100px;"><p>{:fun('area@get',$info.city_id)} {:fun('area@get',$info.zone_id)} {:fun('area@get',$info.street_id)}<br>{:get_word(del_html($info.content),90)}</p></div>
+						
+					</div>
+				</div>
+				<div class="how" style="width:550px;position:relative;">
+					<div style="color:#aaa;position:absolute;left:0px;top:5px;color:green;font-size:14px;">
+					<i class="fa fa-child"></i> {$userdb.username} 
+					{if ($gid=="1"||$gid=="-1")&&fun('qun@get_group',4,$info.mid)}
+						欢迎升级{:fun('qun@get_group',4,$info.mid)}，将可以享受更高级的权益!
+					{elseif $gid=="4" /}
+						您是尊贵的：<span style="color:red">{:fun('qun@get_group',4)}</span>，有效期截止：<span style="color:red">{$qgroup.end_time?format_time($qgroup.end_time):'永久'}</span>
+					{elseif $gid=="" /}
+						欢迎加入我们，将可以享受更多的权益!
+					{else /}
+						 欢迎你回来!
+					{/if}
+					</div>
+					<div class="h_nav">
+						<a href="{:urls('bbs/content/add','mid=1&ext_id='.$id)}?fromurl={:urls('show/content',['id'=>$id])}" class="R">发布话题</a>
+						<div class="mores">
+							<a href="{:urls('cms/add',['aid'=>$id,'mid'=>2])}">发布图片</a>
+							<a href="{:murl('shop/content/add',['mid'=>1,'ext_id'=>$id])}" class="_pop">发布商品</a>
+						</div>
+					</div>
+					<div class="h_nav">
+					{if ($gid=="1"||$gid=="-1")&&fun('qun@get_group',4,$info.mid)}
+						 <a href="#" onclick="qun_api({$id},'up')" class="E">升级{:fun('qun@get_group',4)}</a>
+						 <div class="mores">
+							<a href="javascript:qun_api({$id},'quit');" style="margin-top:10px;">退出本__QUN__</a>
+						</div>
+					{elseif $gid=="" /}
+						<a href="#" onclick="qun_api({$id})" class="E">申请加入</a>
+					{else /}
+						<a href="#" onclick="qun_api({$id},'quit')" class="E">退出本__QUN__</a>
+					{/if} 
+					
+					</div>
+					<div class="h_code">
+						
+{if (config('webdb.wxapp_appid')&&config('webdb.wxapp_appsecret'))}
+						<p><a href="{:fun('wxapp@qun_code',$id)}" target="blank"><img src="{:fun('wxapp@qun_code',$id)}" width="95" height="95" /></a></p>
+						<p>__QUN__小程序</p>
+{else /}
+						<p><img src="{:get_qrcode(urls('show',['id'=>$id,'my_qid'=>$id]))}" width="95" height="95" /></p>
+						<p>访问手机版</p>
+{/if}
+
+					</div>
+				</div>
+			</div>
+<div style="display:none;" class="taglabel">目的是不给用户复制当前碎片</div>

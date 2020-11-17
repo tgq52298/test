@@ -1,0 +1,250 @@
+﻿{extend name="$index_style_layout" /}
+
+<!--SEO相关-->
+{block name="head_title"}{$fid?($info['seo_title']?:$info['name']):$m_info['title']}{/block}
+{block name="head_keword"}{$fid?($info['seo_keywords']?:$info['name']):$m_info['title']}{/block}
+{block name="head_description"}{$info.seo_description}{/block}
+
+{block name="body_content"}
+<link rel="stylesheet" href="__STATIC__/vote/wap/list.css">
+<style>
+.topCont img{
+max-width:95%;
+}
+</style>
+<div class="ListContnaier">
+	<div class="topCont">
+		<div class="name"><a href="waplist.php?fid=17">{$info.name}</a></div>
+		<div class='descrips'>{$info.description}&nbsp;</div>
+		<div class="join_but"><a href="{:murl('add',['fid'=>$fid])}">我要参加</a></div>
+		<div class="times"><span>报名结束日期：{if $info.joinendtime}{:format_time($info.joinendtime,'Y-m-d H:i')}{else /}不限时间{/if}</span></div>
+		<div class="times time2" style="background:#fff; color:#888;"><span>投票结束日期：{if $info.endtime}{:format_time($info.endtime,'Y-m-d H:i')}{else /}不限时间{/if}</span></div>
+	</div>
+
+	<form name="formvote" id='formvote' method="post" action="{:urls('content/agree_votes')}">
+	<div class="ListVotes">
+		<div class="Lists"></div>
+		<div class="Lists"></div>
+	</div>
+	<input type="hidden" name='fid' value="{$fid}">
+	<input type="hidden" name='type' value="1">
+	{if $s_info[type]==1}
+	<div class="submits"><span>投票</span></div>
+	{/if}
+	</form>
+</div>
+ 
+
+<!-- 进入页面的投票选项数据 -->
+<div id='wrap_votelist' style='display:none;'>
+{qb:tag name="wap_vote_index_option_list" type='vote' rows="11" union='fid' order='agree'}
+	<dl class="sideVote">
+		<dt>
+			<a href="{$rs.url}"><img src="{$rs.picurl}" onerror="this.src='__STATIC__/images/nopic.png' "/></a>
+		</dt>
+		<dd>
+			<h3>
+				<a href="{$rs.url}">{$rs.title}</a>
+				<span>({$rs.agree}票)</span>
+			</h3>
+			<p>{:get_word($rs.content,62)}</p>
+			<div onclick="ChangeSelect($(this))">
+			{if get_sort($rs.fid,'type','','vote')==1}
+			<em><input type="checkbox" name="ids[]" value="{$rs.id}"/></em>
+			{else /}
+				<span onclick="AgreeVote({$rs.id},{$rs.fid},0)"><input type="radio" name="ids[0]" value="{$rs.id}"/></span>
+			{/if}
+			
+			</div>
+		</dd>
+	</dl>		
+{/qb:tag}
+ </div>
+
+ <!-- 投票选项的分页数据 -->
+<div id='wrap_votelist_page' style='display:none;'></div>
+
+<div class="WebSeitUrl">{qb:url name='wap_vote_index_option_list'/}</div>
+
+
+
+<SCRIPT LANGUAGE="JavaScript">
+<!--//
+//单选投票
+function AgreeVote(ids,fid,type){	
+	console.log(ids);
+	layer.confirm('是否给所选用户进行投票?', {icon: 3, title:'投票确认'}, function(index){
+	 // alert('f');
+		// return false;
+		$.get("{:urls('content/agree_vote')}?ids="+ids+"&fid="+fid+"&type="+type+"&"+Math.random(),function(res){
+			if(res.code==0){
+				var num =  $('#topic_agree').html();
+				num++;
+				$('#topic_agree').html(num);
+				layer.msg("投票成功！",{time:1500});
+				window.location.reload();
+			}else{
+				// layer.msg('投票失败:'_res.msg);
+				layer.msg("投票失败:"+res.msg,{time:1500});
+			}	
+		});  
+	  layer.close(index);
+	});
+
+}
+
+var Listvote = new Array(); 
+var iHeight,iTempHeight,thisrow;
+$("#wrap_votelist .sideVote").each(function(){
+	var new_str='<dl class="sideVote">'+$(this).html()+'</dl>';
+	Listvote.push(new_str);
+})
+// console.log(Listvote);
+// console.log(Listvote.length);
+for(var i=0; i<Listvote.length; i++){
+	iHeight = -1;
+	$('.ListVotes .Lists').each(function(){
+		iTempHeight = Number( $(this).height() );
+		if(iHeight==-1 || iHeight>iTempHeight){
+			iHeight = iTempHeight;
+			thisrow = $(this);
+		}
+	});
+	thisrow.append(Listvote[i]);
+}
+
+function ChangeSelect(objs){
+	var thisinput=objs.find('input');
+	console.log(thisinput);
+
+	var this_inputype=thisinput.attr('type');
+	//单选
+	if(this_inputype=='radio'){
+		$('.sideVote input').attr('checked',false);
+		$('.sideVote dd div').removeClass('select');
+		thisinput.attr('checked','checked');
+		objs.addClass('select');
+	}else{
+		if (thisinput.attr('checked')){
+			thisinput.attr("checked",false);
+			objs.removeClass('select');
+		}else{
+			thisinput.attr("checked",true);
+			objs.addClass('select');
+		}		
+	}
+	// alert('406');
+
+
+/*	$('.sideVote dd div input').each(function(){
+		var thedd=$(this).parent().parent();
+		// console.log(thedd);
+		if($(this).attr('checked')){
+			thedd.addClass('select');
+		}else{
+			thedd.removeClass('select');
+		}
+	});*/
+}
+
+$(document).ready(function(){
+	$('.submits span').click(function(){
+		// console.info($(this).serialize());
+		var form_data = $('#formvote').serialize();
+		// console.log(form_data);
+		// // return false;
+		postcontent(form_data);
+		// $('form[name="formvote"]').submit();
+	});
+});
+var havepost = false;
+var url = "{:urls('content/agree_votes')}"
+function postcontent(form_data){
+	if(havepost==true){
+		layer.msg('请不要重复提交');
+		return false;
+	}
+	havepost = true;
+
+            $.post(url, form_data).success(function (res) {
+            	console.log(res);
+  	      	havepost = false;
+                	if(res.code==0){
+			layer.msg("投票成功！");
+			window.location.reload();
+			// location.href="{:urls('content/show')}?id=" + res.data.id;
+		}else{
+			havepost = false;
+			layer.alert('投票失败:' + res.msg);
+		}
+            }).fail(function () {
+				havepost = false;
+				layer.open({title: '提示',content: '服务器发生错误'});
+            });
+}
+
+function convertSpecialCharacter(str) {
+	var arrEntities={'lt':'<','gt':'>','nbsp':' ','amp':'&','quot':'"'};
+ 	return str.replace(/&(lt|gt|nbsp|amp|quot);/ig,function(all,t){return arrEntities[t];});
+}
+
+$(".WebSeitUrl").hide();
+var page=1,loading=1,WebSeitUrl=$(".WebSeitUrl").html();
+WebSeitUrl = convertSpecialCharacter(WebSeitUrl);
+$(window).scroll(function(){
+	// 当滚动到最底部以上100像素时， 加载新内容
+	if ($(document).height() - $(this).scrollTop() <1000 && loading==1){
+		// page++;
+		loading=0;
+		var urls=WebSeitUrl;
+		loadMore(urls);
+	} 	
+});
+function loadMore(urls){
+	var ListvotePage = new Array();
+	page++;
+	$('#wrap_votelist_page').html('');
+	$.get(urls+page+'&'+Math.random(),function(res){
+		if(res.code==0){
+			if(res.data==''){
+				loading=0;
+				layer.msg("已经显示完了！",{time:500});
+			}else{
+				loading=1;
+				$('#wrap_votelist_page').html(res.data);
+				$("#wrap_votelist_page .sideVote").each(function(){
+					var new_str2='<dl class="sideVote">'+$(this).html()+'</dl>';
+					ListvotePage.push(new_str2);
+				})
+				for(var i=0; i<ListvotePage.length; i++){
+					iHeight = -1;
+					$('.ListVotes .Lists').each(function(){
+						iTempHeight = Number( $(this).height() );
+						if(iHeight==-1 || iHeight>iTempHeight){
+							iHeight = iTempHeight;
+							thisrow = $(this);
+						}
+					});
+					thisrow.append(ListvotePage[i]);
+				}
+			}
+		}else{
+			layer.msg(res.msg,{time:2500});
+		}
+	});
+}
+//-->
+</SCRIPT>
+
+
+
+
+
+
+
+
+
+
+
+
+{/block}

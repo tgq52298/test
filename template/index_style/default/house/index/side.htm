@@ -1,0 +1,54 @@
+ 
+<link rel="stylesheet" type="text/css" href="__STATIC__/house/default/pc/block/side.css">
+
+<div class="UserInfo">
+
+{empty name="userdb"}
+        <ul class="AcitonBut">
+            <li><a href="javascript:tip_log();" class="post">免费发布信息</a></li>     
+            <li><a href="javascript:tip_log();" class="mg">会员中心</a></li>     
+            <li><a href="javascript:tip_log();" class="edit">修改删除信息</a></li>     
+            <li><a href="javascript:tip_log();" class="rz">修改资料</a></li>      
+        </ul>
+        <div class="MemberCont">
+		<form  name="memberlogin" method="POST" action="{:url('index/login/index')}">
+            <dl>
+                <dt><input type="text" name="username" placeholder="输入用户名" /></dt>
+                <dd><a href="{:urls('index/getpassword/index')}">忘记密码？</a></dd>
+            </dl>    
+    		<dl>
+                <dt><input type="password" name="password" placeholder="输入密码" /></dt>
+                <dd><input type="submit" value="登录"/> <input type="button"  onClick="window.location.href='{:urls('index/reg/index')}';" value="注册"/></dd>
+            </dl><input type="hidden" name="fromurl" value="{:request()->url(true)}">
+		 </form>
+         </div>
+{else /}
+        <ul class="AcitonBut">
+            <li><a href="{:murl('postnew')}" class="post _pop">免费发布信息</a></li>     
+            <li><a href="{:get_url('member')}" class="mg">会员中心</a></li>     
+            <li><a href="{:murl('content/index')}" class="edit _pop">修改删除信息</a></li>     
+            <li><a href="{:murl('member/user/edit')}" class="rz _pop">修改资料</a></li>      
+        </ul>
+        <div class="MemberCont">
+
+		 <dl>
+		    <dt class="headicon"><div><a href="{:get_url('user',$userdb.uid)}"><img src="{:get_user_icon($userdb.uid)}" onerror="this.src='__STATIC__/images/nobody.gif'"/></a></div></dt>
+                <dd>
+                	<ul class='info'>
+						<li>级别: {:getGroupByid($userdb.groupid)}</li>     
+						<li>余额: {$userdb.rmb} 个</li>     
+						<li>注册日期:{$userdb.regdate|format_time}</li>     
+					</ul>
+                    <input type="button"  onClick="window.location.href='{:get_url('quit')}';" value="退出"/>
+                </dd>
+            </dl>
+            </div>
+{/empty}
+        
+
+</div>
+<script>
+    function tip_log(){
+        layer.msg('登陆后才可进行相关操作！');
+    }
+</script>

@@ -1,0 +1,69 @@
+﻿{extend name="$index_style_layout" /}
+{block name="head_title"}确定购买商品{/block}
+{block name="body_content"}
+<link rel="stylesheet" href="__STATIC__/css/wap_order.css">
+<div class="PostOrder">
+	<form action="{:urls('add')}" method="post">
+		<ul><ol><i class="fa fa-home"></i></ol>
+			<li>
+		<select name="address_id" >
+					<option value="" selected>请选择地址</option>
+{volist name="$address" id="rs"}
+					<option {if $rs.often==1}selected{/if} value="{$rs.id}" data-user="{$rs.user}" data-telphone="{$rs.telphone}" data-address="{$rs.address}">{$rs.user} {$rs.telphone|get_word=4} {$rs.address|get_word=12}</option>
+{/volist}
+				 </select>[<a href="{:murl('shop/address/index')}" class="_pop">管理</a>]
+<script type="text/javascript">
+$(function(){
+	$("select[name='address_id']").change(function(){
+		set_address($(this))
+	});
+	set_address($("select[name='address_id']"));
+});
+function set_address(that){
+	var address = that.find("option:selected").data('address');
+	var user = that.find("option:selected").data('user');
+	var telphone = that.find("option:selected").data('telphone');
+	$("input[name='linkman']").val(user);
+	$("input[name='telphone']").val(telphone);
+	$("input[name='address']").val(address);
+}
+</script></li>
+		</ul>
+{qb:form name="xxx" field="title,picurl" mid="-1"}
+		<ul>
+			<ol><i class="{if $rs.name=='linkman'}si si-user{elseif $rs.name=='telphone' /}fa fa-volume-control-phone{elseif $rs.name=='ifolpay' /}fa fa-credit-card{elseif $rs.name=='address' /}glyphicon glyphicon-home{else /}fa fa-angle-right{/if}"></i></ol>
+			<li>{$rs.value}</li>
+		</ul>
+{/qb:form}
+		<dl>
+			<dt>应付金额</dt>
+			<dd>
+				{$total_money} 元
+			</dd>
+		</dl>
+		<!--<dl>
+			<dt>支付类型</dt>
+			<dd>
+				<input type="radio" name="ifolpay" value="1" checked />在线付款
+				<input type="radio" name="ifolpay" value="0" />货到付款
+			</dd>
+		</dl>-->
+{volist name="$money_array" id="money"}
+	{if $array=fun('Coupon@get_list',$userdb.uid,$money,$key)}
+		<dl> 
+			<dd>
+				 <div style="color:red;margin:10px;">商家：{:get_user_name($key)} 派发的代金券如下,请选择</div>
+				{volist name="$array" id="rs"}
+					<input type="radio" name="cid[{$rs.shop_uid}]" value="{$rs.id}">面额：{$rs.quan_money} 元 ， 累计满{$rs.min_money}元可用<br>
+				{/volist}
+			</dd>
+		</dl>
+	{/if}
+{/volist}
+		<div>
+			<button type="submit">提交</button>
+			<button type="button" onclick="javascript:history.back(-1);return false;">返回</button>
+		</div>
+	</form>
+</div>
+{/block}

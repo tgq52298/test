@@ -1,0 +1,68 @@
+.maincont {width:1200px; margin:0 auto; overflow:hidden;}
+.m_title {line-height:35px; text-align:center; font-size:25px;}
+/*base*/
+
+.header_bg {width:100%; height:600px; overflow:hidden; position:relative;}
+.header {width:100%; height:100px; overflow:hidden; position:absolute; top:0; left:0; background:rgba(0,0,0,0.4); z-index:100;}
+.header .maincont {position:relative; height:100px;}
+.header .logo {position:absolute; left:0; top:15px; width:320px; height:65px;}
+.header .login {position:absolute; right:0; line-height:100px;}
+.header .login a {padding:8px 20px; color:#14ca76; background:#FFFFFF; margin-left:25px; border:1px solid #14ca76;}
+.header .login a:hover {background:#14ca76; color:#FFFFFF;}
+.bg {position:absolute; top:0; display:block;left:50%; margin-left:-960px; height:600px;}
+
+.content {overflow:hidden; padding:50px 0 100px 0; background:#FFFFFF;}
+.content .advantage {overflow:hidden; position:relative;} 
+.adv_left {width:1105px; float:left; margin-top:50px;}
+.adv_left .dl_box {width:100%; display:table;}
+.adv_left dl {display:table-cell; width:235px; text-align:center;}
+.adv_left dl dd span {display:block;}
+.adv_left .title_span {font-size:18px; padding:10px 0;}
+.adv_left .last_span {text-align:left;}
+.adv_right {width:70px; float:right;}
+.adv_right li a {display:inline-block; width:70px; height:70px; background:#efefef; border-radius:45px; text-align:center; line-height:70px; margin:5px 0; font-size:18px;}
+.adv_right li a:hover {background:#14ca76; color:#FFFFFF;}
+.adv_right .first a {background:#14ca76; color:#FFFFFF;}
+
+.show_box {width:100%; background:#10b66a; overflow:hidden; padding:25px 0 50px 0; margin-bottom:70px;}
+.show_box .more {float:right; width:95px; height:28px; margin-bottom:25px; line-height:28px; text-align:center; background:#FFFFFF; border:1px solid #14ca76;}
+.show_box .more a {background:url(more.png) no-repeat right center; padding-right:25px; color:#14ca76;}
+.show_box .more:hover {background:#009966;}
+.show_img {width:100%; overflow:hidden; position:relative;}
+.show_img .prev {width:34px; height:85px; background:#FFFFFF url(green.png) no-repeat left center; text-indent:-9999px; position:absolute; left:0px; top:40%;}
+.show_img .prev:hover {background:#14ca76 url(white.png) no-repeat left center;}
+.show_img .next {width:34px; height:85px; background:#FFFFFF url(green.png) no-repeat right center; text-indent:-9999px; position:absolute; right:0px; top:40%;}
+.show_img .next:hover {background:#14ca76 url(white.png) no-repeat right center;}
+.show_img .piclistbox {width:1102px; height:464px; overflow:hidden; margin:0 auto; position:relative;}
+.show_img .piclistbox .piclist {overflow:hidden; clear:both; width:10000px; position:absolute; top:0; left:0;}
+.show_img .piclist .list {float:left; margin:0 6px; border:2px solid #FFFFFF; width:260px; height:460px; overflow:hidden; position:relative;}
+.show_img .piclist .list:hover {border:2px solid #006633;}
+.show_img .piclist .list:hover .pic_cod{display:block;}
+.show_img .piclist .list .pic_cod{display:none; position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,.6);}
+.show_img .piclist .list .pic_cod h3{margin-top:50px; height:40px; line-height:40px; font-size:16px; font-weight:400; color:#fff; width:100%; text-align:center;}
+.show_img .piclist .list .pic_cod p{width:100%; text-align:center;}
+.show_img .piclist .list .pic_cod p img{width:200px; border-radius:6px;}
+
+/**Î²²¿ÑùÊ½**/
+
+.Footer {width:auto;overflow:hidden;}
+.Footer .PartnerBox .Partner,
+.Footer .CopyrightBox .Copyright{width:1200px; margin:0 auto;}
+.Footer .PartnerBox {background:#ebeaea; padding:40px 0 55px 0; overflow:hidden;}
+.Footer .CopyrightBox {background:#333333; overflow:hidden;}
+.Partner .P_list {width:18%; float:left;}
+.Partner ul .title {font-size:18px;padding-bottom:8px;width:100%;}
+.P_list li a {font-size:14px;color:#666666;line-height:30px;}
+.P_list li a:hover {color:#d00;}
+.Partner .Phone {width:20%; float:left;}
+.Phone li a {font-size:18px;color:#22c770;line-height:30px;}
+.Phone .QQcall {width:120px;height:35px;line-height:40px;background:#22c770;}
+.Phone .QQcall:hover {background:#019848;}
+.Phone .QQcall a {font-weight:normal;color:#FFFFFF;padding:7px 0 5px 30px;margin-left:19px;background:url(QQcall.png) left center no-repeat;}
+.Partner .Ewm {width:20%; float:right;}
+.Ewm li div {width:112px;float:left;margin-right:5px;line-height:25px;}
+
+.Copyright {width:1200px;margin:0 auto;padding:10px 0;}
+.Copyright span {width:100%;display:block;text-align:center;line-height:30px;color:#FFFFFF;font-size:15px;}
+.Copyright span a {color:#FFFFFF}
+.Copyright span a:hover {color:#d00;}

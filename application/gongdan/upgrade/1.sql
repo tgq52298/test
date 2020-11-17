@@ -1,0 +1,7 @@
+ALTER TABLE  `qb_gongdan_order` ADD  `status` TINYINT( 2 ) NOT NULL COMMENT  '状态';
+ALTER TABLE  `qb_gongdan_sort` ADD  `status_type` VARCHAR( 256 ) NOT NULL COMMENT  '工单流程状态';
+
+INSERT INTO `qb_gongdan_field` (`id`, `name`, `title`, `type`, `field_type`, `value`, `options`, `about`, `show`, `mid`, `ajax_url`, `next_items`, `param`, `format`, `table`, `level`, `key`, `option`, `pid`, `list`, `listshow`, `ifsearch`, `ifmust`, `nav`, `input_width`, `input_height`, `unit`, `match`, `css`, `script`, `trigger`, `range_opt`, `group_view`, `index_hide`, `group_post`) VALUES(0, 'status_type', '工单流程状态', 'qun_group_array2', 'varchar(255) NOT NULL', '', '', '第一项是流程状态,比如一审、二审、同意、拒绝等等，第二项是有权限设置该状态的用户组，第三项设置该状态后要通知哪些用户组', 1, 1, '', '', '', '', '', 2, '', '', '', 200, 0, 0, 0, '', '', '', '', '', '', '', '', '', '', 1, '');
+INSERT INTO `qb_gongdan_field` (`id`, `name`, `title`, `type`, `field_type`, `value`, `options`, `about`, `show`, `mid`, `ajax_url`, `next_items`, `param`, `format`, `table`, `level`, `key`, `option`, `pid`, `list`, `listshow`, `ifsearch`, `ifmust`, `nav`, `input_width`, `input_height`, `unit`, `match`, `css`, `script`, `trigger`, `range_opt`, `group_view`, `index_hide`, `group_post`) VALUES(0, 'notice_group', '接收新工单提醒的用户组', 'qun_group_array', 'varchar(255) NOT NULL', '', '', '', 1, 1, '', '', '', '', '', 2, '', '', '', 1, 0, 0, 0, '', '', '', '', '', '', '', '', '', '', 1, '');
+
+ALTER TABLE  `qb_gongdan_content1` ADD  `status_type` VARCHAR( 256 ) NOT NULL ,ADD  `notice_group` VARCHAR( 256 ) NOT NULL;

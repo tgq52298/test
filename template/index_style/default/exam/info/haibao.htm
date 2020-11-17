@@ -1,0 +1,66 @@
+<script type="text/javascript" src="__STATIC__/libs/html2canvas/html2canvas.js"></script>
+<style type="text/css">
+.share_box {margin: 0 auto;position: relative;background:#FFF;}
+.add_tt{height:50px; line-height:50px; border-bottom:1px #f4f4f4 solid; text-align:center; background:#f8f8f8}
+.share_box{padding:10px;}
+.share_picurl img {width: 100%;}
+.pize_cop{position: absolute;right:55px;bottom:40px;}
+.pize_cop img{width:50px;}
+.share_pro{position: absolute;left:55px;bottom:50px;color:#666;font-size:10px;}
+.share_pro img {width:45px;height:45px;}
+.sayword{
+	position: absolute;
+	font-size:20px;font-weight:bold;
+	color:red;
+	text-shadow:1px 2px 2px yellow;
+	left:20px;
+	top:150px;
+	width:90%;
+	text-align:center;
+}
+.pize_wordcop{
+	position: absolute;right:55px;bottom:50px;color:#333;font-size:12px;font-weight:bold;line-height:16px;text-indent:10px;
+}
+.user_icon{position: absolute;width:100%;top:40px;right:45px;width:50px;height:50px;border-radius:100%;border:1px solid #ccc;opacity:0.7;}
+ 
+.pize_title{
+	position: absolute;width:100%;top:145px;text-align:center;font-size:25px;color:red;font-weight:bold;
+	text-shadow:0px 1px 1px #ccc;
+}
+.user_name{
+	position: absolute;left:40px;top:70px;font-size:16px;color:#000;
+}
+.user_name em{
+	color:blue;
+}
+.pize_content{
+	position: absolute;left:40px;text-indent:20px;padding-right:40px;top:95px;font-size:15px;color:#000;
+}
+.close_btn{background:url(__STATIC__/libs/html2canvas/close.png) no-repeat;background-size:22px auto;width:22px;height:22px;right:10px;top:14px;display:block;position:absolute}
+</style>
+  <div id="page_share">
+  <div class="add_tt" style="display:none;">长按下面的图片另存或分享给好友</div>
+  <div class="close_btn" onclick="app_page_close();"></div>
+  <div style="position:relative">
+    <div class="share_box" id="share_html">
+	    <div class="user_name">{$userdb.username} <em>同志</em></div>
+		<div class="pize_title">{$haobao_info.title}</div>
+		 <img class="user_icon" src="{$info.picurl?:tempdir($userdb.icon)}" onerror="this.style.display='none'" /> 
+		<div class="pize_content">{$haobao_info.content}</div>
+		<div class="sayword">{$info.title}</div>
+		<div class="share_pro"><img src="{$codeimg?:fun('Haibao@img',$userdb,$id)}"></div>
+		<div class="pize_cop"><img src="__STATIC__/exam/diploma/official_seal.gif"></div>
+		<div class="share_picurl"><img src="__STATIC__/exam/diploma/diploma_bg.png"></div>
+		<div class="pize_wordcop">{$haobao_info.prize_cop}<br>{$haobao_info.time}</div>
+        
+    </div>
+    <img src="__STATIC__/libs/html2canvas/blank.png" id="share_img" style="position:absolute;top:0;left:0;display:none;background: #fff url(__STATIC__/libs/html2canvas/loading.gif) no-repeat center"> </div>
+  </div>
+<script type="text/javascript">
+//分享
+function share_btn() {
+	app_page('page_share', function(){
+		div_toimg("share_html", "share_img");
+	});
+}
+</script>

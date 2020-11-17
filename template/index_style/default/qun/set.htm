@@ -1,0 +1,81 @@
+{if $info.uid==$userdb.uid}
+<style>
+.set_style{
+	position:fixed;
+	width:30%;
+	height:100%;
+	border-left:#CCC solid 1px;
+	background:#FFF;
+	right:0;
+	top:0;
+	filter:alpha(opacity=80); 
+	-moz-opacity:0.9; 
+	opacity:0.9;
+	z-index:100000;
+}
+.set_style ol{
+	width:18px;
+	text-align:center;
+	border:#CCC solid 1px;
+	background:#FFF;
+	padding:5px;
+	position:absolute;
+	left:-30px;
+	top:30%;
+	line-height:18px;
+	color:#F00;
+	border-radius:10px 0 0 10px;
+}
+.set_style li div a{
+	display:block;
+	line-height:35px;
+	height:35px;
+	overflow:hidden;
+	text-align:center;
+	border-bottom:#CCC solid 1px;
+	font-size:14px;
+}
+.set_style li div.quitset a{
+	border:#F60 solid 1px;
+	margin:10px;
+	background:#F90;
+	color:#FFF;
+}
+</style>
+
+<ul class='set_style' style='width:0px;background:#999;'>
+ <ol><span>设置</span></ol>
+ <li>
+	<div><a href='#'>功能设置</a></div>
+{php}
+$weburl = request()->url(true);
+$weburl = str_replace(array('labelhy_set=quit','labelhy_set=set','&&'), '', $weburl);
+$weburl = strpos($weburl,'?') ? ($weburl.'&') : ($weburl.'?') ;
+{/php}
+{if (input('get.labelhy_set')!='set' && get_cookie('labelhy_set')!='set')}
+	<div class='quitset'><a href="{$weburl}labelhy_set=set">装修__QUN__</a></div>
+{else /}
+	<div class='quitset'><a href="{$weburl}labelhy_set=quit">退出装修</a></div>
+{/if}
+<div class='quitset'><a href="{:murl('content/edit',['id'=>$id])}">__QUN__设置</a></div>
+<div class='quitset'><a href="{:murl('style/index',['id'=>$id])}">选择风格</a></div>
+<div class='quitset'><a href="{:murl('menu/index',['aid'=>$id,'type'=>3])}">浮动按钮菜单设置</a></div>
+<div class='quitset'><a href="{:murl('menu/index',['aid'=>$id,'type'=>1])}">底部菜单设置</a></div>
+ </li>
+</ul>
+
+<script>
+var set_styleW=$(window).width()*0.3;
+$('.set_style ol').click(function(){
+	var this_w=$('.set_style').width();
+	if(this_w>10){
+		$('.set_style').animate({'width':'0px'},300);
+		$(this).html('<span>设置</span>');
+	}else{
+		//\$('.set_style').width(set_styleW);
+		$('.set_style').animate({'width':set_styleW+'px'},300);
+		$(this).html('<span>隐藏</span>');
+	}
+});
+</script>
+{/if}

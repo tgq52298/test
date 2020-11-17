@@ -1,0 +1,94 @@
+﻿{extend name="$index_style_layout" /}
+
+<!--SEO相关-->
+{block name="head_title"}{$fid?($info['seo_title']?:$info['name']):$m_info['title']}{/block}
+{block name="head_keword"}{$fid?($info['seo_keywords']?:$info['name']):$m_info['title']}{/block}
+{block name="head_description"}{$info.seo_description}{/block}
+
+ 
+{block name="body_content"}
+<link type="text/css" rel="stylesheet" href="__STATIC__/group/hylist/list.css" />
+<style type="text/css">
+.MainContainer{
+	width:1200px;
+	margin:auto;
+}
+</style>
+<div class='MainContainer'>
+	<div class="banner">
+		<a href="{:urls('add')}"><img src="__STATIC__/group/hylist/banner.png" /></a>
+	</div>
+    
+	<div class="Nav_all"><!--Nav_all e-->
+    	<ul class="n_1">
+			<li class="t">分类：</li>
+		{volist name=":getArray(fun('Sort@son',intval($fid))?:fun('Sort@brother',$fid))" id="name"}
+			<li {eq name="$key" value="$fid"}class='bj_color'{/eq}><a href="{:urls('content/index',"fid=$key")}">{$name}</a></li>
+		{/volist}
+		</ul>
+		{volist name=":fun('field@list_filter',$mid)" id="rs"}
+		<dl>
+			<dt>{$rs.title}：</dt>
+			<dd>
+				<ul>
+					<li {if input($rs['name'])===null} class="ck"{/if}><a href='{:urls("index","fid=$fid&$rs[opt_url]")}'>不限</a></li>
+				{volist name="$rs.opt" id="vs"}
+					<li {if input($rs['name'])==$vs['key']} class="ck"{/if}><a href='{:urls("index","fid=$fid&$vs[url]")}'>{$vs.title}</a></li>
+				{/volist}
+				</ul>
+			</dd>
+		</dl>
+		{/volist}
+		<dl>
+			<dt>区域：</dt>
+			<dd>
+				<ul>
+					<li {if input('zone_id')===null} class="ck"{/if}><a href='{:urls("index",fun("field@make_filter_url","street_id,zone_id,page"))}'>全部</a></li>
+					{volist name=":get_area('','',input('city_id')?:($webdb['city_id']?:6))" id="name"}
+					<li {if input('zone_id')==$key} class="ck"{/if}><a href='{:urls("index","zone_id=$key&".fun("field@make_filter_url","zone_id,page"))}'>{$name}</a></li>
+					{/volist}
+				</ul>
+			</dd>			
+		</dl>		
+		{if input('zone_id')&&$array=get_area('','',input('zone_id'))}
+		<dl>
+			<dt><!--街道：--></dt>
+			<dd>
+				<ul>
+					{volist name="$array" id="name"}
+						<li><a href='{:urls("index","street_id=$key&".fun("field@make_filter_url","street_id,page"))}' {if input('street_id')==$key}style="color:red;"{/if}>{$name}</a></li>
+					{/volist}
+				</ul>
+			</dd>	
+		</dl>
+		{/if}
+        <ul class="n_2">
+        	<li  class="f_color" ><a href="#">默认</a></li>
+            <li ><a href="#">时间</a></li>
+            <li ><a href="#">关注</a></li>
+        </ul>
+    </div><!--Nav_all e-->
+    <div class="clearfix"></div>
+</div>
+<div class="m-list">
+{qb:listpage name="qun_pclist_002" rows="8" order="id" by="desc"}
+	<dl >
+	  <dt><a href="{$rs.url}" class="pic"><img src="{:tempdir($rs.banner?:$rs.picurl)}" onerror="this.src='__STATIC__/group/qun-bg.jpg'"/></a></dt>
+	  <dd>
+		<h3><a href="{$rs.url}" target="_blank">{$rs.title}</a></h3>
+		<p class="cont">{$rs.content|get_word=74}</p>
+		<p class="address">地址：{$rs.address}</p>
+		<p class="tel"><em>{$rs.telphone}</em></p>
+		<div class="code" onclick="window.open('{$rs.url}')">
+		  <span class="codetitle">扫一扫手机查看</span>
+		  <span class="codeimg"><img src="{:get_qrcode($rs.url)}" width="120" height="120"/></span>
+		</div>
+	  </dd>
+	</dl>
+{/qb:listpage}
+	
+
+	{$pages} 
+
+</div>
+{/block}

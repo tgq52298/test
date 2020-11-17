@@ -1,0 +1,336 @@
+<!--这是黄页名片专属模板-->
+{extend name="$index_style_layout" /}
+
+<!--SEO相关-->
+{block name="head_title"}{$info.title}{/block}
+{block name="head_keword"}{$info.keywords?:$info.title}  {$s_info.name} {/block}
+{block name="head_description"}{:get_word(del_html($info['content']),300)}{/block}
+
+{block name="body_content"}
+{include file="content/notice" /}
+<link rel="stylesheet" href="__STATIC__/group/show.css">	
+<div class="MainContainer">
+	<!--ul class="TopCntBox">
+		<li class="home"><a href="#"><i class="fa fa-reply"></i> 首页</a></li>
+		<li class="name">圈友排行版</li>
+		<li class="member"><a href="#"><i class="fa fa-user-o"></i></a></li>
+	</ul-->	
+<style type="text/css">
+.qun-head{
+	background:#fff;
+	position:relative;
+}
+.qun-head .qun-icon{
+	position:absolute;
+	z-index:1;
+	left:5px;
+	bottom:0px;
+	width:90px;
+	height:90px;
+	border-radius: 100%;
+}
+.qun-head .qun-v{
+	position:absolute;
+	width:20px;
+	height:20px;
+	z-index:2;
+	left:80px;
+	bottom:0px;
+}
+.qun-head .word{
+	padding-top:5px;	
+	height:35px;
+}
+.qun-head .word span{
+	display:block;
+	float:right;
+	border:1px solid #3897F1;
+	padding:0px 16px 0px 16px;
+	margin-right:15px;
+	font-size:13px;
+	border-radius: 3px;
+}
+.qun-head .word span.join{
+	color:#fff;
+	background:#3897F1;
+}
+.qun-head .word span.join a{
+	color:#fff;
+}
+.qun-head .banner{
+	background:url({$info.banner}) no-repeat;	
+	background-position:center center;
+}
+.qun-head .banner img{
+	width:100%;
+}
+
+</style>
+
+<script type="text/javascript">
+var load_err_pic = false;
+function load_banner(o){
+	if(load_err_pic==true){
+		return ;
+	}
+	if(o.width>o.height){
+		if(o.height<120){
+			$(o).parent().css({'background-size':'auto 120px','height':'120px'});
+		}else{
+			$(o).parent().css({'background-size':'auto '+o.height+'px','height':o.height+'px'});
+		}
+	}else{
+		if(o.height>250){
+			$(o).parent().css({'background-size':'100% auto','height':'250px'});
+		}else{
+			$(o).parent().css({'background-size':'100% auto','height':o.height+'px'});
+		}		
+	}
+	$(o).hide();
+}
+function load_err_banner(o){
+	load_err_pic = true;
+	o.src='__STATIC__/group/hyshow/pc_banner.jpg';
+	$(o).show();
+}
+</script>
+
+	<div class="qun-head">
+
+<!--幻灯片开始---->
+{if $info.rollpics}
+<link href="__STATIC__/libs/owlcarousel/css/owl.carousel.css" rel="stylesheet">
+<link href="__STATIC__/libs/owlcarousel/css/owl.theme.css" rel="stylesheet">
+<link href="__STATIC__/libs/owlcarousel/css/owl.transitions.css" rel="stylesheet">
+<script src="__STATIC__/libs/owlcarousel/js/owl.carousel.js"></script>
+<style type="text/css">
+#owl-demo { width: 100%; margin-left: auto; margin-right: auto;}
+#owl-demo .item{ display: block;}
+#owl-demo img { display: block; width: 100%;}
+.owl-theme .owl-controls{
+	margin-top:0;
+}
+</style>
+<script>
+$(function(){
+	$('#owl-demo').owlCarousel({
+		items: 1,
+		autoPlay: 4000,
+		autoHeight: true,	//如果不想自适应高度就把true改成false
+		transitionStyle: 'fade'
+	});
+});
+</script>
+<div id="owl-demo" class="owl-carousel">			
+{volist name="$info.rollpics" id="rs"}
+	<a class="item"><img src="{$rs.picurl}" alt=""></a>
+{/volist}
+</div>
+{/if}
+<!--幻灯片结束---->
+
+
+	     <img class="qun-icon" src="{:tempdir($info.picurl?:$userdb.icon)}" onerror="this.src='__STATIC__/images/nopic.png'"> 
+		{if $info.status==2}<img class="qun-v" src="__STATIC__/group/v.png">{/if}
+
+		{if empty($info.rollpics)}<div class="banner"><img onload="load_banner(this)" onerror="load_err_banner(this);" src="{$info.banner}"></div>{/if}
+
+		<div class="word">
+			{eq name="$info.uid" value="$userdb.uid"}<span onclick="window.location.href='{:murl('qun/content/edit',['id'=>$id])}'"><i class="fa fa-fw fa-gear"></i>设置</span>{/eq}
+			<span class="join"><a href="{:murl('member/msg/add',['uid'=>$info.uid])}" class="_pop">发私信</a></span> 
+			{if ($info.status<2&&$info.uid!=$userdb.uid&&in_array($info.uid,explode(',',$webdb.qun_user_show_claim)))}
+				<span><a href="{:murl('qun/claim/add',['aid'=>$id])}">认领</a></span> 
+			{/if}							
+		</div>
+	</div>
+
+	 
+	
+<style type="text/css">
+.SideBox .head .qun-title{
+	font-weight:bold;
+	font-size:17px;
+}
+.aboutcnt .cnt{
+	padding-top:5px;
+}
+.aboutcnt .cnt div{
+	font-size:14px;
+	line-height:32px;
+}
+.aboutcnt .cnt div i{
+	color:#62B3E7;
+}
+.aboutcnt .nav{
+	font-size:12px;
+}
+.aboutcnt .nav em{
+	font-size:15px;
+	font-weight:bold;
+	margin-left:10px;
+	margin-right:3px;
+}
+.aboutcnt .nav em.left{
+	margin-left:0;
+}
+.aboutcnt .nav span{
+	margin-left:8px;
+}
+.hongbaoBox{
+	top:80px;
+	right:15px;
+}
+</style>
+	<div class="SideBox">
+		<div class="head"><span class="tag qun-title">{$info.title}</span></div>
+		<div class="aboutcnt">			
+			<div class="cnt">
+				<div><i class="glyphicon glyphicon-map-marker" onclick="window.location.href='{:urls('map/index',['aid'=>$id])}'"></i> <span onclick="window.location.href='{:urls('map/index',['aid'=>$id])}'">{:fun('area@get',$info.city_id)} {:fun('area@get',$info.zone_id)} {:fun('area@get',$info.street_id)} ({$info.address})</span></div>
+				<div onclick="tel::{$info.telphone}"><i class="fa fa-phone"></i>  电话：{$info.telphone}</div>
+				{if $info.wxid}<div onclick="$('.MoreInfoBox').fadeIn();$('.MoreInfoBox').css({'display':'flex'});"><i class="fa fa-commenting"></i>  微信：{$info.wxid}</div>{/if}
+			</div>
+			<div class="nav"><em class="left">{$info.view}</em>人气 
+				<!--<span onclick="$('.MoreInfoBox').fadeIn();$('.MoreInfoBox').css({'display':'flex'});"><i class="fa fa-fw fa-qrcode"></i></span>-->
+				<span onclick="share_btn();"><i class="fa fa-fw fa-qrcode"></i></span>							
+				<span onclick="SharShowMsg()"><i class="fa fa-fw fa-share-square-o"></i></span>				
+			</div>	
+		</div>
+		{if plugins_config('voicehb')}<div class="hongbaoBox" style="opacity: 0.7;"><a href="{:urls('voicehb/index',['aid'=>$id])}"><img src="__STATIC__/plugins/voicehb/hongbao.png"></a></div>
+		{elseif(plugins_config('hongbao')) /}<div class="hongbaoBox" style="opacity: 0.7;"><a href="{:urls('hongbao/index',['aid'=>$id])}"><img src="__STATIC__/plugins/hongbao/hongbao.png"></a></div>
+		{/if}		
+	</div>
+
+
+<style type="text/css">
+.MainMenu{
+	padding: 3px;
+}
+.MainMenu ul li span{
+	width:55px;
+}
+.MainMenu ul li span i{
+	font-size:22px;
+}
+.MainMenu ul li em{
+	overflow: hidden;
+	font-size:13px;
+}
+</style>
+
+	<div class="SideBox">
+		<div class="MainMenu">
+			<ul>
+				<li>
+					{php}$GLOBALS['telphone']=$info['telphone'];{/php}
+					{qb:hy name="wap_qun_link01" type="link"}
+					<!--<a href="tel::{$GLOBALS['telphone']}"><span><i class="fa fa-phone"></i></span><em>一键拨号</em></a>-->
+					<a href="{$url}"><span><i class="{$logo}"></i></span><em>{$title}</em></a>
+					{/qb:hy}
+				</li>
+				<li>
+					{qb:hy name="wap_qun_link02" type="link"}		
+					<!--<a href="{:urls('map/index',['aid'=>input('id')])}"><span><i class="glyphicon glyphicon-map-marker"></i></span><em>一键导航</em></a>-->
+					<a href="{$url}"><span><i class="{$logo}"></i></span><em>{$title}</em></a>
+					{/qb:hy}
+				</li>
+				<li>{php}$GLOBALS['uid']=$info['uid'];{/php}
+					{qb:hy name="wap_qun_link03" type="link"}
+					<!--<a href="{:murl('member/msg/add',['uid'=>$GLOBALS['uid']])}" class="_pop"><span><i class="fa fa-commenting"></i></span><em>微信留言</em></a>-->
+					<a href="{$url}"><span><i class="{$logo}"></i></span><em>{$title}</em></a>
+					{/qb:hy}
+				</li>
+				<li>
+					{qb:hy name="wap_qun_link04" type="link"}		
+					<!--<a href="{:get_url('msg','-'.input('id'))}"><span><i class="fa fa-comments-o"></i></span><em>群聊</em></a>-->
+					<a href="{$url}"><span><i class="{$logo}"></i></span><em>{$title}</em></a>
+					{/qb:hy}
+				</li>
+			</ul>
+		</div>
+	</div>
+<script type="text/javascript">
+function joinGroup(){
+	var url = "{:urls('wxapp.member/join',['id'=>$id])}";
+	$.get(url,function(res){
+		if(res.code==0){
+			layer.alert("收藏成功！");
+		}else{
+			layer.alert("收藏失败:"+res.msg);
+		}	
+	});
+}
+</script>
+<style type="text/css">
+.info-content img{
+	max-width:100%;
+}
+</style>
+	<div class="SideBox">
+		<div class="head"><span class="tag">介绍</span> </div>
+		<div class="info-content">
+			{$info.content}
+		</div>
+	</div>
+
+ <a href="{:murl('bbs/content/add',['mid'=>2,'ext_id'=>$id,'ext_sys'=>M('id')])}?fromurl={:urlencode(get_url('location'))}"><div style="width:90%;margin:auto;border-radius:8px;background:orange;margin-top:10px;margin-bottom:10px;color:#fff;text-align:center;padding-top:8px;padding-bottom:5px;font-size:18px;">我要点评</div></a>
+
+
+<!--加微信开始-->
+<div class="MoreInfoBox">
+	<div class="BackBox" onclick="$('.MoreInfoBox').fadeOut();"></div>
+	<div class="ShowinfoBox" style="text-align:center;font-size:12px;">
+	请长按识别或扫一扫下方二维码加好友<br>
+<img src="{$info.wximgcode|tempdir}">
+	</div>
+</div>
+<!--加微信结束-->
+
+
+<script type="text/javascript">
+$.get("{:urls('wxapp.visit/check_visit',['id'=>$id])}",function(res){
+		if(res.code==0){
+			//layer.msg("更新浏览量成功!");
+		}else{
+			//layer.msg("并没有更新到浏览量!");
+		}	
+});
+</script>
+
+<!--圈子各个频道的数据调用-->
+{include file="content/more_content" /}
+
+<!--  发布内容的按钮 -->
+{include file="qun@post_btn" /}
+
+<!--  商家设置菜单 -->
+{include file="qun@set" /}
+
+<!-- 微信分享插件 -->
+{include file="index@share"/}
+
+<!--
+微信分享插件里边有这段代码了
+<script type="text/javascript" src="https://res.wx.qq.com/open/js/jweixin-1.3.2.js"></script>
+-->
+<script type="text/javascript">
+wx.miniProgram.getEnv(function (res) { 
+	if (res.miniprogram==true) { 
+		var info = { 
+			title: '{$info.title}',
+			picurl: '{$info.picurl}',
+			url: "{:get_url(urls('show',['id'=>$id]))}?my_qid={$id}&p_uid={$userdb.uid}",
+		}; 
+		var json = JSON.stringify(info); 
+		wx.miniProgram.postMessage({ 
+			data: info, 
+		}); 
+	} 
+}); 
+</script>
+
+<!-- 分享海报二维码宣传推广图片 -->
+{include file="$haibao" /}
+{include file="../../../haibao_style/btn" /}
+<!--<div style="position:fixed;right:30px;top:80px;z-index:200;width:30px;font-size:10px;line-height:10px;color:#000;opacity:0.7;"><i id="share_code" onclick="share_btn()" style="font-size:30px;" class="fa fa-qrcode"></i>海报</div>-->
+
+{/block}

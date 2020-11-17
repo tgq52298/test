@@ -1,0 +1,31 @@
+<!--圈子相关贴子列表-->
+{notempty name="$info.qun"}
+					
+					<div class="SideMores taglabel">
+					<div class="h"><span>本圈子内的新贴</span></div>
+					<ul class="ListNewfen qun_new_title">
+						{qb:tag name="pc_qun_indexpage" type="bbs" where="ext_id=$info.ext_id" order="id" rows="8"}
+						<li><a href="{$rs.url}">{$rs.title}</a></li>
+						{/qb:tag}
+					</ul>
+					<div class="MOreShow msnewfen qun_more_btn"><button type="button" onclick="MoreShowQun('{qb:url name='pc_qun_indexpage' /}')">更多<i class="fa fa-chevron-down"></i></button></div>
+				</div><br>
+<script type="text/javascript">
+var qun_more_page = 1;
+function MoreShowQun(url){
+	qun_more_page++;
+	$.get(url+qun_more_page,function(res){
+		if(res.code==0){
+			if(res.data==''){
+				layer.msg("已经显示完了！",{time:500});
+				$('.qun_more_btn').hide();
+			}else{
+				$('.qun_new_title').append(res.data);
+			}
+		}else{
+			layer.msg(res.msg,{time:2500});
+		}
+	});
+}
+</script>
+{/notempty}

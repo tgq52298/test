@@ -1,0 +1,162 @@
+    
+      <div id='print_wrap'>
+        <link rel='stylesheet' type='text/css' href='__STATIC__/hr/default/pc/showmember_print.css'>
+            
+            <table style="width:97%; border:1px solid #dfdfdf; margin-right:25px;">
+                <tr>
+                    <td class="head">
+                        <div class="hl">
+                            {qb:tag name="pchr_show2_head" type="text"}<span>个人简历</span>{/qb:tag}
+                        </div>
+                        {empty name=":input('from')"}
+                        <div class="hr">
+                            {if is_dir(PLUGINS_PATH.'fav')} <!-- 如安装了收藏插件即可进行收藏操作 -->
+                              <a href="javascript:;" class="hj"  onclick="add_fav({$id})" rel="external nofollow"><em class="orange">加入收藏</em></a>
+                              <script>
+                              function add_fav(id){
+                                var url="{:purl('fav/api/add')}?type={:config('system_dirname')}&id="+id;
+                                $.get(url,function(res){
+                                  if(res.code==0){
+                                    layer.msg('收藏成功');
+                                  }else{
+                                    layer.alert(res.msg);
+                                  }
+                                })
+                              }
+                              </script>
+                            {/if}
+
+                            {qb:tag name="pchr_show2_print_btn" type="text"}
+                            <a href="javascript:;"  onclick="print_vita('print_wrap');" class="hp" rel="external nofollow"><em class="blue">打印简历</em></a>
+                            {/qb:tag}
+                        </div>
+                        {/empty}
+                    </td>
+                    </tr><tr>
+                    <td class="text">
+                        <table style="width:95%; margin:0 20px;">
+                            <tr>
+                                <td class="th">
+                                    <div >
+                                    <span class="th1">{qb:tag name="pchr_show2_vita_title1" type="text"}【职位描述】{/qb:tag}</span>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="width:100%; float:left;">
+                                    <div class="t_pic">
+                                        <a href="#"><img src="{$info.picurl}" onError="this.src='__STATIC__/images/noface.png'" border="0" width="120"></a>
+                                    </div>
+                                    <ul class="base"><li>
+                                        {qb:showpage field="picurl,title,wage,skill,interest,education,work,content,qq,email,mobphone"}
+                                        <div><em>{$rs.title}：</em>{$rs.value} </div>
+                                        {/qb:showpage}        
+                                        <div class="lin">期望待遇: {$info.wage}</div>
+                                        <div class="lin">期望岗位: {$info.title}</div>
+                                        </li>
+                                    </ul>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="th">
+                                    <div class="th1">{qb:tag name="pchr_show2_vita_title2" type="text"}【教育背景】{/qb:tag}</div>
+                                </td>
+                                </tr><tr>
+                                <td class="tu">
+                                    {$info.education}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="th">
+                                    <div class="th1">{qb:tag name="pchr_show2_vita_title3" type="text"}【工作经验】{/qb:tag}</div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="tu">
+                                    {$info.work}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="th">
+                                    <div class="th1">{qb:tag name="pchr_show2_vita_title6" type="text"}【技能特长】{/qb:tag}</div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="tu">
+                                    {$info.skill}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="th">
+                                    <div class="th1">{qb:tag name="pchr_show2_vita_title7" type="text"}【体育爱好】{/qb:tag}</div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="tu">
+                                    {$info.interest}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="th">
+                                    <div class="th1">{qb:tag name="pchr_show2_vita_title4" type="text"}【自我评价】{/qb:tag}</div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="tu">
+                                    {$info.content}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="th">
+                                    <div class="th1">{qb:tag name="pchr_show2_vita_title5" type="text"}【联系方式】{/qb:tag}</div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="call">
+                                      {if $userdb}
+                                        <div><b>手机号码:</b> {$info.mobphone}</div>
+                                        <div><b>QQ号码:</b> {$info.qq}</div>
+                                        <div><b>常用邮箱:</b> {$info.email}</div>
+                                        {else /}
+                                        <div class='log_tip'>
+                                            <span>还不是会员,立即</span>
+                                            <a href="javascript:;" class="blue" onClick="window.location.href='{:get_url('reg')}';">免费注册</a>
+                                        </div>
+                                        <div class='log_tip'>
+                                            <span>已经是会员,马上</span>
+                                            <a href="javascript:;" class="orange" onClick="window.location.href='{:get_url('login')}' ">登录</a>
+                                        </div>
+                                        <div class="care log_tip">要先登录才能查看联系方式</div>
+                                      {/if}
+
+                                    </div>
+                                    <!-- 
+                                    <div class="print">
+                                        <a href="javascript:;" onclick="print_vita('print_wrap');" rel="external nofollow">打印简历</a>
+                                    </div>    
+                                    -->    
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+      </div>
+
+<script>
+
+function print_vita(printpage){   
+  var headstr = "<html><head><title></title></head><body>";  
+  var footstr = "</body></html>";  
+  var newstr = document.all.item(printpage).innerHTML;  
+  var oldstr = document.body.innerHTML;  
+  document.body.innerHTML = headstr+newstr+footstr;  
+  console.log(headstr+newstr+footstr)
+  window.print();  
+  document.body.innerHTML = oldstr;  
+  return false;  
+} 
+
+
+</script>

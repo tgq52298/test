@@ -1,0 +1,43 @@
+<!--推荐圈子-->
+				<div class="SideMores taglabel">
+					<div class="h"><span>活跃__QUN__</span></div>
+					<ul class="ListMember pc_qun_list_member">
+{qb:tag name="pc_qun_list_member" order="list" js="pc_qun_list_member" type="qun" rows="6"}
+						<li><a href="{$rs.url}" target="_blank" title="{$rs.content|get_word=200}"><span><img src="{$rs.picurl}" onerror="this.src='__STATIC__/images/nopic.png'"  onmouseover="changeShowImg($(this),'over');" onmouseout="changeShowImg($(this),'out');" ></span><em>{$rs.title}</em></a></li>
+{/qb:tag}
+
+					</ul>
+					<script type="text/javascript">
+						function changeShowImg(obj,mouse){
+							if(mouse=='over'){
+								obj.animate({"width":"150%","height":"150%"},300);
+							}else if(mouse=='out'){
+								obj.animate({"width":"100%","height":"100%"},300);
+							}
+						}
+					</script>
+					<div class="MOreShow"><button class="showMoreShop" type="button" onclick="showMoreMember('{qb:url name='pc_qun_list_member'/}')">更多<i class="fa fa-chevron-down"></i></button></div>
+				</div>
+<script type="text/javascript">
+var shoppage=1;
+function showMoreMember(url){	
+	shoppage++;
+	$.get(url+shoppage,function(res){
+		if(res.code==0){
+			if(res.data==''){
+				layer.msg("已经显示完了！",{time:500});
+				$('.showMoreShop').attr('onclick','');
+				$('.showMoreShop').html('显示完了');
+				$('.showMoreShop').css({'background':'#CCC'});
+			}else{
+				res.data="<div class='pages"+shoppage+"'>"+res.data+"</div>";			
+				$('.ListMember').append(res.data);
+				$('.ListMember .pages'+shoppage).hide();
+				$('.ListMember .pages'+shoppage).show(500);
+			}
+		}else{
+			layer.msg(res.msg,{time:2500});
+		}
+	});
+}
+</script>	

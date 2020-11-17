@@ -1,0 +1,35 @@
+<!--滚动显示站点信息-->
+	<div class="auto-roll taglabel">
+		<ul class="qun_wapindex_r001">			 
+			<li><dd><i class="si si-calendar"></i>今日发贴: <a id="div_today_post">0</a> 篇</dd> <dd><i class="fa fa-calendar"></i>昨日发贴: <a id="div_yesterday_post">0</a> 篇</dd></li>
+			<li><dd><i class="fa fa-file-o"></i>共有主题: <a id="div_total_topic">0</a> 篇</dd> <dd><i class="fa fa-fire"></i>共有贴子: <a id="div_total_post">0</a> 篇</dd></li>
+			<li><dd><i class="fa fa-user-circle"></i>总共会员: <a id="div_total_member">1</a> 位</dd> <dd><i class="fa fa-child"></i>最高日发贴: <a id="div_day_top_post">1</a> 篇</dd></li>
+			<li><dd style="width:100%;"><i class="fa fa-user-o"></i>欢迎新人: <a id="div_new_member"></a></dd></li>
+{if modules_config('appstore')}
+			<li><dd><i class="fa fa-download"></i>今日安装量: <a id="div_today_setup">0</a> 次</dd> <dd><i class="fa fa-download"></i>昨日安装量: <a id="div_yesterday_setup">0</a> 次</dd></li>
+<script type="text/javascript">
+$(function(){
+	setTimeout(function(){
+		var url = "{:urls('appstore/wxapp.api/total')}?type=";
+		$.get(url+"day1",function(res){
+			if(res.code==0){
+				$("#div_today_setup").html(res.data);
+			}
+		});
+		$.get(url+"day2",function(res){
+			if(res.code==0){
+				$("#div_yesterday_setup").html(res.data);
+			}
+		});
+	},2000);
+});
+</script> 
+{/if}
+		</ul>
+	</div>
+
+<script type="text/javascript">
+var infomsg_url = "{:urls('wxapp.infomsg/index')}";
+var get_new_member = "{:urls('index/wxapp.member/get_list',['rows'=>1])}";
+</script>
+<script src="__STATIC__/bbs/wap_rollinfo.js"></script>

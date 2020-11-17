@@ -1,0 +1,326 @@
+u{extend name="$index_style_layout" /}
+
+<!--SEO相关-->
+{block name="head_title"}{$info.title}{/block}
+{block name="head_keword"}{$info.title} {:get_sort($info.fid)}  {:M('name')}{/block}
+{block name="head_description"}{:get_word(del_html($info['content']),300)}{/block}
+
+
+{block name="body_content"}
+
+<link rel="stylesheet" type="text/css" href="__STATIC__/house/default/pc/show_sell.css">
+
+<div style="margin:15px auto; width:1200px;"> <!-- wrap S -->
+    <div id="showsell_top">
+        <div class="showsell_top_L2">{$info.title}</div>
+        <div class="showsell_top_L3">房源编号：{$info.id}</div>
+
+            {if is_dir(PLUGINS_PATH.'fav')} <!-- 如安装了收藏插件即可进行收藏操作 -->
+              <div class="showsell_top_R"><a href="javascript:;" onclick="add_fav({$id})" > <em class="fa fa-fw fa-heart"></em>收藏</a></div>
+              <script>
+              function add_fav(id){
+                var url="{:purl('fav/api/add')}?type={:config('system_dirname')}&id="+id;
+                $.get(url,function(res){
+                  if(res.code==0){
+                    layer.msg('收藏成功');
+                  }else{
+                    layer.alert(res.msg);
+                  }
+                })
+              }
+              </script>
+            {/if}
+            
+    </div>
+
+    <table width="100%" border="0" cellspacing="0" cellpadding="0" id="showsell_main">
+        <tr>
+            <td valign="top" class="showsell_main_L" height="300">
+                <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                    <tr>
+                        <td valign="top" class="showsell_main_in_R" align="center">
+                            <!-- pic S -->
+                            <div class="m-pic">
+                                <div class="m-prev m-Bt"><span></span></div>
+                                <div class="m-next m-Bt"><span></span></div>
+                                <ul>
+                                    {notempty name="$info.picurls"} {volist name="$info.picurls" id="rs"}
+                                    <li><span><img src="{$rs.picurl}" onError="this.src='__STATIC__/images/nopic.png'"/></span>
+                                    </li>
+                                    {/volist} {else /}
+                                    <li><span><img src="__STATIC__/images/nopic.png" /></span>
+                                    </li>
+                                    {/notempty}
+                                </ul>
+                                <ol>
+                                    {notempty name="$info.picurls"} {volist name="$info.picurls" id="rs2" key='k'}
+                                            {switch name="k"}
+                                                {case value="1"}<li class='active'>{$k}</li>{/case}
+                                                {default /}<li>{$k}</li>
+                                            {/switch}
+                                    {/volist} 
+                                    {/notempty}
+                                </ol>
+                                <script>
+                                var bannerNum = 0;
+                                var liNum = $(".m-pic ul li").length;
+                                  $(".m-pic .m-prev").click(function(){
+                                    bannerNum = (--bannerNum + liNum) % liNum;
+                                    $(".m-pic ul li").eq(bannerNum).fadeIn("slow").siblings().fadeOut("slow");
+                                    $(".m-pic ol li").eq(bannerNum).addClass("active").siblings().removeClass("active");
+                                  });
+                                  $(".m-pic .m-next").click(function(){
+                                    bannerNum = ++bannerNum % liNum;
+                                    $(".m-pic ul li").eq(bannerNum).fadeIn("slow").siblings().fadeOut("slow");
+                                    $(".m-pic ol li").eq(bannerNum).addClass("active").siblings().removeClass("active");
+                                  });
+                                  $(".m-pic ol li").click( function(){
+                                    var thisIndex = $(this).index();
+                                    $(".m-pic ul li").eq(thisIndex).fadeIn("slow").siblings().fadeOut("slow");
+                                    $(".m-pic ol li").eq(thisIndex).addClass("active").siblings().removeClass("active");
+                                  } );
+                                </script>
+                            </div>
+                             <!-- pic E -->
+
+                        <div class="m-flatInfo">
+                            <span>发布日期：{$info.create_time|format_time}</span>
+                            {if $info.showday}<span>有效日期：{$info.showday}</span>{/if}
+                            &nbsp;
+                            <span>浏览量：{$info.view} 人次</span>                    
+                                  <!-- 
+                                    如果发现虚假信息，欢迎举报：
+                                     {volist name=':str_array($webdb[info_reportdb])' id="report_info" offset="0" length='3'}
+                                        <a href="$city_url/job.php?job=report&fid=$fid&id=$id&type=$key" target="_blank">{$report_info}</a>
+                                    {/volist} 
+                                     -->
+                        </div>
+                        <div class="m-userInfo">
+                            <span>发布者：{$info.uid|get_user_name}</span>
+                            <a href="{:murl('add','fid='.$info['fid'])}" class="m-bPost _pop">发布</a>
+                                
+                            {if ($admin || $info['uid']==$userdb['uid'])}
+                                <a href="{:murl('edit','id='.$id)}" class="m-bEdit _pop">修改</a>
+                                <a href="#" onclick="delinfo({$id})" class="m-bDel">删除</a> 
+                            {/if}
+                                <script type="text/javascript">
+                                    function delinfo(aid) {
+                                        $.get("{:urls('wxapp.post/delete')}?id="+aid, function (res) {
+                                            if (res.code == 0) {
+                                                layer.alert("删除成功！");
+                                                location.href = "{:urls('content/index',['fid'=>$fid])}";
+                                            } else {
+                                                layer.msg("删除失败:" + res.msg, {
+                                                    time: 1500
+                                                });
+                                            }
+                                        });
+                                    }
+                                </script>
+                        </div>
+                    </td>
+
+                    <td height="100" valign="top" class="showsell_main_in_L">
+                        <div class="t1 line">价格：<b>{$info.price}</b> </div>
+                        <div style="clear:both;"></div>
+                        {if $info.province_id || $info.city_id}
+                        <div class="line">地区：{$info.province_id|get_area} {$info.city_id|get_area} {$info.zone_id|get_area} {$info.street_id|get_area}</div>
+                        {/if}
+                    {qb:showpage field="title,price,content,picurl,telphone,maps"}
+                     <div class="line">{title}：</span>{value}</div>
+                    {/qb:showpage}
+
+                        {if $info.telphone}
+                        <div class="m-bTel">{$info.telphone}</div>
+                        {/if}
+                    </td>
+                </tr>
+      </table>
+      </td>
+
+    </td>
+    <td valign="top" class="showsell_main_R" align="center"> 
+     <!-- {include file="index/side" /} -->
+      <div class="imgdiv"> <a href="{:get_url('user',$info.uid)}" >
+   <img src="{:get_user_icon($info.uid)}" width='150px' onError="this.src='__STATIC__/images/nobody.gif'" 
+    border="0"></a> 
+   </div>      
+   <div class="title">{$info.uid|get_user_name}</div>
+   <div class="goin"><a href="{:get_url('user',$info.uid)}">查看用户信息</a></div>
+   <div class="line">注册:{:format_time(get_user($info.uid)[regdate])}</div>
+   <div class="line">级别:{:getGroupByid(get_user($info.uid)[groupid])}</div>
+   <div class="line">离线:{:format_time(get_user($info.uid)[lastvist])}</div>
+   <div class="line">
+       {if get_user($info.uid)[grouptype]==1}
+         <img src="https://life8.php168.com/house/images/life6/r-hy1.gif" alt="企业会员">
+       {/if}
+       {if get_user($info.uid)[idcard_yz]==1}
+        <img src="https://life8.php168.com/house/images/life6/r-id1.gif" alt="身份认证会员"> 
+         {else/}
+          <img src="https://life8.php168.com/house/images/life6/r-id0.gif" alt="身份还未认证">
+       {/if}
+       {if get_user($info.uid)[email_yz]==1}
+        <img src="https://life8.php168.com/house/images/life6/r-email1.gif" alt="邮箱认证会员"> 
+         {else/}
+          <img src="https://life8.php168.com/house/images/life6/r-email0.gif" alt="邮箱还未认证">
+       {/if}
+       {if get_user($info.uid)[mob_yz]==1}
+        <img src="https://life8.php168.com/house/images/life6/r-mob1.gif" alt="手机认证会员"> 
+         {else/}
+          <img src="https://life8.php168.com/house/images/life6/r-mob0.gif" alt="手机还未认证">
+       {/if}
+   </div>
+         <br>
+         <div class="m-bAd1">
+          {qb:tag name="house_show3_sell" type="image"} <!-- <img src="__STATIC__/house/demo/jydc.jpg"> --> <img src="{$picurl}">{/qb:tag}
+         </div>
+    </td>
+    </tr>
+    </table>
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0" id="main2t">
+  <tr>
+    <td valign="top"> 
+                  <table width="100%" border="0" cellspacing="0" cellpadding="0" class="main2t_L_tb">
+                    <tr>
+                      <td class="top" id="mtps">
+                      {qb:tag name="house_show3_content_title" type="text"}
+                        <div class="m-bChooseT choose_mt" onmouseover="chooose_tb(this,'1')"><a href="javascript::">详细描述</a></div>
+                        <div onmouseover="chooose_tb(this,'2')"><a href="javascript::">图片展示</a></div>
+                        <div onmouseover="chooose_tb(this,'3')"><a href="javascript::">网友评价</a></div>
+                        <div onmouseover="chooose_tb(this,'4')"><a href="javascript::">联系方式</a></div>
+                        <div onmouseover="chooose_tb(this,'5')"><a href="javascript::">地图位置</a></div>
+                      {/qb:tag}
+                      </td>
+                    </tr>
+                    <tr>
+                        <td class="main" height="150"> 
+                            <div id="mtb1">{$info.content}</div>
+                            <div id="mtb2" style="display:none;">
+                                    {notempty name="$info.picurls"} {volist name="$info.picurls" id="rs"}
+                                    <div class="imglist"><a class="ii" href="{$rs.picurl}" target="_blank"><img src="{$rs.picurl}" width="150" height="120" alt="{$rs.name}" border="0" onError="this.src='__STATIC__/images/nopic.png'"/></a><br>
+                                    <a href="$rs[imgurl]" target="_blank">{$rs.name}</a></div>
+                                    {/volist}
+                                    {/notempty}
+                            </div>
+                            <div id="mtb3" style="display:none;">
+                                    <!--引用评论碎片-->
+                                    {qb:comment name="commentpc001" rows='5'}
+                                        {include file="content/comment_pc" /}
+                                    {/qb:comment}
+                            </div>
+                            <div id="mtb4" style="display:none;">   
+                                <div><span>联系人：</span>{$info.uid|get_user_name}</div> 
+                                <div><span>联系电话:</span>{$info.telphone}</div>
+                            </div>
+                            <div id="mtb5" style="display:none;">
+                                {notempty name="$info.maps"}
+                                        <div class="sidecont">
+                                            <div class="head">地图位置</div>
+                                            <div style="padding:10px 0;"><iframe src="{:urls('index/map/index')}?xy={$info.maps}&title={$info.title|urlencode}"  width="100%" height="350" scrolling="no" frameborder="0" ></iframe></div>
+                                        </div>
+                                {/notempty}
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+        </td>
+<SCRIPT LANGUAGE="JavaScript">
+<!--
+function chooose_tb(obj,pid){
+    oo=document.getElementById('mtps').getElementsByTagName("DIV");
+    for(var i=0;i<oo.length;i++){
+        if(oo[i]==obj){
+            oo[i].className='choose_mt';
+        }else{
+            oo[i].className='';
+        }
+    }
+    for(var i=1;i<6;i++){
+        $('#mtb'+i).hide();
+    }
+    $('#mtb'+pid).show();
+
+}
+//-->
+</SCRIPT>
+
+        <!--包含的文件在此目录/house/index/side.htm-->
+     
+
+    <td class="main2t_R" valign="top"> 
+      <table width="100%" border="0" cellspacing="0" cellpadding="0" class="main2t_R_tb">
+        <tr>
+          <td class="top">{qb:tag name="pc_house_show3_sidetitle_001" type="text"}热门房源{/qb:tag}</td>
+        </tr>
+        <tr>
+          <td class="main" height="150">
+                {qb:tag name="pc_house_show3_side_001" type="house" rows="5" union="mid" order="view" where="status>0"}
+                    <div class="listword">
+                        <span class="title"><a href="{$rs.url}" target="_blank">{:get_word($rs.title,22)}</a></span>
+                        <span class="price">{$rs.price} {$field_db[price][form_units]}</span>
+                    </div>
+                {/qb:tag}
+         </td>
+        </tr>
+      </table>
+    </td>
+
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<table width="100%" border="0" cellspacing="0" cellpadding="0" id="main3t">
+  <tr>
+    <td class="main3t_L"><table width="100%" border="0" cellspacing="0" cellpadding="0" class="main3t_L_tb">
+        <tr> 
+          <td class="top">{qb:tag name="pc_house_show3_sidetitle_002" type="text"}<div>推荐房源</div>{/qb:tag}</td>
+        </tr>
+        <tr> 
+          <td class="main" height="150">
+            {qb:tag name="pc_house_show3_side_002" type="house" rows="5" union="mid" order="status" where="status=2"}
+            <div class="imglist"><a href="{$rs.url}" class="ii"><img onError="this.src='__STATIC__/images/nopic.png'" src="{$rs.picurl}" border="0"></a> 
+             <a href="{$rs.url}" target="_blank">{$rs.title}</a>  </div>
+            {/qb:tag}
+          </td>
+        </tr>
+      </table>
+    </td>
+
+    <td class="main3t_R">
+      <table width="100%" border="0" cellspacing="0" cellpadding="0" class="main3t_R_tb">
+        <tr> 
+          <td class="top">{qb:tag name="pc_house_show3_sidetitle_003" type="text"}最新房源{/qb:tag}</td>
+        </tr>
+        <tr> 
+          <td class="main" height="150" valign="top">
+        {qb:tag name="pc_house_show3_side_003" type="house" rows="5" union="mid" order="id" where="status>0"}
+        <div class="listword">
+            <span class="title"><a href="{$rs.url}" target="_blank">{:get_word($rs.title,22)}</a></span>
+            <span class="price">{$rs.price}</span>
+        </div>
+        {/qb:tag}
+            
+          </td>
+        </tr>
+      </table>
+    </td>
+
+
+
+
+    </tr>
+</table>
+
+
+
+
+
+
+
+</div> <!-- wrap E -->
+
+
+
+{/block}

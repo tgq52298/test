@@ -1,0 +1,10 @@
+<!--相关主题开始-->
+			<div class="ShowComment taglabel">
+				<ul class="head"><ol>你可能感兴趣的主题</ol><li class="tag_more">{volist name=":fun('Tagfun@tags_link',$info)" id="keyword" } {if $i<10}<a href="{:purl('kwtags/taglist/index',['keyword'=>$keyword])}" target="_blank">{$keyword}</a>{/if} {/volist}</li></ul>
+				<div class="ListMoreTitle">
+				{php}$sysname=config('system_dirname');{/php}
+				{qb:tag name="ListMoreTitle" class="plugins\kwtags\model\Info@get_label" union="aid=$info.id,tids=$info.kwtagid,sysname=$sysname,mid=$info.mid" rows="20"}
+					<div class="ltile"><a href="{$rs.url}" target="_blank">{$rs.title}</a></div>
+				{/qb:tag}
+				</div>
+			</div>

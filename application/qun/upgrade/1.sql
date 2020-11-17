@@ -1,0 +1,2 @@
+ALTER TABLE  `qb_qun_content1` ADD  `hidetitle` TINYINT( 1 ) NOT NULL COMMENT  '私密圈是否对外显示标题';
+INSERT INTO `qb_qun_field` (`id`, `name`, `title`, `type`, `field_type`, `value`, `options`, `about`, `show`, `mid`, `ajax_url`, `next_items`, `param`, `format`, `table`, `level`, `key`, `option`, `pid`, `list`, `listshow`, `ifsearch`) VALUES (0, 'hidetitle', '是否对外隐藏标题', 'radio', 'tinyint(2) NOT NULL DEFAULT ''0''', '', '0|公开标题\r\n1|隐藏标题', '仅针对私密圈才能隐藏', 1, 1, '', '', '', '', '', 2, '', '', '', 0, 0, 0);

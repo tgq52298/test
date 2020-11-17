@@ -1,0 +1,11 @@
+<!--论坛分类-->
+				<dl class="RightBase">
+					<dd>
+						<div class="h"><span>热门分类</span></div>
+						<ul>
+{volist name="0|sort_config" id="rs"}
+							<li><a href="{:urls('content/index',['fid'=>$rs['id']])}" {eq name="$info.fid" value="$rs.id"}class="ck"{/eq}>{$rs.name}</a></li>
+{/volist}
+						</ul>
+					</dd>
+				</dl>

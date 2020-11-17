@@ -1,0 +1,58 @@
+{extend name="$member_style_layout" /}
+
+{block name="title"} {$tab_ext.page_title} {/block}
+
+{block name="content"}
+	{include file="member@common/menu" /}
+	{include file="member@common/table01" /}
+	{$pages}
+<style type="text/css">
+.aboutnote{
+	background:#fff;
+	padding:12px;
+}
+.aboutnote li{
+	border-bottom:1px solid #eee;
+	margin-top:9px;
+}
+.aboutnote .head{
+	color:red;
+}
+</style>
+	<div class="aboutnote">
+	  <div class="head">说明:</div>
+	  <li>通过QQ或微信转发分享，只要他们领取优惠券并使用，你就有收益。</li>  
+	</div>
+
+	<div class="sideBox">
+			<ul>
+				<ol>推广方式有以下3种</ol>
+				<li> </li>		
+			</ul>
+			<ul>
+				<ol>直接分享</ol>
+				<li>请点击右上角直接分享更快捷</li>		
+			</ul>
+			<ul>
+				<ol>网址</ol>
+				<li><input type="text" name="textfield" style="width:250px;" id="urlcode" value="{$share_url}"></li>		
+			</ul>
+			<ul>
+				<ol>海报</ol>
+				<li></li>		
+			</ul>
+			<div class="showimg"><div style="margin:auto;cursor:pointer;background:orange;border-radius:8px;line-height:40px;width:300px;color:#fff;text-align:center;font-size:15px;" onclick="share_btn()">点击把下面的内容生成海报图片</div>
+		{include file="youhui/haibao"}</div>
+	</div> 
+{php}
+$share = [
+'link'=>$share_url,
+'picurl'=>tempdir($topic['picurl']),
+'title'=>"关于 《".$topic['title']."》 的优惠券限时限量领取，先到先得。",
+'about'=>"关于 《".$topic['title']."》 的优惠券限时限量领取，先到先得。".$topic['description'],
+];
+{/php}
+	<!-- 微信分享 -->
+{include file="index@share"/}
+
+{/block}

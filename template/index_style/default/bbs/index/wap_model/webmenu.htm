@@ -1,0 +1,30 @@
+<!--网站菜单-->
+<script type="text/javascript">
+$(function () {
+	var swiper = new Swiper('.sort_button', {
+		autoplay: {
+		delay: 3000,
+		},
+		pagination: {
+			el: '.swiper-pagination', 
+		},
+	});
+})
+</script>
+<div class="MainMenu taglabel">
+	<ul>
+		<div class="swiper-container sort_button">
+			<div class="swiper-wrapper">
+				<!--每行4个,可以把4改成8即变成两行-->
+				{volist name=":array_chunk(get_web_menu('wap'),4,true)" id="array"}
+				<div class="swiper-slide">
+					{volist name="$array" id="rs"}
+					<li><a href="{$rs.url}"><span style="{notempty name='$rs.bgcolor'}background-color:{$rs.bgcolor};{/notempty}"><i class="{$rs.style|default='fa fa-leaf'}"></i></span><em {notempty name='$rs.fontcolor'}style="color:{$rs.fontcolor};"{/notempty}>{$rs.name}</em></a>{$rs.script}</li>
+					{/volist}
+				</div>
+				{/volist}
+			</div>
+			<div class="swiper-pagination"></div>
+		</div>
+	</ul>
+</div>

@@ -1,0 +1,110 @@
+<ul class="div_set_group_view" style="display:none;">
+<div class="set_group_view" style="padding:10px;line-height:180%;">
+{volist name=":getGroupByid()" id="name"}
+<input type="checkbox" name="" value="{$key}"> {$name}<br>
+{/volist}
+</div>
+</ul>
+
+
+<script type="text/javascript">
+//设置用户组查看杼
+function set_group_view(){
+	check_wap_edit();
+
+	layer.open({
+		type: 1,
+		btn:['确认','取消'],
+		yes:function(){
+			var gid_array = new Array();
+			$(".set_group_view").last().find("input:checkbox:checked").each(function(){
+				gid_array.push($(this).val());
+			});
+			var groups = gid_array.join(',');
+			if(groups!=''){
+				var str = '[group='+groups+'] 内容区域 [/group]';
+				{if IN_WAP===true}
+				//v_summernote.summernote('pasteHTML',str)
+				put_summernote(str);
+				{else /}
+				ueditor.execCommand('insertHtml',str);
+				{/if}
+				layer.closeAll();
+			}else{
+				layer.alert('你必须选择一个用户组');
+			}			
+		},
+		title:'请选择哪些用户组才有权限查看',
+		content:$('.div_set_group_view'),
+	},);
+}
+
+//密码查看权限
+function set_password_view(){
+	check_wap_edit();
+
+	layer.prompt({
+            title: '请输入访问密码',
+            formType: 0
+       }, function(value){
+		   layer.closeAll();
+		   var str = '[password='+value+'] 内容区域 [/password]';
+		 {if IN_WAP===true}
+			put_summernote(str)
+		{else /}
+			ueditor.execCommand('insertHtml',str);
+		{/if}
+    });
+}
+
+//积分消费查看权限
+function set_paymoney_view(){
+	check_wap_edit();
+
+	layer.prompt({
+            title: '访问内容需要消费多少积分？',
+            formType: 0
+       }, function(value){
+		   value=parseInt(value);
+		   if(value<1){
+			   layer.alert('必须大于0');
+			   return ;
+		   }
+		   layer.closeAll();
+		   var str = '[paymoney='+value+'] 内容区域 [/paymoney]';
+		 {if IN_WAP===true}
+			put_summernote(str)
+		{else /}
+			ueditor.execCommand('insertHtml',str);
+		{/if}
+    });
+}
+
+//设置回复才可看
+function set_reply_view(){
+	check_wap_edit();
+	var str = '[reply] 内容区域 [/reply]';
+	//v_summernote.summernote('pasteHTML',str);
+	put_summernote(str)
+}
+
+
+function put_summernote(str){
+	v_summernote.summernote('code', cache_summernote_code.replace(/<!--#@#@#@#@#-->/, str+'<br>'));
+}
+
+function check_wap_edit(){
+	{if IN_WAP!==true}
+		return ;
+	{/if}
+	//v_summernote.summernote('createRange') 选中区域
+	v_summernote.summernote('insertText', ' ');	//焦点获取失败,避免下面的报错
+	v_summernote.summernote('pasteHTML', '<!--#@#@#@#@#-->');
+	cache_summernote_code = v_summernote.summernote('code');
+	if(cache_summernote_code.indexOf('<!--#@#@#@#@#-->')==-1){
+		layer.alert("焦点获取失败,请重新点击选择位置,要在哪插入模板!");
+		return false;
+	}
+}
+
+</script>

@@ -1,0 +1,143 @@
+
+			<div class="layui-row">
+				<div class="layui-col-md12">
+				  <form action="{:urls('bbs/wxapp.post/add')}" method="post" class="ajax-post">
+					<div class="layui-form-item layui-form-text">
+					  <div class="layui-input-block" style="margin-left:0px;">
+						<input type="hidden" name="title" value="">
+						<textarea name="content"  placeholder="我来说两句" class="layui-textarea"></textarea>
+					  </div>
+					</div>
+
+					<div class="layui-form-item" style="overflow: hidden;">
+					  <div class="layui-input-block layui-input-right" style="float:right;">
+					  <input type="hidden" name="picurl" id="atc_picurl">
+					  <input type="hidden" name="ext_id" id="ext_id" value="{if count(fun('qun@getByuid',$userdb.uid))==1}{:fun('qun@getByuid',$userdb.uid)[0]['id']}{/if}">
+					  <input type="hidden" name="ext_sys" id="ext_sys" value="{:M('id')}">
+						<button class="layui-btn" lay-submit lay-filter="formDemo">发表</button>
+					  </div>
+					  <div class="layadmin-messag-icon" style="position:relative;">						
+						<a href="javascript:;" onclick="open_upfile_images();"><i class="layui-icon layui-icon-picture"></i></a>
+						<em id="images_num" style="display:none;position:absolute;left:0px;top:0px;background:orange;color:#fff;padding:1px 3px 1px 3px;">0</em>
+						<a href="javascript:;" onclick="open_choose_face();"><i class="layui-icon layui-icon-face-smile-b"></i></a>
+						<a href="javascript:;" onclick="open_choose_qun();"><i class="layui-icon layui-icon-user"></i></a>
+					  </div>
+					</div>
+				  </form>
+				</div>
+			 </div>
+
+<style type="text/css">
+.sort-content{
+	padding:20px;
+	line-height:30px;
+}
+</style>
+
+<ul style="display:none;"><li class="list-sort"><div class="sort-content">
+<dt>请选择发布到哪个__QUN__</dt>
+{volist name=":fun('qun@getByuid',$userdb.uid)" id="rs"}
+	<dd onclick="choose_qun({$rs.id})"><input type="radio" name="id">{$rs.title}</dd>
+{/volist}
+</div></li></ul>
+<script src="__STATIC__/js/insert.js"></script>
+<script type="text/javascript">
+var havepost = false;
+$(document).ready(function(){
+	$("form.ajax-post textarea[name='content']").blur(function(){
+		var title = $(this).val();		
+		title = title.replace(/\[(face\d+)\]/g,"");	//把表情过滤掉
+		title = title.replace(new RegExp('\n',"g"),'');
+		$("form.ajax-post input[name='title']").val(title.substr(0,20));
+	});
+
+    $('form.ajax-post').submit(function () {
+		if($(this).find("textarea[name='content']").val()==''){
+			layer.alert('内容不能为空!');
+			return false;
+		}
+		if($(this).find("input[name='ext_id']").val()==''){
+			open_choose_qun();
+			return false;
+		}
+		post_content($(this));
+        return false;
+    });
+});
+
+function post_content(that){
+		if(havepost==true){
+			layer.alert('请不要重复发表');
+		}
+		havepost = true;
+		var url = that.attr('action');
+		var contents = that.find("textarea[name='content']").val();		
+		contents = contents.replace(new RegExp('\n',"g"),'<br>');
+		contents = contents.replace(new RegExp(' ',"g"),'&nbsp;');
+		that.find("textarea[name='content']").val(contents);
+		var form_data = that.serialize();
+		$.post(url, form_data).success(function (res) {
+			havepost = false;
+			if(res.code==0){
+				layer.msg("发表成功！");
+				setTimeout(function(){window.location.reload();},800);
+			}else{
+				layer.alert('发表失败:' + res.msg);
+			}
+        }).fail(function () {
+			havepost = false;
+			layer.alert('服务器发生错误');
+        });
+}
+
+function open_choose_face(){
+	layer.open({
+		type:2,
+		title:'请选择一个表情',
+		area:['{if IN_WAP===true}300px{else /}400px{/if}','{if IN_WAP===true}100px{else /}100px{/if}'],
+		content:"{:iurl('index/image/face')}",
+	});
+}
+
+function end_choose_face(face){
+	$("form.ajax-post textarea[name='content']").insert({"text":face});
+}
+
+
+function open_choose_qun(){
+	layer.open({
+		type:1,
+		area:['{if IN_WAP===true}300px{else /}400px{/if}','{if IN_WAP===true}300px{else /}400px{/if}'],
+		content:$(".list-sort").html(),
+		end:function(){
+			if($("form.ajax-post textarea[name='content']").val()!=''){
+				layer.closeAll();
+				layer.confirm('是否立即发表',{btn:['立即发表','还要修改'],},function(){
+					post_content($("form.ajax-post"));
+				});
+			}
+		}
+	});
+}
+function choose_qun(id){
+	$("#ext_id").val(id);
+	layer.closeAll();
+}
+
+function open_upfile_images(){
+	layer.open({
+		type:2,
+		area:['{if IN_WAP===true}98%{else /}600px{/if}','{if IN_WAP===true}95%{else /}600px{/if}'],
+		content:"{:urls('index/upfile/images')}?img="+$("#atc_picurl").val(),
+	});
+}
+function end_upfile_images(imgs){
+	if(imgs!=''){
+		$("#images_num").html(imgs.split(',').length);
+		$("#images_num").show();
+	}else{
+		$("#images_num").hide();
+	}
+	$("#atc_picurl").val(imgs);
+}
+</script>

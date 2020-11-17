@@ -1,0 +1,311 @@
+{extend name="$index_style_layout" /}
+
+<!--SEO相关-->
+{block name="head_title"}{$webdb.mseo_title?:$webdb.seo_title}{/block}
+{block name="head_keword"}{$webdb.mseo_keyword?:$webdb.seo_keyword}{/block}
+{block name="head_description"}{$webdb.mseo_description?:$webdb.seo_description}{/block}
+
+ 
+{block name="body_content"}
+ 
+  <link rel="stylesheet" href="__STATIC__/layui/css/layui.css" media="all">
+  <link rel="stylesheet" href="__STATIC__/layui/css/admin.css" media="all">
+  <link rel="stylesheet" href="__STATIC__/layui/css/template.css" media="all">
+
+<div style="width:1200px;margin:auto;margin-top:10px;padding-top:10px;margin-bottom:20px;background:#F7F7F7;">
+
+
+<style type="text/css">
+.cmdlist-container{
+	overflow: hidden;
+	padding:5px;
+}
+.imglink{
+	position: relative;
+	width:100%;
+	display:block;
+}
+/* 丝带 */
+.box-ribbon {
+	color: #fff;
+    position: absolute;
+    line-height: 24px;
+    text-align: center;
+    top: 18px;
+    right: -68px;
+    width: 200px;
+    height: 25px;
+    padding: 5px;
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.13);
+    transform: rotate(45deg);
+    background-color: #5DB9E4;
+	opacity:0.9;
+}
+.disable-buy{
+	background-color: #666;
+}
+/* 左右的深色小三角 */
+.box-ribbon-triangle {
+	position: absolute;
+	border: 5px solid #2488B7;
+	border-bottom-color: transparent;
+    height: 0;
+    width: 0;
+    transform: rotate(45deg);
+}
+
+.box-ribbon-left {
+    top: -5px;
+    right: 95px;
+    border-right-color: transparent;
+}
+
+.box-ribbon-right {
+    top: 95px;
+    right: -5px;
+    border-left-color: transparent;
+}
+.shop-top{
+	border-bottom:1px solid #097cde;
+	margin-bottom:15px;
+}
+.shop-top .tag{
+	background:#50adff;
+	color:#fff;
+	width:120px;
+	height:35px;
+	line-height:35px;
+	text-align:center;
+	letter-spacing:2px;
+	font-size:16px;
+}
+.layui-col-space30{
+	margin-bottom:15px !important;
+}
+</style>
+<div class="layui-fluid layadmin-homepage-fluid">
+  <div class="layui-row layui-col-space8">
+
+    <div class="layui-col-md12">
+      <div class="layui-fluid layadmin-homepage-content">
+        
+        <div class="layui-row layui-col-space20 layadmin-homepage-list-imgtxt">
+          <!--左边布局开始-->
+		  <div class="layui-col-md9">
+
+
+			<!--预约开始-->
+		  	  <ul class="shop-top">
+				<li class="tag">预约</li>
+			  </ul>
+			  <div class="layui-row layui-col-space30">
+{qb:listpage name="pc_yuyue_001" mid="1" rows="12" order="list"}
+    <div class="layui-col-md4 layui-col-sm4">
+        <div class="cmdlist-container">				
+            <a href="{$rs.url}" target="_blank" class="imglink">
+					<div class="box-ribbon-triangle box-ribbon-left">&nbsp;</div>
+					<div class="box-ribbon-triangle box-ribbon-right">&nbsp;</div>
+					<div class="box-ribbon" data-id="{$rs.id}">预约进行中...</div>
+              <img src="{$rs.picurl}" style="height:200px;" onerror="this.src='__STATIC__/images/nopic.png'">
+            </a>
+            <a href="{$rs.url}" target="_blank">
+              <div class="cmdlist-text">
+                <p class="info"><a href="{$rs.url}" target="_blank">{$rs.title|get_word=100}</a></p>
+                <div class="price">                    
+                   <p >价格：¥{$rs.price}</p> 
+					
+					{if $rs.qun_money>0}
+                    <span class="flow">
+                       所需圈币<b style="color:orange;"> {$rs.qun_money}个</b>
+                    </span>{/if}
+                </div>	
+				<div class="price">                    
+                    
+					<i class="fa fa-user-circle"></i> 累计售出: {$rs.fewnum} 份
+                     
+                </div>
+              </div>
+            </a>
+        </div>
+    </div>
+{/qb:listpage}
+			 </div>
+			 <!--预约结束-->
+ 
+
+<script type="text/javascript">
+$(function(){
+	$(".layui-col-space30").each(function(){
+		if($(this).find('.layui-col-sm4').length==0){
+			$(this).hide();
+			$(this).prev().hide();
+		}
+	});
+});
+</script>
+          </div>
+		  <!--左边布局结束-->
+          <div class="layui-col-md3">
+            <div class="grid-demo">
+
+
+	<!--我的相关开始-->
+      <div class="layadmin-homepage-panel layadmin-homepage-shadow">
+        <div class="layui-card text-center">			 
+          <div class="layui-card-body">            
+			<a href="{:murl('order/index')}" class="_pop"><button class="layui-btn layui-btn-fluid">查看我的订单</button></a>			           
+          </div>
+        </div>        
+      </div>
+    <!--我的相关结束-->
+
+
+               
+              <div class="layui-card homepage-bottom">
+                <div class="layui-card-header">
+                  <h3 class="panel-title">
+                    <i class="layui-icon layui-icon-fire"></i>
+                    最近成功下订的用户
+                  </h3>
+                </div>
+                <div class="layui-card-body qun_indexvisit_pcshow">
+					{qb:tag name="yuyue_indexvisit_pcshow" where="few_ifpay=1" class="app\yuyue\model\Order@get_label" rows="15" js="qun_indexvisit_pcshow"}
+                    <a href="{:get_url('user','uid='.$rs.uid)}" target="_blank" class="layadmin-privateletterlist-item">
+                      <div class="meida-left">
+                        <img onerror="this.src='__STATIC__/images/nobody.gif'" src="{$rs.uid|get_user_icon}">
+                      </div>
+                      <div class="meida-right">
+                        <p>{$rs.uid|get_user_name}</p>
+                        <mdall><i class="si si-clock"></i> {:format_time($rs.create_time,true)}</mdall>
+                      </div>
+                    </a>
+                    {/qb:tag}
+                  </div>
+              </div>
+			  <!--分隔线-->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<script type="text/javascript">
+$(document).ready(function (){
+	$(".box-ribbon").each(function(){
+		var that = $(this);
+		var id = $(this).data("id");
+		$.get("{:urls('api/check_buy')}?id="+id,function(res){
+			if(res.code==1){
+				that.html(res.msg);
+				that.addClass('disable-buy');
+			}
+		});
+	})
+});
+</script>
+
+<script src="__STATIC__/layui/layui.js"></script>  
+<script type="text/javascript">
+layui.use(['form','element'], function(){
+  var form = layui.form;
+  var element = layui.element;
+});
+</script>
+
+<style type="text/css">
+.topUpCont{
+	position: fixed;
+	width: 80px;
+	border: #DDD solid 1px;
+	background: #FFF;
+	z-index: 10000;
+	right:10px;
+	bottom: 10px;
+	border-radius: 5px;
+	text-align: center;
+	padding: 10px 0px;
+	line-height: 20px;
+	cursor: pointer;
+	color: #999;
+	display: none;
+}
+.topUpCont i{
+	font-size:20px
+}
+.topUpCont:hover{
+	border:#F60 solid 1px;
+	background: #F90;
+	color: #FFF;
+}
+</style>
+<div class="topUpCont">
+    <ul>
+    	<ol><i class="fa fa-angle-double-up"></i></ol>
+        <li>回到顶部</li>
+    </ul>
+</div>
+
+
+<script type="text/javascript">
+
+var Mpage = [];	//存放分页码
+var default_i = 0; //默认显示第一个
+var urldb = ['{qb:url name="pc_qun_indexbbspage_001" /}','{qb:url name="pc_qun_indexbbs_toppic" /}','{qb:url name="pc_qun_indexbbs_reply" /}'];
+function ShowMoreInfo(){
+	if(Mpage[default_i]==undefined){
+		Mpage[default_i] = 1;
+	}
+	Mpage[default_i]++;
+	var url = urldb[default_i] + Mpage[default_i];
+	$.get(url,function(res){
+		layer.closeAll();
+		if(res.code==0){
+			if(res.data==''){
+				layer.msg("已经显示完了！",{time:500});
+			}else{
+				$(".layui-tab-content .layui-tab-item").eq(default_i).append(res.data);
+				scroll_get = true;
+			}
+		}else{
+			layer.msg(res.msg,{time:2500});
+		}
+	});
+}
+
+//滚动显示更多
+var scroll_get  = true;	//做个标志,不要反反复复的加载
+/*
+$(document).ready(function () {
+	$(window).scroll(function () {
+		if (scroll_get==true &&  (200 + $(window).scrollTop())>($(document).height() - $(window).height())) {
+			scroll_get = false;
+			layer.msg('内容加截中,请稍候',{time:1000});
+			ShowMoreInfo();
+		}
+
+		if ($(window).scrollTop() > 100) {
+			$(".topUpCont").show();
+		} else {
+			$(".topUpCont").hide();
+		}
+
+	});
+
+	$(".topUpCont").click(function () {
+		$("html,body").animate({scrollTop:0},500);
+	});
+});
+*/
+//切换显示
+function choose_type(i){
+	default_i = i;
+	scroll_get = true;
+}
+
+
+</script>
+
+{/block}

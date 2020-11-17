@@ -1,0 +1,20 @@
+{extend name="$member_style_layout" /}
+
+{block name="title"} {$tab_ext.page_title} {/block}
+
+{block name="content"}
+
+<div class="MainCont">
+  <div class="head"><div class="tag">{if ($tab_ext['page_title'])} {$tab_ext.page_title} {else /} 内容管理 {/if}</div></div>
+  <div class="cont">
+  	{include file="member@common/menu" /}
+	{include file="member@common/pc_table02" /}
+	{if $type<2}
+	<div style="padding:15px;">
+	<center>说明:这里添加的菜单是替换系统底部的菜单,需要扫码才能有效果!<br><img src="{:get_qrcode(iurl('content/show',['id'=>input('aid'),'my_qid'=>input('aid')]))}" width="150" height="150" /></center>
+	</div>
+	{/if}
+  </div>
+</div>
+
+{/block}

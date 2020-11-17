@@ -1,0 +1,149 @@
+{extend name="$member_style_layout" /}
+
+{block name="title"}客户的工单{/block}
+
+{block name="content"}
+<link rel="stylesheet" href="__STATIC__/layui/css/layui.css" media="all">
+<link rel="stylesheet" href="__STATIC__/css/pcorder.css">
+<style type="text/css">
+.listtable{
+	padding:5px 10px;
+}
+input[name="keyword"]{
+	width:100px;
+	float:left;
+	margin-right:10px;
+}
+@media (min-width: 1024px){
+	input.layui-input {
+		width: 100px;
+	}
+	input[name="keyword"]{
+		width:200px;
+		margin-right:10px;
+	}
+}
+</style>
+
+<script type="text/javascript">
+$(function(){
+
+	layui.use(['form'], function(){
+		  var form = layui.form;
+		  form.on('select(shop_id)', function(data){
+		      $(data.elem).trigger('change');
+		  });
+	});
+
+	$("#shop_id").change(function(){
+		window.location.href="?type={$type}&qid={$qid}&aid="+$(this).val()
+	});
+
+});
+
+function check_data(){
+	if(!$("#shop_id").val()){
+		layer.alert("请必须先选择一个工单模板");
+		return false;
+	}
+}
+</script>
+
+<form method="get" action="{:urls('index',['type'=>$type,'qid'=>$qid])}">
+<!--
+<div style="margin-bottom:10px;" class="layui-form"> 
+	 <a href="{:urls('index')}" class="layui-btn {if empty($type)}layui-btn-normal{else /}layui-btn-primary{/if}">全部</a> 
+	 <a href='{:urls("index","type=isfew&ktype=$ktype&keyword=$keyword&qid=$qid&aid=$aid")}' class="layui-btn {if $type=='isfew'}layui-btn-normal{else /}layui-btn-primary{/if}">已付订金</a> 
+	 <a href='{:urls("index","type=nofew&ktype=$ktype&keyword=$keyword&qid=$qid&aid=$aid")}' class="layui-btn {if $type=='nofew'}layui-btn-normal{else /}layui-btn-primary{/if}">未付订金</a> 
+	 <a href='{:urls("index","type=tui&ktype=$ktype&keyword=$keyword&qid=$qid&aid=$aid")}' class="layui-btn {if $type=='tui'}layui-btn-normal{else /}layui-btn-primary{/if}">申请退订金</a> 
+	 <a href='{:urls("index","type=ispay&ktype=$ktype&keyword=$keyword&qid=$qid&aid=$aid")}' class="layui-btn {if $type=='ispay'}layui-btn-normal{else /}layui-btn-primary{/if}">已付全款</a>
+	 <a href='{:urls("index","type=nopayall&ktype=$ktype&keyword=$keyword&qid=$qid&aid=$aid")}' class="layui-btn {if $type=='nopayall'}layui-btn-normal{else /}layui-btn-primary{/if}">仍差余款</a> 
+ 
+	<a href='{:urls("index","type=ishexiao&ktype=$ktype&keyword=$keyword&qid=$qid&aid=$aid")}' class="layui-btn {if $type=='ishexiao'}layui-btn-normal{else /}layui-btn-primary{/if}">已核销</a> 
+	<a href='{:urls("index","type=nohexiao&ktype=$ktype&keyword=$keyword&qid=$qid&aid=$aid")}' class="layui-btn {if $type=='nohexiao'}layui-btn-normal{else /}layui-btn-primary{/if}">未核销</a> 
+</div>
+-->
+
+<div style="margin-bottom:10px;height:40px;" class="layui-form">
+	<!--
+	 <div style="width:110px;float:left;margin-right:10px;">
+	  <select name="ktype">
+        <option value=""></option>
+        <option value="shopid" {if $ktype=='shopid'}selected{/if}>商品ID</option>
+        <option value="uid" {if $ktype=='uid'}selected{/if}>订购用户UID</option>
+        <option value="order_sn" {if $ktype=='order_sn'}selected{/if}>订单号</option>
+		<option value="linkman" {if $ktype=='linkman'}selected{/if}>联系人</option>
+      </select>
+	</div>
+	<input type="text" name="keyword" value="{$keyword}" placeholder="请输入关键字" class="layui-input">
+	<button class="layui-btn" style="float:left;margin-right:10px;" lay-submit>搜索</button>
+	-->
+	<div style="width:270px;float:left;margin-left:0px;">
+	  <select name="shop_id" id="shop_id" lay-filter='shop_id'>
+        <option value="">工单模板筛选</option>
+		{volist name="$shopdb" id="rs"}
+        <option value="{$rs.id}" {if $aid==$rs.id}selected{/if}>{$rs.title}</option>
+		{/volist}
+      </select>
+	</div> 
+	<a style="float:right;" onclick="return check_data();" href="{:strstr(get_url('location'),'?')?get_url('location').'&excel=1':get_url('location').'?excel=1'}" class="layui-btn">导出下面订单</a>
+</div>
+</form>
+<!--
+<div style="margin-bottom:10px;"> 
+	 <a href="{:urls('index')}" class="layui-btn {if empty($type)}layui-btn-normal{else /}layui-btn-primary{/if}">全部</a> 
+	 <a href="{:urls('index','type=ispay')}" class="layui-btn {if $type=='ispay'}layui-btn-normal{else /}layui-btn-primary{/if}">已付款</a>
+	 <a href="{:urls('index','type=nopay')}" class="layui-btn {if $type=='nopay'}layui-btn-normal{else /}layui-btn-primary{/if}">未付款</a>
+</div>
+-->
+{empty name="listdb"}<div style="padding:50px;font-size:14px;">没有任何资料</div>{/empty}
+{volist name="listdb" id="rs"}
+<div class="ListOrder">
+  <div class="company">
+  
+    
+    <a target="_blank" href="{:get_url('user',"uid=$rs[uid]")}">客户: <em><img src="{$rs.uid|get_user_icon}" onerror="this.src='__STATIC__/index/base/noface.gif'"/></em>{$rs.uid|get_user_name}</a>
+	<span>{$rs.create_time}</span>
+  </div>
+  <ul class="orderinfo">
+    <li class="shops">
+		<div class='listtable'>
+		{php}
+		$f_array = fun('field@order_field_post',$rs['shop_db'][0]['order_filed']);
+		$order_info = fun('field@order_field_format',$rs['order_field'],$f_array);
+		{/php}
+		{volist name=":fun('field@fields_to_table',$f_array,$order_info)" id="vs"}
+			{if $f_array[$vs['name']]['listshow']}
+				<dl class="lists"><i>{$vs.title}</i>：<em>{$vs.value}</em></dl>
+			{/if}
+		{/volist}
+		</div>
+    </li>
+   <!-- <li class="totalmoney" style="font-size:15px;"> </li>-->
+    <li class="state" style="width: 150px;">
+       <a class="more-menu status-{$rs.id}" style="padding:3px 15px;background:{$rs.status?'orange':'#999'};color:#fff;" url='{volist name=":status_power($rs['shop_db'][0],$userdb)" id="name"}<a href="javascript:set_status({$rs.id},{$key})">{$name}</a><br>{/volist}'>{:status_type($rs['shop_db'][0],$rs['status'])}</a> 
+    </li>
+    <li class="action">
+      <a href="{:urls('show',['id'=>$rs['id']])}">查看</a><br>      
+      {if $rs.uid==$userdb.uid}<a href="{:urls('delete',['id'=>$rs['id']])}" class="alert">删除</a>{/if}	   
+    </li>
+  </ul>
+  <div class="otheraction" style="width: auto;">工单：<a href="{:iurl('content/show',['id'=>$rs['shop_db'][0]['id']])}" target="_blank">{$rs['shop_db'][0]['title']}</a></span></div>
+</div>
+{/volist}
+<div class="OrderPage">{$pages}</div>
+
+<script type="text/javascript">
+function set_status(id,type){
+	$.get("{:iurl('wxapp.api/status')}?id="+id+"&type="+type,function(res){
+		if(res.code==0){
+			layer.msg('操作成功!');
+			$(".status-"+id).html(res.data.name).css('background','orange');
+		}else{
+			layer.alert(res.msg);
+		}
+	});
+}
+</script>
+
+{/block}

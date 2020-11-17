@@ -1,0 +1,43 @@
+
+        <div class="AddFavorite">
+            <span onclick="joinGroup({$id})"><em>收藏景点</em></span>
+<SCRIPT LANGUAGE="JavaScript">
+function joinGroup(id){
+	var url = "{:urls('wxapp.member/join',['id'=>$id])}?"+Math.random();
+	$.get(url,function(res){
+		if(res.code==0){
+			layer.alert("加入成功！");
+			//$(".JoinBut").hide();
+		}else if(res.code==2){
+			join_need_sn(url);
+		}else{
+			layer.alert("加入失败:"+res.msg);
+		}	
+	});
+}
+function join_need_sn(url){
+	var index = layer.prompt({
+		   title : '请输入正确的授权码,才能加入',
+		   formType:0,
+	},function(val, index){
+		$.post(url,{'sncode':val},function(res){
+			if(res.code==0){
+				layer.msg('加入成功');
+				layer.close(index);
+			}else{
+				layer.msg('加入失败,'+res.msg,{time:1000});
+			}
+		});		
+	});
+}
+</SCRIPT>
+        </div>
+        <div class="sendmsg"><a href="{:murl('member/msg/add',['uid'=>$info.uid])}" class="_pop"><span>我要咨询</span></a>
+        </div>
+        <div class="tjInfo">
+            <div class="head">统计信息</div>
+            <ul>
+                <li>收藏:<span>{$info.usernum}</span>次</li>
+                <li>浏览量:<span>{$info.view}</span>次</li>
+            </ul>
+        </div>

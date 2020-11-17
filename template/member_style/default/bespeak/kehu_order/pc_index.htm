@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>客户提交的预约单</title>
+<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<!-- <link rel="stylesheet" href="__STATIC__/css/qb_ui.css"> -->
+<link rel="stylesheet" href="__STATIC__/layui/css/layui.css">
+<link rel="stylesheet" href="__STATIC__/layui/css/admin.css">
+<!-- <script type="text/javascript" src="__STATIC__/layui/layui.js"></script> -->
+<style>
+/*分页*/
+.pagination{
+  text-align: center;
+  width: 100%;
+  clear: both;
+  padding: 10px 0;
+}
+.pagination li{
+  display: inline-block;
+  line-height: 30px;  
+  margin: 0 5px;  
+}
+.pagination li a,.pagination li span{
+  display: block;
+  border: #DDD solid 1px;
+  padding: 0 8px;
+  color: #666;
+}
+.pagination li a,.pagination li span{
+  color: #999;
+}
+.pagination li a:hover{
+  border:#F30 solid 1px;
+  background: #F60;
+  color: #FFF;
+}
+.pagination li.active span{
+  border:#21806E solid 1px;
+  background: #64C2B0;
+  color: #FFF;
+}
+
+.c_g{color:green;}
+.c_r{color:red;}
+.c_9{color:#888;}
+</style>
+</head>
+<body>
+
+<fieldset class="layui-elem-field layui-field-title">
+  <legend>客户提交的预约单管理</legend>
+</fieldset>
+
+<div>
+   <a href="{:urls('index')}" class="layui-btn {if empty($type)}layui-btn-normal{else /}layui-btn-primary{/if}">全部</a> 
+   <a href="{:urls('index','type=ispay')}" class="layui-btn {if $type=='ispay'}layui-btn-normal{else /}layui-btn-primary{/if}">已审核</a>
+   <a href="{:urls('index','type=nopay')}" class="layui-btn {if $type=='nopay'}layui-btn-normal{else /}layui-btn-primary{/if}">待审核</a>
+</div>
+
+<table class="layui-table" lay-skin="nob">
+  <thead>
+    <tr>
+      <th>服务名称</th>
+                <th>联系人</th>
+      <th>预约时间</th>
+      <th>联系电话</th>
+                <th>提交时间</th>
+      <th>状态</th>
+      <th>操作</th>
+    </tr> 
+  </thead>
+  <tbody>
+    {volist name='listdb' id='rs'}
+      <tr>
+        <td><a href="{:iurl('content/show',['id'=>$rs.shopid])}" target="_blank">{$rs.fuwu_name}</a></td>
+                      <td>{$rs.order_linkman}</td>
+        <td>{:format_time($rs.order_bespeak_time)} </td>
+        <td>{$rs.order_telphone}</td>
+                    <td>{$rs.create_time} </td>
+        <td>
+          {switch name="$rs.pay_status" }
+          {case value="1"} <span class='c_r'>预约成功</span>{/case}
+          {case value="2"}<span class='c_9'>预约失败</span>{/case}
+          {case value="3"}用户已取消{/case}
+          {default /} <span class='c_g'>待审核</span>
+          {/switch}
+        </td>
+        <td>
+
+          {if $rs.pay_status <1 }
+            <a href="{:urls('edit',['id'=>$rs.id,'act'=>'affirm'])}" class='layui-btn layui-btn-radius layui-btn-xs'>通过审核</a>
+
+            <a href="{:urls('edit',['id'=>$rs.id,'act'=>'cancel'])}" class='layui-btn layui-btn-normal layui-btn-radius layui-btn-normal layui-btn-xs'>取消审核</a>
+          {elseif $rs.pay_status ==3 /} 
+            <a href="{:urls('del',['id'=>$rs.id])}" class='layui-btn layui-btn-danger layui-btn-radius layui-btn-xs'>删除</a>
+          {/if}
+                          <a href="{:urls('show',['id'=>$rs['id']])}" class='layui-btn layui-btn-radius layui-btn-warm layui-btn-xs' >详情</a>
+                          <!-- <a href="{:iurl('content/show',['id'=>$rs.shopid])}" class='layui-btn layui-btn-radius layui-btn-xs'  target="_blank">查看服务</a> -->
+          
+        </td>
+      </tr>
+    {/volist}
+  </tbody>
+
+</table> 
+
+<div id="Showpage">{$pages}</div>
+
+<script>
+  
+</script>
+
+
+
+
+</body>
+</html>

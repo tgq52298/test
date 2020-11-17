@@ -1,0 +1,114 @@
+﻿{extend name="$index_style_layout" /}
+
+<!--SEO相关-->
+{block name="head_title"}{$fid?($info['seo_title']?:$info['name']):$m_info['title']}{/block}
+{block name="head_keword"}{$fid?($info['seo_keywords']?:$info['name']):$m_info['title']}{/block}
+{block name="head_description"}{$info.seo_description}{/block}
+
+{block name="body_content"}
+<link rel="stylesheet" href="__STATIC__/group/list.css">	
+<div class="MainContainer ShowContentType">
+	<div class="ShowTypes">
+		<a href="#">人气__QUN__</a>
+		<a href="#">最新__QUN__</a>
+		<a href="#">推荐__QUN__</a>
+	</div>
+	<div class="ListBox">
+	{qb:tag name="qun_waplist_001" union="order,by,mid,fid,status" order="view" by="desc" type="qun" rows="8"}
+		<div class="list">
+			<ul>
+				<li class="img"><a href="{$rs.url}"><img src="{$rs.picurl}" onerror="this.src='__STATIC__/images/nopic.png'"><span class="num{$i}">{$i}</span></a></li>
+				<li class="info">
+					<div class="title"><a href="{$rs.url}">{$rs.title}</a></div>
+					<div class="cnt">{$rs.content|get_word=200}</div>
+					<div class="other">
+						<span><i class="fa fa-user-o">{$rs.usernum}</i></span>
+						<em><i class="fa fa-file-text-o">0</i></em>
+					</div>
+				</li>
+				<li class="join"><a href="#" onclick="joinGroup({$rs.id})">加入</a></li>
+			</ul>
+		</div>
+	{/qb:tag}
+	</div>
+	<div class="ListBox"></div>
+	<div class="ListBox"></div>
+	<div class="ShowMores">查看更多...</div>
+	<!--
+	<div class="addGroup">
+		<ul>
+			<ol><a href="{:murl('content/postnew')}"><i class="fa fa-plus"></i></a></ol>
+			<li>创建村庄</li>
+		</ul>
+	</div>-->
+</div>	
+
+<script type="text/javascript">
+
+var ajax_url_db = ['&order=view&by=desc&','&order=id&by=desc&','&status=2,order=id&by=asc&'];
+var choose_i = 0; //选中第几项
+var haveshowpage = []; //每一项,作个标志,已经已显示到第几页
+    haveshowpage[0] = 1; //第一项就从第二页开始
+
+//显示更多
+function showMoreContent(){	
+	var url = ajax_url_db[choose_i];	//第几项对应的网址
+	haveshowpage[choose_i]++;
+	$.get('{qb:url name="qun_waplist_001"/}' + haveshowpage[choose_i] + url + Math.random(),function(res){
+		if(res.code==0){
+			if(res.data==''){
+				layer.msg("已经显示完了！",{time:500});
+				$('.ShowMores').off("click");
+				$('.ShowMores').html('显示完了');
+				$('.ShowMores').css({'background':'#eee'});
+			}else{
+				if(haveshowpage[choose_i]==1){
+					$('.ShowContentType .ListBox').eq(choose_i).html(res.data);
+				}else{
+					$('.ShowContentType .ListBox').eq(choose_i).append(res.data);
+				}
+			}
+		}else{
+			layer.msg(res.msg,{time:2500});
+		}
+	});
+}
+
+
+//切换显示
+function showContentType(num){
+
+	choose_i = num;
+	$('.ShowMores').off("click");	//先移除,避免重复加多次click事件
+	$('.ShowMores').on("click",showMoreContent);
+	$('.ShowMores').html('查看更多');
+	$('.ShowMores').css({'background':'orange'});
+
+	if(haveshowpage[num]==undefined){
+		haveshowpage[num] = 0;
+		showMoreContent();
+	}
+
+	$('.ShowContentType .ShowTypes a').removeClass('ck');
+	$('.ShowContentType .ShowTypes a').eq(num).addClass('ck');
+	$('.ShowContentType .ListBox').hide();
+	$('.ShowContentType .ListBox').eq(num).show();
+}
+$('.ShowContentType .ShowTypes a').click(function(){
+	showContentType( $(this).index() );
+});
+showContentType(0);
+
+
+function joinGroup(id){
+	$.get("{:urls('wxapp.member/join')}?id=" + id ,function(res){
+		if(res.code==0){
+			layer.alert("加入成功！");
+		}else{
+			layer.alert("加入失败:"+res.msg);
+		}	
+	});
+}
+</script>
+
+{/block}

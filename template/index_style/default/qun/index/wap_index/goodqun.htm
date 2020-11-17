@@ -1,0 +1,80 @@
+<!--推荐圈子-->
+<style type="text/css">
+.qun_roll .swiper-pagination{
+	bottom:0px !important;
+	width:50px;
+	margin-left:40%;;
+	height:17px;
+}
+.qun_roll .swiper-pagination-bullet-active{
+	background:orange !important;
+}
+</style>
+<!--加上taglabel类,不给复制-->
+
+	<div class="HotGroupBox taglabel">
+		<div class="head">推荐__QUN__</div>
+		{qb:hy name="qun_wapindex001" mid="-1" type="qun" order="status desc,list desc" rows="15" val="listdb" conf="index_style/default/qun/index/wap_index/goodqun.php"}
+		<div id="ListGroup" class="swiper-container qun_roll">
+			<ul class="swiper-wrapper">				
+					{volist name=":array_chunk($listdb,3,true)" id="array"}
+				<div class="swiper-slide">
+					{volist name="$array" id="rs"}
+					<li><a {if $_cfg.imglink==1}href="{$rs.url}"{else /}href="{:get_url('msg',-$rs.id)}"{/if}><span style="position:relative;">{if $rs.status>1}<img src="__STATIC__/group/v.png" style="position:absolute;bottom:0px;right:20px;width:20px;height:20px;z-index:9;">{/if}<img src="{$rs.picurl}" onerror="this.src='__STATIC__/images/nopic.png'"></span></a><a {if $_cfg.titlelink==1}href="{:get_url('msg',-$rs.id)}"{else /}href="{$rs.url}"{/if}><em>{$rs.title}-{$_cfg.titlelink}</em></a>
+					<dd data-id="{$rs.id}" {if $_cfg.btncolor}style="background:{$_cfg.btncolor};"{/if}>关注</dd></li>	
+					{/volist}
+				</div>
+					{/volist}
+				
+			</ul>
+			<div class="swiper-pagination"></div>
+		</div>
+		{/qb:hy}
+		</div>		
+	</div>
+
+<!--加入圈子-->
+<script type="text/javascript">var qun_api_url = "{:urls('wxapp.member/api')}";</script>
+<script type="text/javascript" src="__STATIC__/qun/qun.js"></script>
+
+<script type="text/javascript">
+
+function tz_qun_roll(){
+	var swiper = new Swiper('.qun_roll', {
+			autoplay: {
+				delay: 2500,
+			 },
+			pagination: {
+				el: '.swiper-pagination', 
+			},
+        });
+}
+
+//关注__QUN__ , 此异步函数名必须要跟上面的JS值一致
+function qun_wapindex001(){
+	tz_qun_roll();	//当标签设置了js参数后,就需要这里设置
+	$("#ListGroup dd").each(function(){
+		var id = $(this).data('id');
+		var that = this;
+		if("{$userdb.uid}"==""){	//游客点关注,就直接进入对应的__QUN__
+			$(this).click(function(){
+				window.location.href = "{:urls('content/show')}?id="+id;
+			});
+		}else{
+			//检查是否已关注
+			$.get("{:urls('wxapp.member/ckjoin')}?id="+id,function(res){
+				if(res.code==1){	//还没关注
+					$(that).click(function(){	//添加关注点击事件
+						qun_api(id);						
+					});
+				}else if(res.code==0){	//已关注
+					$(that).html('已关注');
+				}
+			});
+			
+		}		
+	});
+}
+qun_wapindex001();	//当标签设置了js参数后,就是异步加载,这里就设置无效了
+
+</script>

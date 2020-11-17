@@ -1,0 +1,11 @@
+<!--视频直播-->
+	<ul class="ListType wap_live_video taglabel">
+		<!--<li><a href="#"><span>置顶</span>校园暴力事件频发，为何校园变“江湖”？</a></li> <li><a href="#"><em>精华</em>数据告诉你，未来几年升学你要和多少人PK？</a></li>-->
+		{qb:tag name="wap_live_video" class="plugins\alilive\index\Index@label"}
+		<li style="position: relative;"><a href="{:get_url('msg',-$rs.id)}"><i>直播</i>{$rs.uid|get_user_name} 正在 {$rs.title} 直播</a>			
+			<div class="play_voice">
+				<span class="line1"></span><span class="line2"></span><span class="line3"></span><span class="line4"></span>
+			</div>
+		</li>							
+		{/qb:tag}			
+	</ul>

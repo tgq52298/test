@@ -1,0 +1,230 @@
+.B{
+	font-weight:bold;
+}
+.red{
+	color:red;
+}
+.blue{
+	color:blue;
+}
+.MustInput{
+	display:inline-block;
+	color:red;
+	padding-right:3px;
+}
+.PostContBox{
+	border:#CCC solid 1px;
+	margin:10px 0;
+	font-size:14px;
+}
+.PostContBox .head{
+	border-bottom:#CCC solid 1px;
+	height:40px;
+	overflow:hidden;
+	line-height:40px;
+	background:#F5F5F5;
+}
+.PostContBox .head .tag{
+	float:left;
+	padding-left:15px;
+	font-weight:bold;
+}
+.PostContBox .head .tag span{
+	display:inline-block;
+	color:#F60;
+	padding-right:3px;
+}
+.PostContBox .mhead{
+	height:20px;
+	position:relative;
+	line-height:20px;
+	overflow:hidden;
+	margin:20px 30px 20px 15px;
+}
+.PostContBox .mhead:before{
+	content:'';
+	display:block;
+	width:100%;
+	height:0;
+	position:absolute;
+	left:0;
+	top:9px;
+	border-top:#DDD dotted 1px;
+}
+.PostContBox .mhead .tag{
+	float:left;
+	position:relative;
+	background:#FFF;
+	padding:0 10px 0 50px;
+}
+.PostContBox .mhead .tag:before{
+	content:'';
+	display:block;
+	position:absolute;
+	width:4px;
+	height:20px;
+	background:#f80;
+	left:30px;
+	top:0;
+	border-radius:30%;
+}
+dl.ListType{
+	display:table;
+	width:100%;
+}
+dl.ListType dt.Left,dl.ListType dd.Right{
+	display:table-cell;
+	padding:8px 5px;
+	vertical-align:top;
+	line-height:25px;
+}
+dl.ListType dt.Left{
+	width:150px;
+	text-align:right;
+}
+dl.ListType dt.Left span{
+	display:inline-block;
+	padding-right:3px;
+	color:#F80;
+}
+dl.ListType dd.Right{
+	color:#666;
+	padding-right:20px;
+}
+.ListArea{
+	display:table;
+	height:30px;
+}
+.ListArea li{
+	display:table-cell;
+	vertical-align:middle;
+	padding-right:5px;
+}
+.ListArea li select{
+	max-width:100px;
+}
+dl.ListType dd.Right input[type=text],dl.ListType dd.Right input[type=password]{
+	border:#DDD solid 1px;
+	height:28px;
+	text-indent:5px;
+	border-radius:3px;
+	color:#666;
+}
+dl.ListType dd.Right textarea{
+	border:#DDD solid 1px;
+	padding:5px;
+	color:#666;
+}
+.showimgs .ListPic:after{
+	content:'';
+	display:block;
+	clear:both;
+}
+.showimgs .ListPic .List{
+	width:100px;
+	overflow:hidden;
+	border:#DDD solid 1px;
+	float:left;
+	margin:0 5px 5px 0;
+	position:relative;
+	filter:alpha(opacity=80); 
+	-moz-opacity:0.8; 
+	opacity:0.8;
+}
+.showimgs .ListPic .List:hover{
+	border:#F30 solid 1px;
+	filter:alpha(opacity=100); 
+	-moz-opacity:1; 
+	opacity:1;
+}
+.showimgs .ListPic .List:before{
+	content:'';
+	display:block;
+	padding-top:100%;
+}
+.showimgs .ListPic .List img{
+	max-width:90%;
+	max-height:90%;
+	position:absolute;
+	left:50%;
+	top:50%;
+  -webkit-transform: translate3D(-50%, -50%, 0);
+      -ms-transform: translate3D(-50%, -50%, 0);
+          transform: translate3D(-50%, -50%, 0);
+}
+.showimgs .ListPic .List span,.showimgs .ListPic .List section{
+	display:block;
+	width:20%;
+	height:20%;
+	position:absolute;
+	filter:alpha(opacity=50); 
+	-moz-opacity:0.5; 
+	opacity:0.5;
+}
+.showimgs .ListPic .List span:hover,.showimgs .ListPic .List section:hover{
+	filter:alpha(opacity=100); 
+	-moz-opacity:1; 
+	opacity:1;
+}
+.showimgs .ListPic .List span{
+	background:url('del.png');
+	background-size:100% 100%;
+	right:2%;
+	top:2%;
+}
+.showimgs .ListPic .List section{
+	background:url('move.png');
+	background-size:100% 100%;
+	left:2%;
+	top:2%;
+}
+/***/
+span.setmap{
+	display:inline-block;
+	padding:0 10px 0 25px;
+	background:#F90 url(icon_add.png) 5px center no-repeat;
+	color:#FFF;
+	margin:0 5px;
+	cursor:pointer;
+}
+span.setmap:hover{
+	background:#F60 url(icon_add.png) 5px center no-repeat;
+}
+span.noteword{
+	color:#888;
+}
+span.clearmap{
+	display:inline-block;
+	padding:0 10px;
+	background:#AAA;
+	color:#FFF;
+	margin:0 5px;
+	cursor:pointer;
+}
+span.clearmap:hover{
+	background:#666;
+}
+.ListMore{
+	display:inline-block;
+	padding:2px 8px 2px 0;
+	color:#666;
+}
+.SubMitButter{
+	clear:both;
+	text-align:center;
+	padding:10px 0 25px 0;
+}
+.SubMitButter input[type=submit]{
+	border:#F60 solid 1px;
+	background:#F90;
+	color:#FFF;
+	padding:8px 40px;
+	border-radius:5px;
+	cursor:pointer;
+	letter-spacing:10px;
+	font-size:16px;
+}
+.SubMitButter input[type=submit]:hover{
+	background:#F60;
+	border:#F30 solid 1px;
+}

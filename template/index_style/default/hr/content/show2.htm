@@ -1,0 +1,105 @@
+{extend name="$index_style_layout" /}
+
+<!--SEO相关-->
+{block name="head_title"}{$info.title}{/block}
+{block name="head_keword"}{$info.title} {:get_sort($info.fid)}  {:M('name')}{/block}
+{block name="head_description"}{:get_word(del_html($info['content']),300)}{/block}
+
+{block name="body_content"}
+<link rel="stylesheet" type="text/css" href="__STATIC__/hr/default/wap/person.css">
+
+
+<div class="conter">
+        <dl class="m-person">
+            <dt><img src="{$info.picurl}" onError="this.src='__STATIC__/images/noface.png'" ></dt>
+            <dd>
+                <h3>{$info.truename}</h3>
+                <ul>
+                    {qb:showpage field="truename,picurl,lifeplace,wage,title,worktime,skill,interest,education,workyear,alma_mater,work,content,qq,email,mobphone"}
+                    <li><em>{$rs.title}：</em>{$rs.value} </li>
+                    {/qb:showpage}   
+                </ul>
+            </dd>
+        </dl>
+    
+        <div class="show">
+            <div class="title">教育背景</div>
+            <div class="conts"> {$info.education}</div>
+        </div>
+    
+        <div class="show">
+            <div class="title">工作经历</div>
+            <div class="conts"> {$info.work}</div>
+        </div>
+
+        <div class="show">
+            <div class="title">求职意向</div>
+            <ul>
+                <li>期望月薪：<em>{$info[wage]}</em></li>
+                <li>希望岗位：<em>{$info[title]}</em></li>
+                <li>希望地区：<em>{$info[lifeplace]}</em></li>
+                <li>到岗时间：<em>{$info[worktime]}</em></li>
+                <li>擅长技能：<em>{$info[skill]}</em></li>
+            </ul>
+        </div>
+
+        <div class="show">
+            <div class="title">自我评价</div>
+            <div class="conts">{$info.content}</div>
+        </div>
+
+        <div class="show">
+            <div class="title">联系方式</div>
+                                      {if $userdb}
+                                      <ul>
+                                        <li>手机号码:<em> {$info.mobphone}</em></li>
+                                        <li>QQ号码:<em> {$info.qq}</em></li>
+                                        <li>常用邮箱:<em> {$info.email}</em></li>
+                                        </ul>
+                                        {else /}
+                                        <p class="notice ">要先登录才能查看联系方式,请 <a href="{:get_url('login')}">登陆</a> 或 <a href="{:get_url('reg')}">注册</a></p>
+                                      {/if}
+          </div>
+</div>
+
+
+
+
+{if is_dir(PLUGINS_PATH.'fav')} <!-- 如安装了收藏插件即可进行收藏操作 -->
+  <a href="javascript:;" onclick="add_fav({$id})" class="btn">加入收藏库</a>
+  <script>
+  function add_fav(id){
+    var url="{:purl('fav/api/add')}?type={:config('system_dirname')}&id="+id;
+    $.get(url,function(res){
+      if(res.code==0){
+        layer.msg('收藏成功');
+      }else{
+        layer.alert(res.msg);
+      }
+    })
+  }
+  </script>
+{/if}
+
+
+
+
+<SCRIPT LANGUAGE="JavaScript">
+<!--
+function pic_height(){
+  var this_H=$(".m-person dt").width()*1.12;
+  if(this_H>210){
+  this_H = 210;
+  }
+  $(".m-person dt").css({"height":this_H+'px',"line-height":this_H+'px'});
+}
+pic_height();
+$(window).resize(function(){
+  pic_height()
+});
+-->
+</script>
+
+
+
+{/block}

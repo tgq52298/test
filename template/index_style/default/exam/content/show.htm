@@ -1,0 +1,234 @@
+{extend name="$simple_layout" /}
+
+<!--SEO相关-->
+{block name="head_title"}{:del_html($info.title)}{/block}
+{block name="head_keword"}{:del_html($info.keywords?:$info.title)}  {$s_info.name} {/block}
+{block name="head_description"}{:get_word(del_html($info['content']),300)}{/block}
+
+{block name="title"}练习题{/block}
+
+{// 主体内容}
+{block name="content"}
+<link rel="stylesheet" href="__STATIC__/exam/default/math.css">
+<i class="fa fa-star fav-exam" style="position:fixed;z-index:10;right:19px;top:15px;color:#999;"> 收藏</i>
+<script type="text/javascript">
+$.get("{:purl('fav/api/check')}?type={:config('system_dirname')}&id={$info.id}",function(res){
+	if(res.code==0){
+		$(".fav-exam").html(' 已收藏');
+	}else{
+		$(".fav-exam").click(function(){
+			var url="{:purl('fav/api/add')}?type={:config('system_dirname')}&id={$info.id}";
+			$.get(url,function(res){
+				if(res.code==0){
+					$(".fav-exam").html(' 已收藏');
+					layer.msg('收藏成功');
+				}else{
+					layer.alert(res.msg);
+				}
+			})
+		});
+	}
+});
+</script>
+		<div class="mui-card">
+				<div class="mui-card-content">		
+							<div class="mui-card-header"><a class="mui-card-link">{:model_config($mid)['title']}</a></div>
+							<div class="mui-card-content">
+								<div class="mui-card-content-inner">
+									 {$info.title}
+								</div>
+							</div>
+{notempty name="info.picurl"}
+							<div class="mui-card-content" ><div class="mui-card-content-inner">								
+								<img src="{$info.picurl|tempdir}" alt="" width="100%"/></div>
+							</div>	
+{/notempty}
+							<div class="mui-card-header"><a class="mui-card-link">答案选项</a></div>
+				 </div>
+
+				 <form class="mui-input-group">
+{if ($info.mid == 1)}
+					<div class="mui-input-row mui-radio mui-left">
+						<label><em class="block">A、</em>{$info.answer_a}</label>
+						<input name="radio1" value="1" type="radio">
+					</div>
+					<div class="mui-input-row mui-radio mui-left">
+						<label><em class="block">B、</em>{$info.answer_b}</label>
+						<input name="radio1" value="2" type="radio">
+					</div>
+					{if $info.answer_c!=''}
+					<div class="mui-input-row mui-radio mui-left">
+						<label><em class="block">C、</em>{$info.answer_c}</label>
+						<input name="radio1" value="3" type="radio">
+					</div>
+					{/if} 
+					{if $info.answer_d!=''}
+					<div class="mui-input-row mui-radio mui-left">
+						<label><em class="block">D、</em>{$info.answer_d}</label>
+						<input name="radio1" value="4" type="radio">
+					</div>
+					{/if} 
+{elseif ($info.mid == 2) /}
+					<div class="mui-input-row mui-checkbox mui-left">
+						<label><em class="block">A、</em>{$info.answer_a}</label>
+						<input name="checkbox" value="1" type="checkbox" >
+					</div>
+					<div class="mui-input-row mui-checkbox mui-left">
+						<label><em class="block">B、</em>{$info.answer_b}</label>
+						<input name="checkbox" value="2" type="checkbox" >
+					</div>
+					{if $info.answer_c!=''}
+					<div class="mui-input-row mui-checkbox mui-left">
+						<label><em class="block">C、</em>{$info.answer_c}</label>
+						<input name="checkbox" value="3" type="checkbox" >
+					</div>
+					{/if} 
+					{if $info.answer_d!=''}
+					<div class="mui-input-row mui-checkbox mui-left">
+						<label><em class="block">D、</em>{$info.answer_d}</label>
+						<input name="checkbox" value="4" type="checkbox" >
+					</div>
+					{/if} 
+{elseif ($info.mid == 3) /}
+					<div class="mui-input-row mui-radio mui-left">
+						<label>A、正确</label>
+						<input name="radio1" value="1" type="radio">
+					</div>
+					<div class="mui-input-row mui-radio mui-left">
+						<label>B、错误</label>
+						<input name="radio1" value="2" type="radio">
+					</div>
+{elseif ($info.mid == 4) /}
+					<div class="mui-input-row mui-left" style="width:100%;" >
+						 <input style="border-bottom:1px solid #324052;width:100%;background:#e3e6f3;color:#000;" name="text" placeholder="点击输入答案" value="" type="text">						
+					</div>
+{/if}
+				</form>
+
+			</div>
+		
+{if input('type')=='live'} <!--在线答题-->
+			<div class="mui-content-padded">
+				<button type="button" onclick="post_live_ans()" class="mui-btn mui-btn-danger" style="float:right;color:#fff;">
+					提交
+				</button> 
+			</div>
+<script type="text/javascript">
+function post_live_ans(){
+	if(answer==''){
+		layer.alert("请选择一项答案!");
+		return ;
+	}
+	if("{$info.mid}"==3){
+		answer = answer.replace('1','正确');
+		answer = answer.replace('2','错误');
+	}else if("{$info.mid}"==4){
+	}else{
+		answer = answer.replace('1','A');
+		answer = answer.replace('2','B');
+		answer = answer.replace('3','C');
+		answer = answer.replace('4','D');
+		answer = answer.replace(',','、');
+	}
+	var str = "<div class='new-gift-msg'><div class='fa fa-edit'> {$userdb.username} <span>选择的答案是 </span>  <span class='buyname'> "+answer+" </span> </div></div>";
+
+	var parents;
+	if(window.parent.frames['iframe_msg']!=undefined){
+		parents = window.parent.frames['iframe_msg'];
+	}else{
+		parents = window.parent;
+	}
+	parents.ws_send({ 
+		type:"qun_to_alluser",
+		tag:"give_question_result",
+		data: str, 
+	});
+	setTimeout(function(){					
+		parent.layer.close(parent.layer.getFrameIndex(window.name));
+	},500);	
+}
+</script>
+{else /}
+			<div class="mui-content-padded">				 
+				<div class="mui-btn mui-btn-primary" id="alertBtn">
+					查看答案
+				</div>		
+				<a href="{:auto_url('next',['id'=>$id])}?grade={:input('grade')}&kemu={:input('kemu')}&step={:input('step')}&type={:input('type')}&mid={:input('mid')}&myfid={:input('myfid')}&uid={:input('uid')}" style="color:#fff;">
+				<button type="button" class="mui-btn mui-btn-danger" style="float:right;">
+					下一道题
+				</button> </a>
+			</div>
+{/if}
+<style type="text/css">
+.show_answer{
+	padding:10px;
+}
+.show_answer img{
+	max-width:100%;
+}
+</style>
+
+<div  class="show_answer_wap" style="display:none;">
+<div class="show_answer">
+正确是:{$info.answer}<br>{$info.content|format_math}
+</div>
+</div>
+
+<script src="__STATIC__/mui/js/mui.min.js"></script>
+<script type="text/javascript" charset="utf-8">
+			//mui初始化
+			mui.init({
+				swipeBack: true //启用右滑关闭功能
+			});
+			/*
+			var info = document.getElementById("info");
+			document.getElementById("alertBtn").addEventListener('tap', function() {
+				mui.alert('{$info.content}', '答案是：{$info.answer}', function() {
+					window.location.href="{:auto_url('next',['id'=>$id])}?grade={:input('grade')}&kemu={:input('kemu')}&step={:input('step')}&type={:input('type')}&mid={:input('mid')}"
+					//相关事件
+				});
+			});
+			*/
+$("#alertBtn").click(function(){
+	layer.open({
+		type:1,
+		title:"答案如下:",
+		content:$('.show_answer_wap').html(),
+		area:['95%','80%'],
+	});
+});
+
+var answer = '';
+function post_ans(val){
+	answer = val;
+	var url = "{:urls('content/add_answer',['id'=>$info.id])}?answer="+val;
+	$.get(url,function(res){
+		if(res.code==1){
+			layer.alert('试题不存在');
+		}else{
+			//layer.msg(res.msg,{time:800});
+		}
+	});
+}
+
+$(".mui-input-group input[type='radio']").click(function(){
+	post_ans($(this).val());
+});
+
+$(".mui-input-group input[type='text']").blur(function(){
+	post_ans($(this).val());
+});
+
+$(".mui-input-group input[type='checkbox']").click(function(){
+	var question_ans = [];
+	$(".mui-input-group input[type='checkbox']:checked").each(function(){
+		question_ans.push($(this).val());
+	});
+	post_ans(question_ans.join(','));
+});
+
+</script>
+ 
+ {include file="index@footmenu" /}
+
+{/block}

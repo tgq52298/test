@@ -1,0 +1,67 @@
+{extend name="$member_style_layout" /}
+
+{block name="title"}客户的工单{/block}
+{block name="content"}
+{php}$type||$type=0; $house[$type]="class='red'";{/php}
+<!--
+<ul class="qb_ui_page_menu">
+	<li><a href="{:urls('index')}" {$house[0]}>全部</a></li>	
+	<li><a href="{:urls('index','type=ispay')}" {$house['ispay']}>已付款</a></li>
+	<li><a href="{:urls('index','type=nopay')}" {$house['nopay']}>未付款</a></li>
+</ul>
+-->
+<link rel="stylesheet" href="__STATIC__/css/waporder.css">
+{volist name="listdb" id="rs"}
+<div class="ListOrder">
+	<ul class="topinfo">
+		<ol><a href="{:get_url('user',['uid'=>$rs['uid']])}"><img src="{$rs.uid|get_user_icon}" onerror="this.src='__STATIC__/images/nopic.png';"/><span>{$rs.uid|get_user_name}</span></a></ol>
+		<li><i class="fa fa-clock-o"></i>{$rs.create_time}</li>		
+	</ul>
+
+
+	<ul class="listshop"> 
+		<li class="infos">
+		{php}
+		$f_array = fun('field@order_field_post',$rs['shop_db'][0]['order_filed']);
+		$order_info = fun('field@order_field_format',$rs['order_field'],$f_array);
+		{/php}
+		{volist name=":fun('field@fields_to_table',$f_array,$order_info)" id="vs"}
+			{if $f_array[$vs['name']]['listshow']}
+				<dl class="lists"><i>{$vs.title}</i>：<em>{$vs.value}</em></dl>
+			{/if}
+		{/volist}
+		</li>
+		<li class="price"><div> </div><p> </p></li>
+	</ul>
+
+	<ul class="otherinfo">
+		<ol> <span> </span> </ol>
+		 
+		<li>工单:<a href="{:iurl('content/show',['id'=>$rs['shop_db'][0]['id']])}">{$rs['shop_db'][0]['title']}</a></li>
+	</ul>
+	<div class="actions"> 
+
+		<a class="more-menu status-{$rs.id}" style="padding:3px 15px;background:{$rs.status?'orange':'#999'};color:#fff;border:0;" url='{volist name=":status_power($rs['shop_db'][0],$userdb)" id="name"}<a href="javascript:set_status({$rs.id},{$key})">{$name}</a><br>{/volist}'>{:status_type($rs['shop_db'][0],$rs['status'])}</a> 
+
+		<a href="{:urls('show',['id'=>$rs['id']])}">查看</a> 
+		<!--<span>未付款</span><a href="{:urls('edit',['id'=>$rs['id']])}">修改</a>-->
+		{if $rs.uid==$userdb.uid}<a href="{:urls('delete',['id'=>$rs['id']])}" class="del alert">删除</a>{/if}
+	</div>
+</div>
+{/volist}
+{$pages}
+
+<script type="text/javascript">
+function set_status(id,type){
+	$.get("{:iurl('wxapp.api/status')}?id="+id+"&type="+type,function(res){
+		if(res.code==0){
+			layer.msg('操作成功!');
+			$(".status-"+id).html(res.data.name).css('background','orange');
+		}else{
+			layer.alert(res.msg);
+		}
+	});
+}
+</script>
+
+{/block}

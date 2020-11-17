@@ -1,0 +1,88 @@
+﻿{extend name="$index_style_layout" /}
+
+<!--SEO相关-->
+{block name="head_title"}{$fid?($info['seo_title']?:$info['name']):$m_info['title']}{/block}
+{block name="head_keword"}{$fid?($info['seo_keywords']?:$info['name']):$m_info['title']}{/block}
+{block name="head_description"}{$info.seo_description}{/block}
+
+
+{block name="body_content"}
+
+<link rel="stylesheet" type="text/css" href="__STATIC__/house/default/pc/list_sell.css">
+
+<div style="margin:15px auto; width:1200px;"> <!-- WRAP S -->
+	<!-- 筛选 -->
+	{include file="index/filter" /}
+<!-- ====== -->
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0" id="listMain">
+  <tr>
+    <td valign="top" class="L">
+
+	<table width="100%" border="0" cellspacing="0" cellpadding="0" class="maintb">
+		<tr>
+			<td class="top">
+				<div class="EL"></div>
+				{qb:tag name='pc_house_list_cs_sorttitle'}
+					<div class="s1" id="mt3"><a href="javascript:;">{$info.city_id|get_area}求租</a></div>
+				{/qb:tag}
+				<div class="ER"></div>
+			</td>
+		</tr>
+		<tr>
+			<td class="main wrap1" height="150" valign="top"> 
+				
+				{qb:listpage name="pchouse_list4_page_listdata1" field="title" type="house" rows="20" order="list" where="status>0"}
+				<table width="100%" border="0" cellspacing="0" cellpadding="0" class="ltb">
+					<tr>
+						<td width="16%" align="left" class="ii"><a href="{$rs.url}" title="{$rs.title}" target="_blank"><img src="{$rs.picurl}" onerror="this.src='__STATIC__/images/nopic.png'"/></a></td>
+						<td width="40%" class="tt"><a href="{$rs.url}" class="wd" target="_blank" title="{$rs.title}" style="color:;">{$rs.title}</a> 
+							<br>
+							<span class='p'>关注度:<em>{$rs.view}</em> 次</span><span class='name'> 
+							发布者:{:get_user_name($rs.uid)}</span><span class='time '> 时间:{:format_time($rs.create_time)}</span><br>
+							
+						</td>
+						<td width="10%" align="center">
+							{$rs.room_type}
+						</td>
+						<td width="15%" align="center"><span class="cc">{$rs.acreage}</span></td>
+						<td width="18%" align="center"><span class="cc">{$rs.price}</span></td>
+					</tr>
+				</table>
+				{/qb:listpage}
+				{$pages}
+			</td>
+
+
+		</tr>
+	</table>
+	
+    
+    <td class="R SideR" height="300" valign="top" style="width:250px;padding-left:10px;">
+	
+	 {include file="index/side" /}
+
+	{include file="index/notice_ad" /}
+
+    </td>
+  </tr>
+</table>
+
+
+
+
+
+
+</div> <!-- WRAP E -->
+
+
+
+
+
+
+
+
+
+
+
+{/block}

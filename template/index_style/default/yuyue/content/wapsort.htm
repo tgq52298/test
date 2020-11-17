@@ -1,0 +1,26 @@
+<style type="text/css">
+.qb_ui_wapSortBoxCont .swiper-slide{width: auto!important;}
+</style>
+<div class="qb_ui_wapSortBoxCont swiper-container">
+	<ul class="swiper-wrapper">
+		{volist name="$fid|get_sort=###,'other'" id="vo"}
+		<li class='swiper-slide {eq name="$key" value="$fid"}ck{/eq}'><a href="{:urls('content/index',['fid'=>$key])}">{$vo}</a></li>
+		{/volist}
+	</ul>
+</div>
+<link href="__STATIC__/libs/swiper/swiper.min.css" rel="stylesheet">
+<script src="__STATIC__/libs/swiper/swiper.min.js"></script>
+<script type="text/javascript">
+$(function () {
+	var swiper = new Swiper('.qb_ui_wapSortBoxCont', {
+            spaceBetween: 0,
+            slidesPerView:'auto',
+            freeMode: true,
+			autoplay: {
+				delay: 4000,
+				stopOnLastSlide: false,
+				disableOnInteraction: true,
+			},
+	});
+})
+</script>

@@ -1,0 +1,51 @@
+<!--圈子成员-->
+<div class="main" style="margin-top:25px;">
+					<div class="mhead mhead3">
+						<div class="fourth"><a href="javascript:">活跃成员</a></div>
+						<div><a href="javascript:">最新加入</a></div>
+					</div>
+					<div class="listbox listbox3">
+						<div class="plist qun_listmember_pcshow_a">
+						{qb:tag name="qun_listmember_pcshow_a" class="app\qun\model\Member@get_label" order="type" rows="10" union="aid=id" js="qun_listmember_pcshow_a"}
+							<div class="picshow" style="position:relative;" title="加入时间:{:format_time($rs.create_time,'Y-m-d H:i')} 最后访问时间:{:format_time($rs.update_time,'Y-m-d H:i')} {if $rs.end_time>0}VIP到期时间:{:format_time($rs.end_time,'Y-m-d H:i')}{/if}">	
+									{if $rs.type==0}
+									<i data-id="{$rs.id}" class="fa fa-check-circle yz-member" title="等待审核" style="color:#aaa;position:absolute;left:0px;top:5px;"></i>
+									{elseif $rs.type==4}
+									<i data-id="{$rs.id}" class="fa fa-check-circle yz-member" title="VIP会员" style="color:#fff;background:orange;border-radius:2px;padding:3px 5px 3px 5px;position:absolute;left:0px;top:5px;"> vip</i>
+									{else /}
+									<i data-id="{$rs.id}" class="fa fa-check-circle" title="正式成员" style="color:green;position:absolute;left:0px;top:5px;"></i>
+									{/if}
+								<div class="img"><a target="_blank" href="{:get_url('user',$rs.uid)}"><img src="{$rs.icon}" width="88" height="88" onerror="this.src='__STATIC__/images/nobody.gif'"/></a></div>
+								<div class="info"><a href="javascript:" onclick=' KF.chat_win({uid:"{$rs.uid}",username:"{$rs.username}",icon:"{$rs.icon}",});'>{$rs.username|get_word=10}</a></div>
+							</div>
+						{/qb:tag}							
+						</div>
+						<div class="plist qun_listmember_pcshow_b">
+						{qb:tag name="qun_listmember_pcshow_b" class="app\qun\model\Member@get_label" order="id" rows="10" union="aid=id" js="qun_listmember_pcshow_b"}
+							<div class="picshow" style="position:relative;" title="加入时间:{:format_time($rs.create_time,'Y-m-d H:i')} 最后访问时间:{:format_time($rs.update_time,'Y-m-d H:i')} {if $rs.end_time>0}VIP到期时间:{:format_time($rs.end_time,'Y-m-d H:i')}{/if}">	
+									{if $rs.type==0}
+									<i data-id="{$rs.id}" class="fa fa-check-circle yz-member" title="等待审核" style="color:#aaa;position:absolute;left:0px;top:5px;"></i>
+									{elseif $rs.type==4}
+									<i data-id="{$rs.id}" class="fa fa-check-circle yz-member" title="VIP会员" style="color:#fff;background:orange;border-radius:2px;padding:3px 5px 3px 5px;position:absolute;left:0px;top:5px;"> vip</i>
+									{else /}
+									<i data-id="{$rs.id}" class="fa fa-check-circle" title="正式成员" style="color:green;position:absolute;left:0px;top:5px;"></i>
+									{/if}
+								<div class="img"><a target="_blank" href="{:get_url('user',$rs.uid)}"><img src="{$rs.icon}" width="88" height="88" onerror="this.src='__STATIC__/images/nobody.gif'"/></a></div>
+								<div class="info"><a href="javascript:" onclick=' KF.chat_win({uid:"{$rs.uid}",username:"{$rs.username}",icon:"{$rs.icon}",});'>{$rs.username|get_word=10}</a></div>
+							</div>
+						{/qb:tag}
+						</div>
+						<div class="right_show_more" onclick="$('.model-menu div[data-type=warp_member]').trigger('click');">查看更多</div>
+					</div>
+<script type="text/javascript">
+$('.listbox3 .plist').eq(1).hide();
+$(".mhead3 div").hover(function(){
+	var thisindex = $(this).index();
+	$(this).addClass("fourth").siblings().removeClass("fourth");
+	$(".listbox3 .plist").eq(thisindex).show().siblings().hide();
+	$(".right_show_more").show();
+})
+</script>					
+</div>
+
+<div style="display:none;" class="taglabel">目的是不给用户复制当前碎片</div>

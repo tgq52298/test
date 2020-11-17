@@ -1,0 +1,405 @@
+{extend name="$index_style_layout" /}
+
+<!--SEO相关-->
+{block name="head_title"}{$webdb.mseo_title?:$webdb.seo_title}{/block}
+{block name="head_keword"}{$webdb.mseo_keyword?:$webdb.seo_keyword}{/block}
+{block name="head_description"}{$webdb.mseo_description?:$webdb.seo_description}{/block}
+
+
+{block name="body_content"}
+<link type="text/css" rel="stylesheet" href="__STATIC__/house/default/pc/index.css" />
+<SCRIPT LANGUAGE="JavaScript" src="__STATIC__/house/default/pc/sliding.js"></SCRIPT>
+
+
+<div style="margin:15px auto; width:1200px;"><!-- main_wrap S-->
+
+<div class="MiddleBanner"><a href="#"><img src="__STATIC__/house/default/pc/ad1.jpg"/></a></div>
+
+<div class="mt20 MainContainer">
+	<div class="sidel">
+    	<div class="memberaction">
+        	<div class="head"><div class="tag">{qb:tag name="pc_house_index_sorthead" type='text'}房产分类{/qb:tag}  </div></div>
+            <div class="cont">
+            	{qb:tag name="pc_house_index_sort" type='text'}
+			<div><a href="{:urls('content/index',['fid'=>6])}" target="_blank">出租信息</a></div> 
+			<div><a href="{:urls('content/index',['fid'=>7])}" target="_blank">出售信息</a></div>
+			<div><a href="{:urls('content/index',['fid'=>8])}" target="_blank">求租信息</a></div>
+			<div><a href="{:urls('content/index',['fid'=>9])}" target="_blank">求购信息</a></div>
+			<div class="ck1"><a href="{:urls('content/index',['fid'=>10])}" target="_blank">楼盘信息</a></div>
+			<div class="ck2"><a href="{:urls('content/index',['fid'=>11])}" target="_blank">中介信息</a></div> 
+            	{/qb:tag}     	          
+            </div>
+        </div>
+        <div class="changeinfo">
+        	<div class="head">{qb:tag name="pc_house_index_hot_fc_head" type='text'}<div class="tag">热门房产</div><div class="more"><a href="#" target="_blank" >更多</a></div>{/qb:tag}</div>
+            <div class="cont">
+            	<div class="h">
+			{qb:tag name="pc_house_index_hot_fc_headtab" type='text'}
+				<div id="Span1" onmouseover="ShowTab(1,1,4)">求购信息</div>
+				<div id="Span2" onmouseover="ShowTab(2,1,4)">楼盘信息</div>
+				<div id="Span3" onmouseover="ShowTab(3,1,4)">出租信息</div>    
+			{/qb:tag}          	
+                </div>
+                <div id="Tab1">
+		{qb:tag name="pc_house_index_hot_fc_main_qg" type="house" rows="5" mid="-1" order="view" fid='8' where="status>0"}
+			  <div class="list">{$rs.create_time|format_time="m"}.{$rs.create_time|format_time="d"}<a href="{$rs.url}"   target="_black">{:get_word($rs.title,40)}</a>均价:{$rs.price}</div>
+		{/qb:tag}
+                </div>
+                <div id="Tab2">
+		{qb:tag name="pc_house_index_hot_fc_main_lp" type="house" rows="5" mid="-1" order="view" fid='10' where="status>0"}
+			  <div class="list">{$rs.create_time|format_time="m"}.{$rs.create_time|format_time="d"}<a href="{$rs.url}"   target="_black">{:get_word($rs.title,40)}</a>均价:{$rs.price}</div>
+		{/qb:tag}
+                </div>
+                <div id="Tab3">
+		{qb:tag name="pc_house_index_hot_fc_main_cz" type="house" rows="5" mid="-1" order="view" fid='7' where="status>0"}
+			  <div class="list">{$rs.create_time|format_time="m"}.{$rs.create_time|format_time="d"}<a href="{$rs.url}"   target="_black">{:get_word($rs.title,40)}</a>均价:{$rs.price}</div>
+		{/qb:tag}
+                </div>
+                <SCRIPT LANGUAGE="JavaScript">ShowTab(2,1,4);</SCRIPT>
+            </div>            
+        </div>
+    </div>
+    <div class="mainr">    
+        <table width="100%" border="0" cellspacing="0" cellpadding="0" class="contenttable">
+          <tr>
+            <td class="housenews">
+            	<div class="head">
+            		{qb:tag name="pc_house_index_loupan_head" type='text'}
+            			<div class="head"><div class="tag">楼市资讯</div><div class="more"><a href="#" target="_blank" >更多</a></div></div>
+			{/qb:tag}
+            	</div>
+                <div class="cont">
+		{qb:tag name="pc_house_index_loupan_cmslist" type="cms" rows="13" mid="1" order="id" where="status>0"}
+			{if $i==1}
+			  <div class="list{$i}"><a href="{$rs.sort_url}"  class="f" target="_black">{$rs.sort_name}|</a><a href="{$rs.url}"  class="t" target="_black">{$rs.title}</a><span>{:get_word($rs.content,150)}</span><em>{$rs.create_time|format_time="Y-m-d"}</em></div>
+			  {else /}
+			  <div class="list{$i}"><a href="{$rs.sort_url}"  class="f" target="_black">{$rs.sort_name}|</a><a href="{$rs.url}"  class="t" target="_black">{:get_word($rs.title,43)}</a><em>{$rs.create_time|format_time="Y-m-d"}</em></div>
+			  {/if}
+		{/qb:tag}
+                </div>
+            </td>
+
+            <td class="moreinf">
+		<div class="moreinfCont">
+	            	<div class="slidecont">
+				{qb:tag name='house_index_slide_r1' val='listdb' type="images"}
+			                	<div  class="p8label" id="house_slide" style="filter:alpha(opacity=50);position: absolute; border: 1px solid #ff0000; z-index: 9999; color: rgb(0, 0, 0); text-align: left; opacity: 0.4; width: 50px; height:21px; background-color:#A6A6FF;display:none;" onmouseover="showlabel_(this,'over','rollpic','');" onmouseout="showlabel_(this,'out','rollpic','');" onclick="showlabel_(this,'click','rollpic','');">
+			                		<div onmouseover="ckjump_(0);" onmouseout="ckjump_(1);" style="position: absolute; width: 15px; height: 15px; background: url(http://life.net/images/default/se-resize.png) no-repeat scroll -8px -8px transparent; right: 0px; bottom: 0px; clear: both; cursor: se-resize; font-size: 1px; line-height: 0%;"></div>
+			                	</div>
+			                	<table border='0' cellspacing='0' cellpadding='0' class='label_house_slide'>  
+			                		<tr> 
+			                			<td>
+							<script type='text/javascript'>
+								var widths=338;
+								var heights=210;
+								var counts=3;
+										{volist name="listdb" id="rs"}
+												 img{$i}=new Image ();
+												img{$i}.src="{$rs.picurl}";
+												url{$i}=new Image ();
+												url{$i}.src='#';
+										{/volist}
+								var nn=1;
+								var key=0;
+								function change_img()
+								{if(key==0){key=1;}
+								else if(document.all)
+								{document.getElementById("pic").filters[0].Apply();document.getElementById("pic").filters[0].Play(duration=2);}
+								eval('document.getElementById("pic").src=img'+nn+'.src');
+								eval('document.getElementById("url").href=url'+nn+'.src');
+								eval('document.getElementById("url").target="blank"');
+								for (var i=1;i<=counts;i++){document.getElementById("xxjdjj"+i).className='axx';}
+								document.getElementById("xxjdjj"+nn).className='bxx';
+								nn++;if(nn>counts){nn=1;}
+								tt=setTimeout('change_img()',4000);}
+								function changeimg(n){nn=n;window.clearInterval(tt);change_img();}
+								document.write('<style>');
+								document.write('.axx{padding:1px 7px;border-left:#cccccc 1px solid;}');
+								document.write('a.axx:link,a.axx:visited{text-decoration:none;color:#fff;line-height:12px;font:9px sans-serif;background-color:#666;}');
+								document.write('a.axx:active,a.axx:hover{text-decoration:none;color:#fff;line-height:12px;font:9px sans-serif;background-color:#999;}');
+								document.write('.bxx{padding:1px 7px;border-left:#cccccc 1px solid;}');
+								document.write('a.bxx:link,a.bxx:visited{text-decoration:none;color:#fff;line-height:12px;font:9px sans-serif;background-color:#D34600;}');
+								document.write('a.bxx:active,a.bxx:hover{text-decoration:none;color:#fff;line-height:12px;font:9px sans-serif;background-color:#D34600;}');
+								document.write('</style>');
+								document.write('<div style="width:'+widths+'px;height:'+heights+'px;overflow:hidden;text-overflow:clip;">');
+								document.write('<div><a id="url"><img id="pic" style="border:0px;filter:progid:dximagetransform.microsoft.wipe(gradientsize=1.0,wipestyle=4, motion=forward)" width='+widths+' height='+heights+' /></a></div>');
+								document.write('<div style="filter:alpha(style=1,opacity=10,finishOpacity=80);background: #888888;width:100%-2px;text-align:right;top:-12px;position:relative;margin:1px;height:12px;padding:0px;margin:0px;border:0px;">');
+
+								for(var i=1;i<counts+1;i++){document.write('<a href="javascript:changeimg('+i+');" id="xxjdjj'+i+'" class="axx" target="_self">'+i+'</a>');}
+
+								document.write('</div></div>');
+								change_img();
+							</script>
+							</td>  
+						</tr>
+					</table>
+				{/qb:tag}    
+	                	</div>
+			<div class="head">
+	            		{qb:tag name="pc_house_index_chuzunew_head" type='text'}
+	            			<div class="tag">最新房产信息</div><div class="more"><a href="#" target="_blank" >更多</a></div>
+				{/qb:tag}
+			</div>
+			<div class="cont">
+				{qb:tag name="pc_house_index_chuzunew_list" type="house" rows="13" mid="-1" order="id" fid='6' where="status>0"}
+					  <div class="list"><a href="{$rs.url}"   target="_black">{:get_word($rs.title,40)}</a><span>{$rs.create_time|format_time="Y-m-d"}</span></div>
+				{/qb:tag}
+			</div>
+		</div>	
+            </td>
+
+          </tr>
+        </table>
+    </div>
+    <div class="clear"></div>
+</div>
+
+{qb:tag name='house_index_banner_b type='image'}
+<div class="arrowbanner mt20">
+	<a href='#' target=_blank><img src='https://life8.php168.com/images/yellow/house/ad4.gif'  width='980'  height='70' border='0' /></a>
+</div>
+{/qb:tag}
+
+
+<div class="MainContainer mt20">
+	<div class="sidel">
+		<div class="hothouse">
+			<div class="head"><div class="tag">{qb:tag name="pc_house_index_hotlp_head" type='text'}热销楼盘{/qb:tag} </div></div>
+			<div class="cont">
+				<div class="c">
+				{qb:tag name="pc_house_index_hotlp_list" type="house" rows="13" mid="-1" order="id" fid='10' where="status>0"}
+					<div class="list">
+						<a href="{$rs.url}" target='_blank'>{$rs.title}</a>
+						<span class="city">{$rs.province_id|get_area} {$rs.city_id|get_area}  {$rs.zone_id|get_area}</span>
+						<span class="price"><em>{$rs.price}</em></span>
+					</div>
+				{/qb:tag}
+				</div>
+			</div>
+		</div>
+	</div>
+    <div class="mainr m-mainr2"> 
+    	<div class="sidecont">
+        	<div class="head">
+            	{qb:tag name="pc_house_index_csfy_head" type="text" }
+			<div class="tag"><span>出售房源</span></div>
+			<div class="more">
+				<a href="{:murl('content/add',['fid'=>7])}" target="_blank" class="post _pop">|发布出售</a>
+			</div>
+            	{/qb:tag}
+            </div>
+            <div class="cont">
+		{qb:tag name="pc_house_index_csfy_list" type="house" rows="5" mid="-1" order="id" fid='7' where="status>0"}
+			<div class="listpic">
+				<div class="img"><a href="{$rs.url}" target="_blank"><img src="{$rs.picurl}" width="100" onError="this.src='__STATIC__/images/nopic.png'"></a></div>
+				<div>{$rs.province_id|get_area} {$rs.city_id|get_area} {$rs.zone_id|get_area} -<a href="{$rs.url}" title='{$rs.full_title}' target="_blank">{$rs.title}</a></div>
+				<div>{$rs.room_type}，{$rs.acreage}平米</div>
+				<div class="price">&yen; {$rs.price}万元</div>
+			</div>
+		{/qb:tag}
+            </div>
+        </div>
+
+        <div class="sidecont sidecont1">
+        	<div class="head">
+            	{qb:tag name="pc_house_index_czfy_head" type="text"}
+			<div class="tag"><span>出租房源</span></div>
+			<div class="more">
+
+				<a href="{:murl('content/add',['fid'=>6])}" target="_blank" class="post _pop">|发布出租</a>
+			</div>			
+            	{/qb:tag}
+            </div>
+            <div class="cont">
+		{qb:tag name="pc_house_index_czfy_list" type="house" rows="5" mid="-1" order="id" fid='6' where="status>0"}
+			<div class="listpic">
+				<div class="img"><a href="{$rs.url}" target="_blank"><img src="{$rs.picurl}" width="100" onError="this.src='__STATIC__/images/nopic.png'"></a></div>
+				<div>{$rs.province_id|get_area} {$rs.city_id|get_area} {$rs.zone_id|get_area} -<a href="{$rs.url}" title='{$rs.full_title}' target="_blank">{$rs.title}</a></div>
+				<div>{$rs.room_type}，{$rs.acreage}平米</div>
+				<div class="price">&yen; {$rs.price}万元</div>
+			</div>
+		{/qb:tag}
+            </div>
+        </div>
+    </div>
+    <div class="clear"></div>
+</div> 
+
+
+<div class="MainContainer mt20">
+	<div class="sidel">
+	    	<div class="abouthouse">
+		        	<div class="head">
+		        		{qb:tag name="pc_house_index_loushinews_head" type='text'}
+		        		<div class="tag">楼市政策</div><div class="more"><a href="#" target="_blank" >更多</a></div>
+		        		{/qb:tag}
+		        	</div>
+			<div class="cont">
+				{qb:tag name="pc_house_index_loushinews_list" type='cms' rows="7" order="view" where="status>0"}
+					{if $i==1}
+					<table width="100%" border="0" cellspacing="0" cellpadding="0">
+					  <tr>
+					    <td class="img"><div><a href="{$rs.url}" target="_blank"><img src="{$rs.picurl}" border="0" width="70"/></a></div></td>
+					    <td class="word">
+					    	<h3><a href="{$rs.url}" target="_blank">{$rs.title}</a></h3>
+					        <div>{:get_word($rs.content,74)}<a href="{$rs.url}" target="_blank">[详细]</a></div>
+					    </td>
+					  </tr>
+					</table>
+					{else /}
+					<div class="list"><a href="{$rs.url}" target='_blank'>{:get_word($rs.title,28)}</a><span>{$rs.time|format_time="m-d"}</span></div>
+					{/if}
+				{/qb:tag}
+			</div>
+	        </div>
+    	</div>
+
+	<div class="mainr"> 
+		<div class="sidecont tzhousecont">
+			<div class="head">
+		        		{qb:tag name="pc_house_index_recommended_loupan_head" type='text'}
+					<div class="head">
+						<div class="tag"><span>推荐楼盘</span></div>
+						<div class="more"><a href="{:urls('content/index',['fid'=>10])}" target="_blank" class="post">|更多</a></div>
+					</div>
+		        		{/qb:tag}
+			</div>
+			<div class="cont">
+				{qb:tag name="pc_house_index_recommended_loupan_list" type='house' rows="9" order="view" fid="10" where="status=2"}
+				<div class="listtz">
+					<dl>
+						<dt><div><a href="{$rs.url}" target="_blank"><img src="{$rs.picurl}" onError="this.src='__STATIC__/images/nopic.png'"  width="70"/></a></div></dt>
+						<dd>
+							<h3><a href="{$rs.url}" target="_blank">{$rs.title}</a></h3>
+							<div>均价:&yen;{$rs.price}</div>
+							<div>{$rs.seller}</div>
+						</dd>
+					</dl>
+				</div>
+				{/qb:tag}
+			</div>
+		</div>
+	</div>
+    <div class="clear"></div>
+</div> 
+
+
+<div class="MainContainer mt20">
+	<div class="sidel ad2">
+		{qb:tag name='pc_house_index_banner_01l' type='image'}
+		<a href='#' target=_blank><img src='https://life8.php168.com/images/yellow/house/ad5.gif'  width='240'  height='70' border='0' /></a>
+		{/qb:tag}
+	</div>
+	<div class="mainr ad3"> 
+		{qb:tag name='pc_house_index_banner_01r' type='image'}
+			<a href='#' target=_blank><img src='https://life8.php168.com/images/yellow/house/ad6.gif'  width='730'  height='70' border='0' /></a>
+		{/qb:tag}
+	</div>
+	<div class="clear"></div>
+</div> 
+
+
+<div class="MainContainer mt20" style="overflow:hidden; margin-bottom:25px;">
+	<div class="sidel">
+		<div class="tophouse">
+			<div class="head">
+				{qb:tag name="pc_house_index_user_require_head" type='text'}
+					<div id="Span5" onmouseover="ShowTab(5,5,7)">求购信息</div>
+					<div id="Span6" onmouseover="ShowTab(6,5,7)">求租信息</div>
+				{/qb:tag}
+			</div>
+			<div class="cont">
+				<div id="Tab5">
+					{qb:tag name="pc_house_index_user_require_list01" type='house' rows="3" order="view" fid="9" where="status>0"}
+					<table width="100%" border="0" cellspacing="0" cellpadding="0" class="listpic">
+						<tr>
+							<td class="img">
+								<div><a href="{$rs.url}" target="_blank"><img src="{$rs.picurl}" height="70" onError="this.src='__STATIC__/images/nopic.png'"></a></div>
+							</td>
+							<td class="word">
+								<div><a href="{$rs.url}" title='{$rs.full_title}' target="_blank">{$rs.title}</a> {$rs.room_type} {$rs.acreage}</div>
+								<div>期望价格：<span>{$rs.price}</span></div>
+								<div>{$rs.time|format_time="Y-m-d"}</div>
+							</td>
+						</tr>
+					</table>
+					{/qb:tag}
+				</div>
+				<div id="Tab6">
+					{qb:tag name="pc_house_index_user_require_list01" type='house' rows="3" order="view" fid="8"}
+					<table width="100%" border="0" cellspacing="0" cellpadding="0" class="listpic">
+						<tr>
+							<td class="img">
+								<div><a href="{$rs.url}" target="_blank"><img src="{$rs.picurl}" height="70" onError="this.src='__STATIC__/images/nopic.png'"></a></div>
+							</td>
+							<td class="word">
+								<div><a href="{$rs.url}" title='{$rs.full_title}' target="_blank">{$rs.title}</a> {$rs.room_type} {$rs.acreage}</div>
+								<div>期望价格：<span>{$rs.price}</span></div>
+								<div>{$rs.time|format_time="Y-m-d"}</div>
+							</td>
+						</tr>
+					</table>
+					{/qb:tag}
+				</div>
+				<SCRIPT LANGUAGE="JavaScript">ShowTab(5,5,7);</SCRIPT>
+			</div>
+		</div>
+	</div>
+
+	<div class="mainr"> 
+		<div class="mencont">
+			<div class="head">
+				{qb:tag name="pc_house_index_broker_head" type='text'}
+					<div id="Span7" onmouseover="ShowTab(7,7,9)">推荐经纪人</div>
+					<div id="Span8" onmouseover="ShowTab(8,7,9)">最新经纪人</div>
+				{/qb:tag}
+			</div>
+			<div class="cont">
+				<div id="Tab7">
+					{qb:tag name="pc_house_index_broker_list01" type='house' rows="6" order="view" where="status=2" fid="11"}
+						<table width="100%" border="0" cellspacing="0" cellpadding="0" class="listpic">
+							<tr>
+								<td class="img">
+									<div><a href="{$rs.url}" target="_blank"><img src="{$rs.picurl}" height="110" onError="this.src='__STATIC__/images/nopic.png'"></a></div>
+								</td>
+								<td class="word">
+									<div><a href="{$rs.url}" title="{$rs.title}" target="_blank">{:get_word($rs.title,13)}</a></div>
+									<div>{$rs.store}</div>
+									<div>服务：{$rs.fuwu_zone}</div>
+									<div class="goto"><a href="{$rs.url}" title="{$rs.title}" target="_blank">点击进入</a></div>
+								</td>
+							</tr>
+						</table>
+					{/qb:tag}				
+				</div>
+				<div id="Tab8">
+					{qb:tag name="pc_house_index_broker_list01" type='house' rows="6" order="create_time"  fid="11"}
+						<table width="100%" border="0" cellspacing="0" cellpadding="0" class="listpic">
+							<tr>
+								<td class="img">
+									<div><a href="{$rs.url}" target="_blank"><img src="{$rs.picurl}" height="110" onError="this.src='__STATIC__/images/nopic.png'"></a></div>
+								</td>
+								<td class="word">
+									<div><a href="{$rs.url}" title="{$rs.title}" target="_blank">{:get_word($rs.title,13)}</a></div>
+									<div>{$rs.store}</div>
+									<div>服务：{$rs.fuwu_zone}</div>
+									<div class="goto"><a href="{$rs.url}" title="{$rs.title}" target="_blank">点击进入</a></div>
+								</td>
+							</tr>
+						</table>
+					{/qb:tag}	
+				</div>
+				<SCRIPT LANGUAGE="JavaScript">ShowTab(7,7,9);</SCRIPT>
+			</div>
+		</div>
+	</div>
+</div> 
+
+
+
+</div><!-- main_wrap E-->
+
+
+
+
+{/block}

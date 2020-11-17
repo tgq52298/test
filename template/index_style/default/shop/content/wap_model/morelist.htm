@@ -1,0 +1,45 @@
+<!--更多相关商品-->
+	<div class="TzContBoxs">
+		<div class="head"><i class="fa fa-send"></i>更多商品</div>
+		<div class="ListShops shop_showpage_more001">
+{qb:tag name="shop_showpage_more001" js="shop_showpage_more001" type="shop" rows="5"}
+			<div class="lists">
+				<ul>
+					<ol><a href="{$rs.url}"><img src="{$rs.picurl}" onmouseover='thisimg_over($(this))' onmouseout='thisimg_out($(this))'/></a></ol>
+					<li>
+						<div class="title"><a href="{$rs.url}">{$rs.title}</a></div>
+						<div class="infos">
+							<div class="price">&yen;<span>{$rs.price}</span><em>元</em></div>
+							{if $rs.market_price>0}<p>&yen;{$rs.market_price}</p>{/if}
+						</div>
+					</li>
+				</ul>
+			</div>
+{/qb:tag}
+		</div>
+		<div class="ShowMoreInfo"><button type="butter" style="line-height:40px;" onclick="ShowMoreInfo()">查看更多</button></div>
+	</div>
+<script type="text/javascript">
+var morepage=1;
+var url='{qb:url name="shop_showpage_more001" /}';//异步获取更多内容的url
+function ShowMoreInfo(){	
+	morepage++;	
+	$.get(url+morepage+'&'+Math.random(),function(res){
+		if(res.code==0){
+			if(res.data==''){
+				layer.msg("已经显示完了！",{time:500});
+				$('.ShowMoreInfo button').attr('onclick','');
+				$('.ShowMoreInfo button').html('显示完了');
+				$('.ShowMoreInfo button').css({'background':'#CCC'});
+			}else{
+				res.data="<dd class='pages"+morepage+"'>"+res.data+"</dd>";			
+				$('.ListShops').append(res.data);
+				$('.ListShops .pages'+morepage).hide();
+				$('.ListShops .pages'+morepage).show(100);
+			}
+		}else{
+			layer.msg(res.msg,{time:2500});
+		}
+	});
+}
+</script>

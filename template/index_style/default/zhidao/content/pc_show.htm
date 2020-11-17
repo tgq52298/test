@@ -1,0 +1,678 @@
+﻿{extend name="$index_style_layout" /}
+
+<!--SEO相关-->
+{block name="head_title"}{$info.title}{/block}
+{block name="head_keword"}{$info.keywords?:$info.title}  {$s_info.name} {/block}
+{block name="head_description"}{:get_word(del_html($info['content']),300)}{/block}
+
+{block name="body_content"}
+<link rel="stylesheet" href="__STATIC__/zhidao/list.css">
+<style type="text/css">
+pre{padding: 10px 15px;border: 1px solid #D1D7DC;    position: relative; margin: 10px 0; font-size: 12px; border-left: 6px solid #009688;  background-color: #f8f8f8;max-width:700px;overflow-x:auto;}
+</style>
+<!--<script type="text/javascript" src="__STATIC__/js/jquery.zclip.min.js"> </script>-->
+<script type="text/javascript">
+function add_fav(id){
+	var url="{:purl('fav/api/add')}?type={:config('system_dirname')}&id="+id;
+	$.get(url,function(res){
+		if(res.code==0){
+			layer.msg('收藏成功');
+		}else{
+			layer.alert(res.msg);
+		}
+	})
+}
+</script>
+<div class="MainContainer">
+	<div class="Container">
+		<div class="LeftCnt">
+			<div class="ShowContent" style="position: relative;">
+				{eq name="$info.status" value="2"}<div style="position: absolute;left:430px;top:70px;filter: z-index: 1;"><img style="opacity:0.1;filter:alpha(opacity=10);" src="__STATIC__/images/recom.png"></div>{/eq}
+				<div class="topinfo">
+					<div class="guide"><a href="{:urls('index/index')}">问答主页</a> -&gt; <a href="{:urls('content/index',['fid'=>$fid])}">{$s_info.name}</a></div>
+					<dl class="SharBox">
+						<dt><span onClick="$('.SharBox dd').fadeIn();" style="margin-right:20px;"><i class="fa fa-share-square-o"></i>分享</span> <span onclick="add_fav({$id})"> <li class="fa fa-fw fa-heart"></li>收藏</span> </dt>
+						<dd>
+							<div class="bshare-custom">
+								<a title="分享到微信" class="bshare-weixin"></a>
+								<a title="分享到新浪微博" class="bshare-sinaminiblog"></a>
+								<a title="分享到Facebook" class="bshare-facebook"></a>
+								<a title="分享到QQ空间" class="bshare-qzone"></a>
+								<a title="分享到Twitter" class="bshare-twitter"></a>
+								<a title="分享到Google+" class="bshare-gplus"></a>
+								<a title="分享到QQ好友" class="bshare-qqim"></a>
+							</div>
+							<div class="exit" onClick="$('.SharBox dd').fadeOut();">X</div>
+						</dd>				
+					</dl>
+					<script type="text/javascript" charset="utf-8" src="http://static.bshare.cn/b/buttonLite.js#style=-1&amp;uuid=&amp;pophcol=2&amp;lang=zh"></script>
+					<script type="text/javascript" charset="utf-8" src="http://static.bshare.cn/b/bshareC0.js"></script>
+				</div>
+				<div class="title">{$info.title}</div>
+				<div class="thebase">
+					<ul>
+						<ol><a href="{:get_url('user',$info['uid'])}" target="_blank"><img src="{$info.uid|get_user_icon}" onerror="this.src='__STATIC__/images/nobody.gif'"  onmouseover="changeShowImg($(this),'over');" onmouseout="changeShowImg($(this),'out');" ></a></ol>
+						<li>
+							<div><span onclick="sendmsg('{$info.uid|get_user_name}')">{$info.uid|get_user_name}</span><em>{$info.create_time|format_time=true}</em></div>
+							<div><a href="#">{:getGroupByid(get_user($info['uid'])['groupid']?:'')}</a></div>
+						</li>
+						{if $info.money>0}
+						<li class='ico_money_c' title="回答被采纳后将获得{$info.money}{$webdb.MoneyDW}{$webdb.MoneyName}"><i class='fa fa-fw fa-database'></i>{$info.money}</li class='ico_money_c'>
+						{/if}						
+					</ul>
+					<dl>
+						<dt><i class="si si-eye"></i>{$info.view}</dt>
+
+						<dd>
+						<i class="fa fa-commenting-o"></i>{$info.replynum} 
+						<!--操作菜单-->
+						{include file="content/menu"}
+						</dd>
+					</dl>
+				</div>
+				<div class="content_html">
+					{$info.content}
+{volist name="$info.picurls" id="rs"}
+</br><img src="{$rs.picurl}"/>
+{/volist}
+				</div>
+				<div class="content_act">
+					<div onclick="TopicAgree()"><span><i class="fa fa-thumbs-o-up"></i></span><em id="topic_agree">{$info.agree}</em></div>
+					{notempty name=":plugins_config('givemoney')"}<div><span class="give-money" data-id="{$id}"><i class="si si-present"></i></span><em>打赏</em></div>{/notempty}
+					<div onclick="add_fav({$id})"><span><i class="fa fa-fw fa-star-o"></i></span><em>收藏</em></div>
+					<div onclick="replyuser(0)"><span style="margin-left:15px;"><i class="fa fa-edit"></i></span><em>点击回答</em></div>
+				</div>
+				{if $info.money>0}
+				<div class='show_money_tip'>您的回答被采纳后将获得：提问者悬赏的 <i class='fa fa-fw fa-database'></i><span class='c_r'> {$info.money} </span>{$webdb.MoneyDW}{$webdb.MoneyName}</div>
+				{/if}
+
+				{if $info.best_rid>0}
+					<div class='show_best_reply'>
+						<div class='best_reply_title'><i class='si si-badge'></i> 最佳答案<span>{$info.best_create_time|format_time="m-d H:i"}</span></div>
+						<div class='best_reply_content'>
+							{if $info.best_content}
+								{$info.best_content}
+							{else /}
+								你来得晚啦，最佳答案内容可能已被问题发布者或回答用户删除！
+							{/if}
+						</div>
+					</div>
+				{/if}		
+			</div>
+
+			<div class="ShowComment">
+				<ul class="head"><ol>全部回答</ol><li>共 <span id="commentnum">{$info.replynum}</span> 条</li></ul>
+{qb:reply name="pcbbs_reply" rows="5"}
+				<div class="ListComment">
+				{volist name="listdb" id="rs"}
+					<div class="lists">
+						<ul>
+							<ol><a {if is_dir(APP_PATH.'weibo')}onclick="pc_view_weibo_msg({$rs.uid})"{else /} href="{:get_url('user',$rs['uid'])}" target="_blank" {/if}><img src="{$rs.icon}" onerror="this.src='__STATIC__/images/nobody.gif'"  onmouseover="changeShowImg($(this),'over');" onmouseout="changeShowImg($(this),'out');" ></a></ol>
+							<li>
+								<div class="info"><a href="javascript::" onclick="sendmsg('{$rs.username}')">{$rs.username} </a><span>{:getGroupByid(get_user($rs['uid'])['groupid']?:'')} </span><em> {$rs.time}</em><i class="lou">{$i}楼</i></div>
+								<div class="cnt replycontent" style="word-break:break-all;">{$rs.content}</div>
+								<div class="replaycomment repalyinfs{$rs.id}">
+									{volist name="rs.children" id="vs"}
+									<dl>
+										<dt><a href="javascript::" onclick="sendmsg('{$vs.username}')">{$vs.username} </a><em> {$vs.time}</em></dt>
+										<dd style="word-break:break-all;" class="replycontent">{$vs.content}  {if ($this->admin || $vs['uid']==$this->user['uid'])}<i onclick="delinfo({$aid},{$vs.id})" class="fa fa-trash-o"></i>{/if} </dd>
+									</dl>
+									 {/volist}
+								</div>
+							</li>
+						</ul>
+						<div class="other">
+							<i class="fa fa-thumbs-o-up"  onclick="reply_agree({$rs.id})"></i><span  onclick="reply_agree({$rs.id})" class="upnum replyAgree{$rs.id}">{$rs.agree}</span>
+							{notempty name=":plugins_config('givemoney')"}<a href="javascript::"><span class="give-money" data-id="{$aid}" data-rid="{$rs.id}"><i class="si si-present"></i></span><em>打赏</em></a>{/notempty}
+
+							<a onclick="replyuser({$rs.id})" href="javascript::"><i class="fa fa-commenting-o"></i>回复</a>
+							{if ($this->admin || $info[uid]==$this->user['uid'])}
+							<i onclick="delinfo({$aid},{$rs.id})" class="fa fa-trash-o"></i>
+								{if !$info.best_rid}
+									<a onclick="adoption_response({$info.id},{$rs.id})" href="javascript::"><i class="fa fa-fw fa-check-square-o"></i>采纳</a>
+								{/if}
+							{/if}
+						</div>
+					</div>
+				{/volist}
+				</div>
+				<div class="ShowMoreComment"><span onclick="ShowMoreComment()">更多回答<i class="fa fa-angle-double-down"></i></span></div>
+		<script type="text/javascript">
+		var posturl="{:fun('label@reply_api','posturl',$aid,$cfg_array)}";
+		var pageurl="{:fun('label@reply_api','pageurl',$aid,$cfg_array)}";
+		</script>
+{/qb:reply}
+
+<script type="text/javascript">
+
+//查看用户信息,微动态信息
+function pc_view_weibo_msg(uid){
+	layer.open({
+		  type: 2,
+		  title: '查阅消息',
+		  shadeClose: true,
+		  shade: false,
+		  maxmin: true, //开启最大化最小化按钮
+		  area: ['1000px', '600px'],
+		  content: '{:url("weibo/api/weibo")}?uid='+uid
+		});
+}
+
+//点击图片查看大图
+jQuery(document).ready(function() {
+	$(".content_html img").each(function(){
+		$(this).click(function(){
+			window.open($(this).attr('src'));
+		});
+	});
+	$(".ShowComment .replycontent img").each(function(){
+		$(this).click(function(){
+			window.open($(this).attr('src'));
+		});
+		$(this).css({"max-width":'700px',});
+	});
+	bbslou();
+});
+
+//楼层
+function bbslou(){
+	var lou = 0;
+	$(".ShowComment .lou").each(function(){
+		lou++;
+		$(this).html(lou+'楼')
+	});
+}
+
+//给用户发短消息
+var haveSendMsg = false;
+function sendmsg(name,ifsend){
+	if(check_jump_login()!=true) return ;
+	if(ifsend==true){
+		var contents = $(".sendmsgBox textarea").val();
+		contents = contents.replace("\n","<br>");
+		contents = contents.replace(" ","&nbsp;");	
+		layer.closeAll();
+		if(contents==''){
+			layer.alert('内容不能为空!');
+			return ;
+		}
+		if(haveSendMsg==true){
+			layer.msg('请不要重复提交');
+			return ;
+		}
+		haveSendMsg = true;
+		layer.msg('正在发送消息,请稍候...');
+        $.post("{:murl('member/wxapp.msg/add')}", {content:contents,touser:name}).success(function (res) {
+			haveSendMsg = false;
+            if(res.code==0){
+				layer.closeAll(); //关闭所有层
+				layer.msg('消息发送成功！');
+				$(".sendmsgBox textarea").val('');
+			}else{
+				layer.alert(res.msg);
+			}
+		}).fail(function () {
+			layer.open({title: '提示',content: '服务器发生错误'});
+		});
+	}else{
+		layer.open({
+		  type: 1,
+		  title:'给 '+name+' 发私信',
+		  area: ['600px','450px'], //宽高，高参数忽略
+		  content: '<ul class="sendmsgBox" style="text-align:center;"><ol><textarea style="width:560px;height:300px;margin:10px;" placeholder="请输入要对他的私信留言"></textarea></ol><li><button onclick="layer.closeAll();" style="padding:10px;">取消</button>  <button style="margin-left:50px;padding:10px;" onclick="sendmsg(\''+name+'\','+true+');">确认发送</button></li></ul>',
+		});
+	}
+}
+</script>
+
+<script type="text/javascript">
+var ueditor;
+
+//修改信息
+function editinfo(aid,id){
+	var url;
+	if(id>0){
+		url="{:urls('reply/edit')}?id="+id;
+	}else{
+		url="{:urls('content/edit')}?id="+aid;
+	}
+	location.href = url;
+}
+
+//删除信息
+function delinfo(aid,id){
+	var url;
+	if(id>0){
+		url="{:urls('wxapp.reply/delete')}?id="+id;
+	}else{
+		url="{:urls('wxapp.post/delete')}?id="+aid;
+	}
+	$.get(url,function(res){
+		if(res.code==0){
+			layer.alert("删除成功！");			
+			if(id==0){
+				location.href="{:urls('index/index')}";
+			}else{
+				location.reload();
+			}
+		}else{
+			layer.msg("删除失败:"+res.msg,{time:1500});
+		}	
+	});
+}
+//采纳
+function adoption_response(id,rid){
+	var url="{:urls('wxapp.post/adoption_response')}?id="+id+"&rid="+rid;
+	$.get(url,function(res){
+		console.log(res);
+		if(res.code==0){
+			layer.alert('已采纳该回答');	
+			location.reload();
+		}else if(res.code==1){
+			layer.msg(res.msg);
+			location.reload();
+		}else{
+			layer.msg("采纳失败:"+res.msg,{time:1500});
+		}	
+	});
+}
+
+//主题点赞
+function TopicAgree(){	
+	$.get("{:urls('wxapp.post/agree',['id'=>$id])}?"+Math.random(),function(res){
+		if(res.code==0){
+			var num =  $('#topic_agree').html();
+			num++;
+			$('#topic_agree').html(num);
+			layer.msg("点赞成功！",{time:1500});
+		}else{
+			layer.msg("点赞失败:"+res.msg,{time:1500});
+		}	
+	});
+}
+
+//回复点赞
+function reply_agree(id){
+	$.get("{:urls('wxapp.reply/agree')}?id=" + id + "&" + Math.random(),function(res){
+		if(res.code==0){
+			var num =  $('.replyAgree'+id).html();
+			num++;
+			$('.replyAgree'+id).html(num);
+			layer.msg("点赞成功！",{time:1500});
+
+		}else{
+			layer.msg("点赞失败:"+res.msg,{time:1500});
+		}	
+	});
+}
+
+//显示分页
+var page=1;
+var check_showMore=1;
+var pid = 0;
+function ShowMoreComment(){
+	page++;
+	check_showMore=0;
+	$('.ShowMoreComment').fadeIn();
+	$.get(pageurl + "?page="+page+"&"+Math.random(),function(res){
+		$('.ShowMoreArtic').fadeOut();
+		if(res.code==0){
+			if(res.data==''){
+				layer.msg("没有更多内容了！",{time:500});
+				$('.ShowMoreComment').hide();
+			}else{
+				$('.ListComment').append(res.data);
+				check_showMore=1;
+				bbslou();
+			}
+		}else{
+			layer.msg(res.msg,{time:2500});
+		}
+	});
+}
+
+//弹出层进行回答
+function pop_post(){
+	var contents = $(".replayBox textarea").val();
+	contents = contents.replace("\n","<br>");
+	contents = contents.replace(" ","&nbsp;");	
+	layer.closeAll();
+	if(contents==''){
+		layer.alert('回答内容不能为空!');
+		return ;
+	}
+	postcontent({content:contents},true);
+	$(".replayBox textarea").val('')
+}
+
+//引用回复
+function replyuser(id){
+	pid = id;
+	//ueditor.focus()
+	if(check_jump_login()!=true) return ;
+	layer.open({
+	  type: 1,
+	  title:'给TA回答',
+	  area: ['600px','550px'], //宽高，高参数忽略
+	  content: '<ul class="replayBox" style="text-align:center;"><ol><textarea onkeydown="keySend(event);" style="width:560px;height:400px;margin:10px;" placeholder="提问者正在等待您的回答"></textarea></ol><li><button onclick="layer.closeAll();" style="padding:10px;">取消</button>  <button style="margin-left:50px;padding:10px;" onclick="pop_post();">提交回答</button></li></ul>',
+	});
+}
+
+function keySend(event) {
+	if (event.ctrlKey && event.keyCode == 13) {
+		pop_post();
+	}
+}
+
+function check_jump_login(){
+	if("{$userdb.uid}"==""){
+		layer.confirm('你还没登录,确认要登录吗？', {
+            btn : [ '确定', '取消' ]
+        }, function(index) {
+            location.href="{:get_url('login')}";
+        });		
+	}else{
+		return true;
+	}
+}
+
+</script>
+			</div>
+			<div id="PostComment">
+			<form class="ajax-post" method="post"  action="" onsubmit="return false;">
+				<div class="ueditor">
+<script id="content" class="js-ueditor" name="content" type="text/plain"></script>
+<script type="text/javascript"> 
+jQuery(document).ready(function() {
+	//重新定义编辑器的宽度＝表单提交容器标签的宽度
+	$('#PostComment .ueditor').width($('#PostComment .submit').width());   
+    ueditor =  UE.getEditor($('.js-ueditor').attr('name'), {
+            initialFrameHeight:300,  //初始化编辑器高度,默认320
+            autoHeightEnabled:false,  //是否自动长高
+            maximumWords: 50000, //允许的最大字符数
+            serverUrl: '{:urls("index/attachment/upload","dir=images&from=ueditor&module=zhidao")}',
+			toolbars: [
+						['fullscreen', 'source', 'removeformat','undo', 'redo', 'forecolor','backcolor','bold','fontsize','insertimage','attachment','link','emotion','pasteplain','insertcode']
+					],
+        });
+ 
+});
+
+//ctrl+enter 事件
+function postform(){
+	layer.confirm('你确认要提交吗?',{
+            btn:['确定','取消']
+        },function(index){
+			var form_data = $('.ajax-post').serialize();
+			postcontent(form_data);
+        }
+	);
+}
+
+//检查用户登录状态
+var user_uid = "{$userdb.uid}";
+function check_login(){
+	if(user_uid!=''){
+		return true;
+	}
+	layer.open({
+	  type: 2,
+	  title: '用户登录',
+	  shadeClose: true,
+	  shade: false,
+	  maxmin: true, //开启最大化最小化按钮
+	  area: ["750px", "780px"],
+	  content: "{:get_url('login')}&type=iframe",
+	  end: function(){
+		  	//window.location.reload();
+			$.get("{:urls('index/wxapp.login/web_login_check')}?" + Math.random(),function(res){
+				layer.closeAll();
+				if(res.code==0){
+					user_uid = res.data.uid;
+					layer.msg("登录成功,你现在可以发表信息了",{time:1500});
+				}else{
+					layer.msg("登录失败");
+				}	
+			});
+		}
+	});
+}
+
+
+
+var havepost = false;
+function postcontent(form_data,islayer){
+	if(check_login()!==true){	//检查用户登录状态
+		return false;
+	}
+			var that  = ueditor;
+			var url = posturl;
+			if(pid>0){
+				url += '?pid='+pid;
+			}
+			if(islayer!==true && that.hasContents()==false){
+				layer.alert('内容不能为空')
+				return false;
+			}
+			if(havepost==true){
+				layer.msg('请不要重复提交');
+				return ;
+			}
+			havepost = true;
+            $.post(url, form_data).success(function (res) {
+				havepost = false;
+                if(res.code==0){
+					if(pid>0){
+						$('.repalyinfs'+pid).html(res.data);
+					}else{
+						$('.ListComment').html(res.data);
+						//$('.ShowMoreComment').fadeIn();
+					}
+					//layer.closeAll(); //关闭所有层
+					layer.msg('回答成功！');
+					//that.hide();
+					that.setContent('');					
+					//HiddenShowMoreComment();
+				}else{
+					layer.alert(res.msg);
+				}
+            }).fail(function () {
+				layer.open({title: '提示',content: '服务器发生错误'});
+            });            
+}
+
+	$(document).ready(function(){
+		//$('.ajax-post').attr('action', pid>0 ? posturl+'?pid='+pid : posturl );	//主要是针对编辑器的ctarl+enter发信息用
+        $('.ajax-post').submit(function () {
+            var form_data = $(this).serialize();
+			postcontent(form_data);
+			return false;
+        });
+    });
+</script>
+<script src="__STATIC__/libs/ueditor/ueditor.config.js"></script>
+<script src="__STATIC__/libs/ueditor/ueditor.all.min.js"></script>
+				</div>
+				<div class="submit"><button type="submit">提交回答</button></div>
+				</form>
+			</div>
+		</div>
+		<div class="RightCnt">
+			<div class="RightSide">
+				<dl class="RightBase">
+					<dt>
+						<a href="{:urls('add',['fid'=>$info['fid']])}"><button type="button">发布问题</button></a>
+					</dt>
+					<dd>
+						<div class="h"><span>问题分类</span></div>
+						<ul>
+{volist name="''|sort_config" id="rs"}
+							<li><a href="{:urls('content/index',['fid'=>$rs['id']])}" {eq name="$info.fid" value="$rs.id"}class="ck"{/eq}>{$rs.name}</a></li>
+{/volist}
+						</ul>
+					</dd>
+				</dl>
+				<div class="SideMores">
+					<div class="h"><span>正在求助</span></div>
+					<ul class="ListNewfen">
+{qb:tag name="pc_zhidao_indexpage" type="zhidao" order="status" rows="8" where="best_rid=0"}
+						<li><a href="{$rs.url}">{$rs.title}</a></li>
+{/qb:tag}
+					</ul>
+					<div class="MOreShow msnewfen"><button type="button" onclick="MoreShowNewfen('{qb:url name='pc_zhidao_indexpage' /}')">更多<i class="fa fa-chevron-down"></i></button></div>
+				</div>
+<script type="text/javascript">
+var M_s_page = 1;
+function MoreShowNewfen(url){
+	M_s_page++;
+	$.get(url+M_s_page+'&'+Math.random(),function(res){
+		if(res.code==0){
+			if(res.data==''){
+				layer.msg("已经显示完了！",{time:500});
+				$('.msnewfen').hide();
+			}else{
+				$('.ListNewfen').append(res.data);
+			}
+		}else{
+			layer.msg(res.msg,{time:2500});
+		}
+	});
+}
+</script>
+				<dl class="WXcode">
+					<dt>扫一扫访问手机版</dt>
+					<dd><img src="{:get_qrcode(get_url('location'))}"/>
+					</dd>
+				</dl>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="topUpCont">
+    <ul>
+    	<ol><i class="fa fa-angle-double-up"></i></ol>
+        <li>回到顶部</li>
+    </ul>
+</div>
+<script type="text/javascript">
+//打赏积分
+var sys_dirname = "{:config('system_dirname')}";
+var give_money_url = "{:purl('givemoney/api/give','index')}";
+var count_money_url = "{:purl('givemoney/api/count','index')}";
+var getlist_money_url = "{:purl('givemoney/api/getlist','index')}";
+$(document).ready(function () {
+	$(".give-money").each(function(){
+		var that = $(this);
+		var id = that.data('id');
+		var rid = typeof(that.data('rid'))=='undefined' ? 0 : that.data('rid');
+		var cid = typeof(that.data('cid'))=='undefined' ? 0 : that.data('cid');
+		
+		//下一个元素显示数值
+		that.next().each(function(){
+			var obj = $(this);
+			$.get(count_money_url,{'sysname':sys_dirname,'id':id,'rid':rid,'cid':cid},function(res){
+				if(res.code==0){
+					obj.html(''+res.data+'积分');
+					obj.mouseenter(function(){
+						obj.unbind("mouseenter");
+						layer.tips('点击图标可打赏，点击数值可以查看详情', obj, {tips:[3,'#888'],time:1000});
+					});
+					obj.click(function(){						
+						getlist();
+					});
+				}else{
+					obj.click(function(){
+						putnum();
+					});
+				}
+			});
+		});
+		
+		//显示打赏用户
+		var getlist = function(){
+			layer.closeAll();
+			layer.load(1);
+			$.post(getlist_money_url,{'sysname':sys_dirname,'id':id,'rid':rid,'cid':cid},function(res){
+				layer.closeAll();
+				if(res.code==0){
+					var str = '';
+					res.data.forEach(function(rs){
+						str += '<div style="padding:5px;"><span style="color:blue;">' + rs.username + '</span> 打赏积分: ' + rs.money + ' 个 　　<span style="color:#666;">['+rs.create_time+']</span></div>';
+					});
+					layer.open({
+					  title:'打赏用户列表',
+					  type: 1,
+					  area: '400px',
+					  content: '<div style="padding:15px;">' + str + '</div>',
+					});
+				}else{
+					layer.alert(res.msg);
+				}
+			}).fail(function(){layer.closeAll();layer.alert('页面出错了!')});
+		}
+
+		//打赏输入积分个数
+		var putnum = function(){
+			layer.prompt({
+				  formType: 0,
+				  value: '3',
+				  title: '请输入要打赏的积分个数',
+				  //area: ['100px', '20px'] //formType:2 自定义文本域宽高
+				}, function(value, index, elem){
+					layer.close(index);
+					postdata(value);
+				}
+			);
+		};
+		
+		//打赏点击事件
+		that.click(function(){
+			putnum();
+		});
+		
+		//打赏提交数据
+		var postdata = function(num){			
+			layer.load(1);
+			$.post(give_money_url,{'sysname':sys_dirname,'money':num,'id':id,'rid':rid,'cid':cid,'about':''},function(res){
+				layer.closeAll();
+				if(res.code==0){
+					layer.msg('打赏成功,谢谢你!');
+				}else{
+					layer.alert(res.msg);
+				}
+			}).fail(function(){layer.closeAll();layer.alert('页面出错了!')});
+		}		
+	});
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function () {
+	//右边页面的高度
+	var rightBoxH=$('.RightSide').height();
+	//头部高度+35px间距
+	var headBoxH=$('.HeadContainer').height()+35;
+	$(window).scroll(function () {
+		var scroll_Height=$(window).scrollTop();
+		if(scroll_Height>rightBoxH){
+			$('.RightBase').addClass('RightBase1');
+			var thistopH=scroll_Height-headBoxH;
+			$(".RightBase").css({'top':thistopH+'px'});
+		}else{
+			$('.RightBase').removeClass('RightBase1');
+		}
+		if (scroll_Height > 100) {
+			$(".topUpCont").show();
+		} else {
+			$(".topUpCont").hide();
+		}
+	});
+	$(".topUpCont").click(function () {
+		$("html,body").animate({scrollTop:0},500);
+	});
+});	
+</script>
+<!-- 微动态自动收录用户感兴趣的主题,时间60代表用户停留60秒将自动收藏 -->
+{:fun('sns@fav',$info,60,'系统帮你订阅了本主题,下次本主题有回复,将会通知你')}
+
+{/block}

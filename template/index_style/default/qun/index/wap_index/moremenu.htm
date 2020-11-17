@@ -1,0 +1,57 @@
+<!--圈子相关菜单-->
+<style type="text/css">
+.qun_main_btn{
+	background:#fff;
+	height:80px;
+	margin-top:12px;
+}
+.qun_main_btn li{
+	height:40px;
+	background:#309DF2;
+	color:#fff;
+	margin-left:8px;
+	margin-right:8px;
+	line-height:40px;
+	font-size:15px;
+	padding-left:10px;
+	padding-right:10px;
+	border-radius:5px;
+	margin-top:20px;
+}
+.qun_main_btn li:nth-child(2){
+	background:orange;
+}
+.qun_main_btn li:nth-child(3){
+	background:#41CD9E;
+}
+.qun_main_btn li:nth-child(4){
+	background:#EE5C5B;
+}
+.qun_main_btn li a{
+	color:#fff;
+	font-size:15px;
+}
+.menu-button .swiper-slide{width: auto!important;}	/*滑动按钮必须的设置,其中swiper-slide类名不能更换*/
+</style>
+<script>
+    $(function () {
+        var swiper = new Swiper('.menu-button', {
+            spaceBetween: 0,
+            slidesPerView:'auto',
+            freeMode: true
+        });
+    })
+</script>
+<!--加上taglabel类,不给复制-->
+	<div class="qun_main_btn taglabel">
+			<div class="swiper-container menu-button">
+				<div class="swiper-wrapper">
+					<li class="swiper-slide"><a href="{:urls('near/index')}"><i class="glyphicon glyphicon-map-marker"></i> 附近的__QUN__</a></li>
+					<li class="swiper-slide"><a href="{:urls('ad/index')}"><i class="fa fa-send"></i> 投放广告</a></li>
+					<li class="swiper-slide"><a href="{:urls('content/my','type=2')}"><i class="fa fa-paw"></i> 我的足迹</a></li>
+					<li class="swiper-slide"><a href="{:urls('content/my')}"><i class="fa fa-street-view"></i> 我加入的</a></li>
+					<li class="swiper-slide"><a href="{:urls('content/my','type=1')}"><i class="fa fa-user-circle-o"></i> 我创建的</a></li>
+					<li class="swiper-slide"><a href="{:urls('content/add')}"><i class="fa fa-plus"></i> 创建__QUN__</a></li>
+				</div>
+			</div>
+	</div>

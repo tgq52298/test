@@ -1,0 +1,28 @@
+<!--推荐内容-->
+				<div class="SideMores good_topic taglabel">
+					<div class="h"><span>精彩内容</span></div>
+					<ul class="ListNewfen pc_indexpage">
+{qb:tag name="pc_indexpage" type="bbs" order="status" rows="8"}
+						<li><a href="{$rs.url}">{$rs.title}</a></li>
+{/qb:tag}
+					</ul>
+					<div class="MOreShow msnewfen"><button type="button" onclick="MoreShowNewfen('{qb:url name='pc_indexpage' /}')">更多<i class="fa fa-chevron-down"></i></button></div>
+				</div>
+<script type="text/javascript">
+var M_s_page = 1;
+function MoreShowNewfen(url){
+	M_s_page++;
+	$.get(url+M_s_page,function(res){
+		if(res.code==0){
+			if(res.data==''){
+				layer.msg("已经显示完了！",{time:500});
+				$('.msnewfen').hide();
+			}else{
+				$('.ListNewfen').append(res.data);
+			}
+		}else{
+			layer.msg(res.msg,{time:2500});
+		}
+	});
+}
+</script>

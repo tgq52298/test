@@ -1,0 +1,60 @@
+{extend name="$member_style_layout" /}
+{block name="title"} 我的试卷 {/block}
+{block name="content"}
+
+<style>
+body{
+	background: #F5F5F5;
+}
+.sideBox{
+	padding: 5px 10px;
+}
+.sideBox ul{
+	position: relative;
+	display: table;
+	width: 100%;
+	border: #EEE solid 1px;
+	background: #FFF;
+}
+.sideBox ul ol,.sideBox ul li{
+	display: table-cell;
+	padding:5px;
+	line-height: 20px;
+	vertical-align: middle;
+}
+.sideBox ul ol{
+	padding-left: 10px;
+	color: #666;
+}
+.sideBox ul ol span{
+	color: #F60;
+}
+.sideBox ul ol em{
+	color: blue;
+}
+.sideBox ul li{
+	width: 50px;
+}
+.sideBox ul li a{
+	display: block;
+	text-align: center;
+	background: #999;
+	color: #FFF;
+	line-height: 30px;
+}
+
+</style>
+</head>
+<body>
+<h1 style='margin-left:10px;'><em class='glyphicon glyphicon-list-alt'></em>&nbsp;我的试卷：</h1>
+{volist name="listdb" id="rs"}
+<div class="sideBox">
+	<ul>
+		<ol>{$rs.name} 得分<span>{$rs.fen}</span></ol>
+		<li><a href="{:iurl('info/putinover','fid='.$rs[paperid])}" target="_blank">查看</a></li>		
+	</ul>
+</div>
+{/volist}
+{$pages}
+
+{/block}

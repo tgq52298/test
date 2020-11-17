@@ -1,0 +1,156 @@
+{extend name="$index_style_layout" /}
+
+<!--SEO相关-->
+{block name="head_title"}{$info.title}{/block}
+{block name="head_keword"}{$info.title} {:get_sort($info.fid)}  {:M('name')}{/block}
+{block name="head_description"}{:get_word(del_html($info['content']),300)}{/block}
+
+{block name="body_content"}
+<link rel="stylesheet" type="text/css" href="__STATIC__/house/default/wap/default.css">
+
+
+<div class="ArticleContBox">
+<!-- 	
+<ul class="topBoxs" style='display:none;'>		 
+	<li class="atten"><a href="{:urls('content/add',['fid'=>$fid])}">免费发布信息</a></li>
+</ul>
+ -->
+	<div class="MainInfos">
+		<div class="title">{$info.title}</div>
+		<div class="infos">
+			<span><i class="glyphicon glyphicon-time"></i> {:date("m-d H:i",$info.create_time)}</span>
+			<span><i class="si si-eye"></i> {$info.view}</span> 
+
+			{if ($admin || $info['uid']==$userdb['uid'])}
+			<span onclick="delinfo({$info.id})"><i class="fa fa-trash-o"></i> 删除</span> 
+			<span onclick="editinfo({$info.id})"><i class="fa fa-edit"></i> 修改</span> 
+			{/if}
+
+		</div>
+		<div class="ShowContent">
+
+			{if $info.picurls}
+				<link rel="stylesheet" type="text/css" href="__STATIC__/house/swiper/swiper.min.css">
+				<div class="swiper-container">
+					<div class="swiper-wrapper">
+						{volist name="$info.picurls" id="rs"}
+							<div class="swiper-slide"><img src="{$rs.picurl}"/></div>
+						{/volist}
+					</div>
+					<div class="swiper-pagination"></div>
+				</div>
+				<script src="__STATIC__/house/swiper/swiper.min.js"></script>
+				<script>
+					var swiper = new Swiper('.swiper-container', {
+					  pagination: {
+					    el: '.swiper-pagination',
+					    dynamicBullets: true,
+					  },
+					});
+				</script>
+			{/if}
+
+			{notempty name="$info.videourl"}
+				<div class='showvideo'>
+					<iframe src="{$info.videourl}"  width="100%" height="350" scrolling="no" frameborder="0" allowfullscreen></iframe>
+				</div>
+			{/notempty}
+
+			{$info.content}
+
+		</div>
+	</div>
+
+	<!--自定义字段-->
+	<div class="OtherInfos">
+	{qb:showpage name="xxx" field="title,content,picurl,maps,videourl"}
+		<div class="SideBox">
+			<span class="tag ">{title}</span><em class='fa fa-fw fa-hand-o-right'></em>
+			<span class="cont">{value}</span>
+		</div>
+	{/qb:showpage}
+	</div>
+	
+
+
+	<!-- 地图 -->
+	{notempty name="$info.maps"}
+		<div class="showmaps">
+			<iframe src="{:urls('index/map/index')}?xy={$info.maps}&title={$info.title|urlencode}"  width="100%" height="350" scrolling="no" frameborder="0" ></iframe>
+		</div>
+	{/notempty}
+
+	<!--引用评论-->
+	{qb:comment name="commentwap01" rows='5'}
+		{include file="content/comment" /}
+	{/qb:comment}
+
+	<div class="ShowMoreInfos">
+		<div class="head"><i class="si si-book-open"></i> 更多信息</div>
+		<div class="ListMoreInfos">
+			{qb:tag name="waphouse_defaultlist_page_listdata02" type="house" union="mid" order="id"}
+			<div class="Lists">
+				<ul>
+				{notempty name="rs.picurl"}
+					<ol><a href="{$rs.url}"><img src="{$rs.picurl}" onmouseover='thisimg_over($(this))' onmouseout='thisimg_out($(this))'/></a></ol>
+				{/notempty}
+					<li>
+						<div class="t"><a href="{$rs.url}">{$rs.title}</a></div>
+						<div class="m"><span><i class="glyphicon glyphicon-time"></i> {$rs.time}</span><em> <i class="si si-eye"></i> {$rs.view}</em></div>
+					</li>
+				</ul>
+			</div>
+			{/qb:tag}
+		</div>
+		<div class="ShowMoreButter"><button type="butter" onclick="ShowMoreInfo()">查看更多</button></div>
+	</div>
+	
+</div>
+<script type="text/javascript">
+//修改信息
+function editinfo(aid){
+	location.href = "{:urls('content/edit')}?id="+aid;
+}
+
+//删除信息
+function delinfo(aid){
+	$.get("{:urls('wxapp.post/delete')}?id="+aid,function(res){
+		if(res.code==0){
+			layer.msg("删除成功！",{time:500});
+			location.href = "{:urls('content/index',['fid'=>$fid])}";
+		}else{
+			layer.msg("删除失败:"+res.msg,{time:2500});
+		}	
+	});
+}
+
+var morepage=1;
+var url='{qb:url name="waphouse_defaultlist_page_listdata02" /}';//异步获取更多内容的url
+function ShowMoreInfo(){	
+	morepage++;	
+	$.get(url+morepage+'&'+Math.random(),function(res){
+		if(res.code==0){
+			if(res.data==''){
+				layer.msg("已经显示完了！",{time:500});
+				$('.ShowMoreButter button').attr('onclick','');
+				$('.ShowMoreButter button').html('显示完了');
+				$('.ShowMoreButter button').css({'background':'#CCC'});
+			}else{
+				res.data="<span class='pages"+morepage+"'>"+res.data+"</span>";			
+				$('.ListMoreInfos').append(res.data);
+				$('.ListMoreInfos .pages'+morepage).hide();
+				$('.ListMoreInfos .pages'+morepage).show(500);
+			}
+		}else{
+			layer.msg(res.msg,{time:2500});
+		}
+	});
+}
+function thisimg_over(imgobjs){
+	imgobjs.animate({"max-width":"150%","max-height":"150%"},300);
+}
+function thisimg_out(imgobjs){
+	imgobjs.animate({"max-width":"100%","max-height":"100%"},300);
+}
+</script>
+{/block}

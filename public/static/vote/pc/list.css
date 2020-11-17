@@ -1,0 +1,522 @@
+.TopContainer{
+	height:370px;
+	background:#29B1AB url(bg.png) center top no-repeat;
+}
+.TopContainer .Votename{
+	width:1000px;
+	margin:auto;
+	padding-top:20px;
+	text-align:center;
+	line-height:30px;
+	font-size:20px;
+	color:#FFF;
+	position:relative;
+	overflow:hidden;
+}
+.TopContainer .Votename:before{
+	content:'';
+	display:block;
+	width:100%;
+	height:1px;
+	background:#2BB8AA;
+	position:absolute;
+	left:0;
+	top:35px;
+	z-index:1;
+}
+.TopContainer .Votename span{
+	display:inline-block;
+	position:relative;
+	padding:0 20px;
+	background:url(bg.png) center -20px no-repeat;
+	z-index:2;
+}
+.TopContainer .BaseInfo{
+	width:733px;
+	height:280px;
+	margin:auto;
+	position:relative;
+}
+.TopContainer .BaseInfo .times{
+	width:400px;
+	height:180px;
+	border:#FFF solid 2px;
+	position:absolute;
+	left:0;
+	top:50px;
+}
+.TopContainer .BaseInfo .times .join,.TopContainer .BaseInfo .times .vote{
+	height:20px;
+	line-height:20px;
+	padding:15px 5px 0 50px;
+	font-size:14px;
+	color:#FFF;
+}
+.TopContainer .BaseInfo .times .join{
+	background:url(join.png) 25px 18px no-repeat;
+	margin-top:5px;
+}
+.TopContainer .BaseInfo .times .vote{
+	background:url(vote.png) 25px 16px no-repeat;
+}
+.TopContainer .BaseInfo .times .tjcont{
+	width:320px;
+	height:60px;
+	overflow:hidden;
+	margin:10px auto 0 auto;
+}
+.TopContainer .BaseInfo .times .tjcont ul{
+	width:106px;
+	height:60px;
+	float:left;
+}
+.TopContainer .BaseInfo .times .tjcont ul ol,.TopContainer .BaseInfo .times .tjcont ul li{
+	height:30px;
+	line-height:30px;
+	overflow:hidden;
+	text-align:center;
+	font-size:14px;
+	color:#FFF;
+}
+.TopContainer .BaseInfo .times .tjcont ul li{
+	color:#005F58;
+	font-size:16px;
+}
+.TopContainer .BaseInfo .times .joins{
+	width:160px;
+	height:50px;
+	position:absolute;
+	left:90px;
+	bottom:-25px;
+	background:url(joinbut.png) center top no-repeat;
+	overflow:hidden;
+}
+.TopContainer .BaseInfo .times .joins:hover{
+	/*background:url(joinbut1.png) center top no-repeat;*/
+}
+.TopContainer .BaseInfo .times .joins a{
+	display:block;
+	padding-top:50px;
+}
+.TopContainer .BaseInfo .aboutVote{
+	width:320px;
+	height:200px;
+	position:absolute;
+	right:0;
+	top:50px;
+	color:#FFF;
+	font-size:14px;
+}
+.TopContainer .BaseInfo .aboutVote .tag{
+	width:60px;
+	float:left;
+	line-height:30px;
+	font-size:14px;
+}
+.TopContainer .BaseInfo .aboutVote .cont2{
+	width:250px;
+	height:150px;
+	float:right;
+	overflow:hidden;
+	line-height:30px;	
+}
+.TopContainer .BaseInfo .aboutVote .showmore{
+	width:65px;
+	height:25px;
+	overflow:hidden;
+	background:#A9E1DE;
+	line-height:25px;
+	text-indent:15px;
+	color:#0289D6;
+	position:absolute;
+	right:10px;
+	bottom:15px;
+	cursor:pointer;
+}
+.TopContainer .BaseInfo .aboutVote .showmore:hover{
+	background:#F60;
+	color:#FFF;
+}
+/*****/
+.fullbg { 
+	background-color:#000; 
+	opacity:0; 
+	top:0; 
+	left:0; 
+	width:100%; 
+	height:100%; 
+	z-index:1000001;
+	position:fixed;
+	display:none;
+}
+.Showdescrip{
+	width:600px;
+	border:#F90 solid 1px;
+	background:#FFF;
+	border-radius:5px;
+	position:fixed;
+	top:0;  
+	top:0; 
+	z-index:1000002;
+	display:none;
+	padding:15px;
+	line-height:25px;
+	font-size:14px;
+	color:#666;
+}
+.Containers{
+	width:1200px;
+	overflow:hidden;
+	margin:15px auto 0 auto;
+	position:relative;
+}
+.ListType{
+	height:30px;
+	border:#EEEEEE solid 1px;
+}
+.ListType li{
+	height:30px;
+	line-height:30px;
+	float:left;
+	border-right:#EEEEEE solid 1px;
+}
+.ListType li a{
+	display:block;
+	padding:0 30px 0 15px;
+	color:#888;
+	font-size:14px;
+	position:relative;
+}
+.ListType li a:after{
+	content:'';
+	display:block;
+	width:7px;
+	height:8px;
+	position:absolute;
+	top:12px;
+	right:12px;
+	background:url(down.png) center top no-repeat;
+}
+.ListType li a.default{
+	padding-right:15px;
+}
+.ListType li a.default:after{
+	display:none;
+}
+.ListType li.ck a{
+	color:#2BB8AA;
+}
+.ListType li.ck a:after{
+	background:url(down1.png) center top no-repeat;
+}
+.ListType li.ck a:before{
+	content:'';
+	display:block;
+	width:100%;
+	height:2px;
+	position:absolute;
+	left:0px;
+	top:-1px;
+	background:#2BB8AA;
+}
+/*****/
+.ListVotes{
+	padding-top:15px;
+}
+.ListVotes:after{
+	content:'';
+	display:block;
+	width:100%;
+	height:1px;
+	clear:both;
+}
+.ListVotes .Lists{
+	width:292px;
+	overflow:hidden;
+	float:left;
+	padding-left:10px;
+}
+.ListVotes .Lists0{
+	width:294px;
+	padding-left:0;
+}
+/**/
+dl.sideVote{
+	border:#CCC solid 1px;
+	overflow:hidden;
+	margin-bottom:10px;
+}
+dl.sideVote dt{
+	margin:5px;
+}
+dl.sideVote dt a{
+	display:block;
+	width:100%;
+	text-align:center;
+	overflow:hidden;
+}
+dl.sideVote dt a img{
+	max-width:100%;
+}
+dl.sideVote dd{
+	margin:0 10px;
+}
+dl.sideVote dd p{
+	line-height:25px;
+	font-size:14px;
+}
+dl.sideVote dd ul{
+	width:240px;
+	height:60px;
+	overflow:hidden;
+	margin:10px auto 0 auto;
+	position:relative;
+}
+dl.sideVote dd ul ol{
+	width:50px;
+	height:50px;
+	text-align:center;
+	line-height:50px;
+	overflow:hidden;
+	border-radius:25px;
+	position:absolute;
+	z-index:100;
+	left:5px;
+	top:5px;
+	background:#FFF;
+}
+dl.sideVote dd ul ol img{
+	max-width:50px;
+	max-height:50px;
+	vertical-align:middle;
+}
+dl.sideVote dd ul li{
+	padding:5px 5px 5px 65px;
+	height:50px;
+}
+dl.sideVote dd ul li a,dl.sideVote dd ul li span{
+	display:block;
+	height:25px;
+	line-height:25px;
+	overflow:hidden;
+	font-size:14px;
+}
+dl.sideVote dd ul li a{
+	color:#1CAF9A;
+}
+dl.sideVote dd ul li span em{
+	color:#60;
+}
+dl.sideVote dd div{
+	text-align:center;
+	padding:5px 5px 15px 5px;
+}
+dl.sideVote dd div a,dl.sideVote dd div span{
+	display:block;
+	width:220px;
+	height:45px;
+	background:#2BB8AA;
+	overflow:hidden;
+	margin:auto;
+	text-align:center;
+	line-height:45px;
+	font-size:18px;
+	color:#FFF;
+	position:relative;
+}
+dl.sideVote dd div a:hover{
+	background:#F60;
+}
+dl.sideVote dd div span:after{
+	content:'';
+	display:block;
+	width:220px;
+	height:45px;
+	position:absolute;
+	left:0;
+	top:0;
+}
+dl.sideVote dd div span.select,dl.sideVote dd div span:hover{
+	background:#F60;
+}
+dl.sideVote:hover{
+	background:#EFEFEF;
+}
+dl.sideVote dd ul:hover{
+	background:#DFDFDF;
+	border-radius:5px;
+}
+div.submits{
+	text-align:center;
+	clear:both;
+	padding:10px;
+}
+div.submits span{
+	display:block;
+	width:150px;
+	height:40px;
+	border:#148176 solid 1px;
+	text-align:center;
+	line-height:40px;
+	background:#2BB8AA;
+	border-radius:5px;
+	font-size:18px;
+	color:#FFF;
+	margin:auto;
+}
+div.submits span:hover{
+	border:#F30 solid 1px;
+	background:#F60;
+}
+/**/
+.sideconts{
+	width:100%;
+	clear:both;
+	margin-bottom:10px;
+}
+.sideconts .head{
+	height:48px;
+	background:url(head1.png) repeat-x;
+	text-align:center;
+	line-height:48px;
+	font-size:16px;
+	color:#FFF;
+}
+.sideconts .wxCode,.sideconts .voteTop{
+	border:#CCC solid 1px;
+	border-top:0;
+	position:relative;
+}
+.sideconts .wxCode:before,.sideconts .wxCode:after{
+	content:'';
+	display:block;
+	width:9px;
+	height:38px;
+	position:absolute;
+	top:-17px;
+	background:url(hicon1.png) center top no-repeat;
+}
+.sideconts .wxCode:before{
+	left:15px;
+}
+.sideconts .wxCode:after{
+	right:15px;
+}
+.sideconts .wxCode div{
+	text-align:center;
+	padding:25px 10px 5px 10px;
+	line-height:25px;
+	font-size:14px;
+	color:#333;
+}
+.sideconts .wxCode p{
+	text-align:center;
+	padding:15px 0 30px 0;
+}
+.sideconts .wxCode p img{
+	width:200px;
+	height:200px;
+}
+.sideconts .voteTop{
+	padding:5px 0 15px 0;
+}
+.sideconts .voteTop:before,.sideconts .voteTop:after{
+	content:'';
+	display:block;
+	width:9px;
+	height:46px;
+	position:absolute;
+	top:-75px;
+	background:url(hicon2.png) center top no-repeat;
+}
+.sideconts .voteTop:before{
+	left:15px;
+}
+.sideconts .voteTop:after{
+	right:15px;
+}
+.sideconts .voteTop dl.list{
+	height:50px;
+	overflow:hidden;
+	padding:15px 5px 0 0px;
+	position:relative;
+}
+.sideconts .voteTop dl.list dt{
+	width:120px;
+	height:50px;
+	position:absolute;
+	z-index:10;
+	overflow:hidden;
+	left:0;
+	top:15px;
+}
+.sideconts .voteTop dl.list dt a{
+	display:block;
+	width:50px;
+	height:50px;
+	border-radius:25px;
+	overflow:hidden;
+	position:absolute;
+	top:0;
+	right:10px;
+	text-align:center;
+	line-height:50px;
+	background:#FFF;
+}
+.sideconts .voteTop dl.list dt span{
+	display:block;
+	width:25px;
+	height:25px;
+	text-align:center;
+	line-height:25px;
+	background:#FBA94D;
+	color:#FFF;
+	position:absolute;
+	left:20px;
+	top:12px;
+	font-size:14px;
+}
+.sideconts .voteTop dl.list1 dt span{
+	width:37px;
+	padding-top:5px;
+	background:url(top1.png) center top no-repeat;
+	left:15px;
+}
+.sideconts .voteTop dl.list2 dt span{
+	width:37px;
+	padding-top:5px;
+	background:url(top2.png) center top no-repeat;
+	left:15px;
+}
+.sideconts .voteTop dl.list3 dt span{
+	width:37px;
+	padding-top:5px;
+	background:url(top3.png) center top no-repeat;
+	left:15px;
+}
+.sideconts .voteTop dl.list dt a img{
+	max-width:50px;
+	max-height:50px;
+	vertical-align:middle;
+}
+.sideconts .voteTop dl.list dd{
+	padding-left:120px;
+	height:50px;
+	overflow:hidden;
+	margin-left:5px;
+}
+.sideconts .voteTop dl.list dd a,.sideconts .voteTop dl.list dd span{
+	display:block;
+	height:25px;
+	line-height:25px;
+	overflow:hidden;
+}
+.sideconts .voteTop dl.list dd a{
+	color:#1CAF9A;
+}
+.sideconts .voteTop dl.list dd span{
+	color:#F60;
+}
+.sideconts .voteTop dl.list dd:hover{
+	background:#EFEFEF;
+}

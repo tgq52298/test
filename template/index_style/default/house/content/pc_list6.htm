@@ -1,0 +1,171 @@
+﻿{extend name="$index_style_layout" /}
+
+<!--SEO相关-->
+{block name="head_title"}{$fid?($info['seo_title']?:$info['name']):$m_info['title']}{/block}
+{block name="head_keword"}{$fid?($info['seo_keywords']?:$info['name']):$m_info['title']}{/block}
+{block name="head_description"}{$info.seo_description}{/block}
+
+
+{block name="body_content"}
+
+<link rel="stylesheet" type="text/css" href="__STATIC__/house/default/pc/list_zhongjie.css">
+
+<div style="margin:15px auto; width:1200px;"> <!-- WRAP S -->
+	<!-- 筛选 -->
+	{include file="index/filter" /}
+<!-- ====== -->
+<table width="100%" border="0" cellspacing="0" cellpadding="0" id="main_tb">
+  <tr>
+    <td  class="LL" valign="top">
+      <table width="100%" border="0" cellspacing="0" cellpadding="0" id="s_tops">
+        <tr>
+          <td class="tops">
+		  
+		  
+		  筛选：<a class='tp' href="{:urls(index,['fid'=>$fid,'mid'=>3])}">出租房源</a> <a  class='tp' href="{:urls(index,['fid'=>$fid,'mid'=>4])}">出售房源</a></td>
+        </tr>
+      </table>
+
+{qb:listpage name="pchouse_list8_page_listdata1" field="title" type="house" rows="20" order="list" where="status>0"}
+
+      <table width="100%" border="0" cellspacing="0" cellpadding="0" class="dragtb">
+        <tr> 
+          <td width="27%" valign="top" align="center" class="iitd"> <a class="ii" href="{$rs.url}" target="_blank"><img onError="this.src='__STATIC__/images/nopic.png'" src="{$rs.picurl}" border="0"></a> 
+            <a href="{$rs.url}" target="_blank">{$rs.title}</a></td>
+          <td width="73%" height="150" valign="top" class="mtd">
+            <table width="100%" border="0" cellspacing="0" cellpadding="0" class="btb">
+              <tr>
+                <td class="ttp"><div class="dL">我发布的房源</div>
+                  <div class="dR"><a href="{$rs[url]}" target="_blank">更多</a></div>
+                </td>
+              </tr>
+              <tr>
+                <td class="mmp" data-uid="{$rs.uid}">
+                <!-- ====中介发布的房源数据======== -->
+	     </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+        <tr> 
+          <td colspan="2" class="a2">
+		    <div class="ta">级别：<font color="#1aa4ed">{:getGroupByid(get_user($rs.uid)['groupid'])}</font> </div>
+            <div class="tb">注册日期： {:format_time(get_user($rs.uid)['regdate'])}</div>
+		  </td>
+        </tr>
+        <tr> 
+          <td colspan="2" class="a3">
+		    <div class="ta">联系电话：<font color="#1aa4ed">{$rs.telphone}</font> </div>
+            <div class="tb">所属门店：<font color="#ff9700">{$rs.store}</font></div>
+		   </td>
+        </tr>
+        <tr> 
+          <td colspan="2" class="a2 lastA2">
+		    <div class="ta fu">服务区域：<font color="#1aa4ed">{$rs.fuwu_zone}</font></div>
+            <div class="tb goin"><a href="{$rs.url}" target="_blank">进入店铺</a></div>
+		  </td>
+        </tr>
+      </table>
+	  
+{/qb:listpage}
+
+	  <div class="page">{$pages}</div>
+	  
+		<!-- ++++++++++ -->
+		<div style="display:none;" class="pchouse_zj_index_houselist">
+		{qb:tag name="pchouse_zj_index_houselist" js="pchouse_zj_index_houselist" type="house" rows="5" union="uid,mid" order="view"  where="status>0"}
+			<div><a href="{$rs.url}" target="_blank">{$rs.title}</a></div>
+		{/qb:tag}
+		</div>
+		<SCRIPT LANGUAGE="JavaScript">
+		var mid;
+		function get_zjfy(){
+			{if input('mid')}
+				var mid={:input(mid)};
+			{else /}
+				var mid=3;
+			{/if}
+			var url ="{qb:url name='pchouse_zj_index_houselist' /}"+1;
+			$(".mmp").each(function(){
+				var that = $(this);
+				var uid = $(this).data("uid");
+				$.get(url + "&mid="+mid+"&uid="+uid,function(res){
+					if(res.code==0){
+						that.html(res.data);
+					}
+				});
+			});
+		}
+		get_zjfy();
+		</SCRIPT>
+		<!-- ++++++++++++ -->
+
+
+	  
+	  </td>
+
+		<td style="width:300px;" class="RR" height="300" valign="top">
+			<table width="100%" border="0" cellspacing="0" cellpadding="0">
+				<tr>
+					<td id="Rtop">
+						{qb:tag name="pchouse_zj_index_jointip" type="text"}
+							<div class="a1">加盟中介“三步曲”</div>
+							<div class="a2"><em>1.</em>注册成为本站会员</div>
+							<div class="a3"><em>2.</em>填写相关资料申请成为中介</div>
+							<div class="a4"><em>3.</em>开通中介相关功能</div>
+							<div class="a5" onclick="window.open('{:urls(\'/index/reg\')}');">立即注册成为会员</div>
+						{/qb:tag}
+					</td>
+				</tr>
+			</table>
+			<table width="100%" border="0" cellspacing="0" cellpadding="0" class="Rmtb">
+				<tr>
+					<td class="top"><div>推荐经纪人</div></td>
+				</tr>
+				<tr>
+					<td class="main" height="150" valign="top">
+						{qb:tag name="pchouse_zj_index_tjlist" type="house" rows="4" union="fid" order="view" mid='8' where="status=2"}
+						<table width="100%" border="0" cellspacing="0" cellpadding="0" class="Rdrag">
+							<tr>
+								<td valign="top" align="center" width="40%" class="tii">
+									<a class="ii" href="{$rs[url]}" target="_blank"><img onError="this.src='__STATIC__/images/noface.png'" src="{$rs[picurl]}" border="0"></a>
+								</td>
+								<td height="100" valign="top" width="60%" class="mii">
+									<div class="name"><a href="{$rs.url}" target="_blank">{$rs[title]}</a></div>
+									<div class="about">
+									{$rs[store]}<br>
+									服务：{$rs[fuwu_zone]}<br>
+									电话：{$rs[telphone]}
+									</div>
+								</td>
+							</tr>
+							<tr><td colspan="2"><div class="goin"><a href="{$rs[url]}" target="_blank">进入我的店铺</a></div></td></tr>
+						</table>
+						{/qb:tag}
+					</td>
+				</tr>
+			</table>
+		</td>
+
+
+</tr>
+</table>
+
+
+
+
+
+
+</div> <!-- WRAP E -->
+
+
+
+
+
+
+
+
+
+
+
+{/block}

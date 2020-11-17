@@ -1,0 +1,30 @@
+{extend name="$member_style_layout" /}
+
+{block name="title"} {$tab_ext.page_title} {/block}
+{block name="content"}
+<!--
+<ul class="qb_ui_page_menu">
+	<li><a href="{:urls('index')}" class="blue si si-present"> 我的商品</a></li>
+	<li class="right"><a href="{:urls('postnew')}" class="red fa fa-sign-in"> 发布商品</a></li>
+</ul>
+-->
+	{include file="member@common/menu" /}
+	{include file="member@common/table03" /}
+	<div class="Showpage">{$pages}</div>
+
+<script type="text/javascript">
+$(function(){
+	$(".ListShop ._dels").attr("onclick","return confirm('你确认要下架吗?');");
+
+	$(".ListShop[data-status=-1]").each(function(){
+		var obj = $(this);
+		obj.css("background","rgb(224, 220, 215)");
+		obj.find("._dels").siblings().hide();
+		obj.find("._dels").html("<i class='fa fa-remove'></i>删除").attr("onclick","return confirm('你确认要删除吗?不可恢复');");
+		obj.find("._dels").after('<a class="recover" href="{:urls("recover")}?id='+obj.data('id')+'"><i class="fa fa-cart-plus"></i>上架</a>');
+		 
+	});
+});
+</script>
+
+{/block}

@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="zh_CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1; maximum-scale=1.0; user-scalable=no;" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black"  />
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>选择__QUN__风格</title>
+<meta name="keywords" content="$titleDB[keywords]">
+<meta name="description" content="$titleDB[description]">
+<link rel="stylesheet" type="text/css" href="__STATIC__/qun/default/global.css">
+<link rel="stylesheet" type="text/css" href="__STATIC__/qun/default/selstyle.css">
+<script type="text/javascript" src="__STATIC__/js/core/jquery.min.js"></script>
+<!-- 滑动按钮要用到的CSS与JS文件,他涉及到三个class类 swiper-container swiper-wrapper swiper-slide -->
+<link href="__STATIC__/libs/swiper/swiper.min.css" rel="stylesheet">
+<script src="__STATIC__/libs/swiper/swiper.min.js"></script>
+<style>
+.ShowThisStyle:before{
+	padding-top:160%;
+}
+.ThisStyleInBox .swiper-slide{width: auto!important;}
+</style>
+</head>
+<body>
+<div class="ActionBox">
+	<div class="SelectTyle">
+		<div class="SelctBox">
+			<ul>
+				<ol><span>风格类型：</span></ol>
+				<li><a href="{:urls('style/index',['id'=>$id])}" {empty name="types"}class='ck'{/empty}>全 部</a></li>
+				{volist name='sortdb' id='val'}
+				<li><a href="{:urls('style/index',['id'=>$id,'types'=>$val])}" {if $types=="$val"}class='ck'{/if}>{$val}</a></li>
+				{/volist}
+
+			</ul>
+		</div>
+	</div>
+</div>
+<div class="ShowThisStyle">
+	<div class="ThisStyleBox">
+		<div class="ShowBigImg">
+			<div><span></span></div>
+		</div>
+		<div class="ThisStyleIn">
+			<div class="ThisStyleInBox swiper-container">
+				<ul class="swiper-wrapper">
+					{volist name='template_config' id='v'}
+						<li class="swiper-slide"><div class='img' onClick="showBigImg('{$v.styleBimg}','{$v.file}',{$key},{$v.thismoney},{$v.checkbuy})"><span><img src='{$v.styleimg}'/></span></div></li>
+					{/volist}
+				</ul>
+			</div>
+		</div>
+		<div class="ShowMeney"></div>
+	</div>
+</div>
+
+
+<script type="text/javascript">
+
+$(function () {
+	var swiper = new Swiper('.ThisStyleInBox', {
+            spaceBetween: 0,
+            slidesPerView:'auto',
+            freeMode: true
+        });
+})
+
+
+function showBigImg(bigimg,stylename,num,money,check){
+	var thisMaxW=$('.ShowBigImg').width();
+	var thisMaxH=$('.ShowBigImg').height();
+	if(money>0){
+		$('.ShowMeney').html("<div>&yen;"+money+"元/年</div>");
+		if(check==1){
+			$('.ShowMeney').html("<div><del>&yen;"+money+"元/年</del></div>");
+			$('.ShowMeney div').css({'background':'#AAA'});
+			money=0;
+		}
+	}else{
+		$('.ShowMeney').html("");
+	}
+	$('.ShowBigImg div span').html("<img src='"+bigimg+"'><a href='javascript:;selectthis(\""+stylename+"\","+money+")'>选择当前风格<em></em></a>");
+	$('.ShowBigImg div span img').css({'max-width':thisMaxW+'px','max-height':thisMaxH+'px'});
+	$('.ThisStyleIn ul li').removeClass('ck');
+	$('.ThisStyleIn ul li').eq(num).addClass('ck');
+}
+
+{volist name='template_config' id='v' offset="0" length='1'}
+	showBigImg('{$v.styleBimg}','{$v.file}',{$key},{$v.thismoney});
+{/volist}
+
+function selectthis(name,money){
+	if(money>0){
+		var groupid={$userdb[groupid]};
+		if(groupid==8){
+			$('.NoteWord input').attr('name',money);
+			$('.NoteWord input').val(name);
+			$('.NoteWord p span').html(money);
+			$('.NoteWordBox').fadeIn();
+		}else{
+			var ss = confirm('当前风格需要支付'+money+'元,是否购买？');
+			if(ss==true){
+				$.get("{:urls('buystyle',['id'=>$id])}?stylename="+name+"&money="+money+"&"+Math.random(),function(d){
+					if (d.code=='2'){
+						//进入充值
+						window.location.href="{:purl('marketing/rmb/add')}";
+					}else if(d.code==1){
+						alert(d.msg);
+					}else{
+						window.location.href="{:iurl('content/show',['id'=>$id])}";//进入__QUN__
+					}				
+				});
+			}
+		}
+		
+	}else{
+		$.get("{:urls('buystyle',['id'=>$id])}?stylename="+name+"&"+Math.random(),function(d){
+			window.location.href="{:iurl('content/show',['id'=>$id])}";//进入__QUN__
+		});
+	}
+}
+</script>
+</body>
+</html>

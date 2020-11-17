@@ -1,0 +1,29 @@
+      
+<link rel="stylesheet" type="text/css" href="__STATIC__/house/default/pc/block/notice_ad.css">
+
+      <table width="100%" border="0" cellspacing="0" cellpadding="0" class="NoticeTable mt10">
+        <tr> 
+          <td class="head">{qb:tag name='pc_house_list_cz_noticetitle' type="text"}<span>公告</span>{/qb:tag}</td>
+          <td class="cont"> 
+            {qb:tag name='pc_house_list_noticecontent' type="text"}
+            <div class="list">房源信息需根据真实情况进行发布</div>
+            <div class="list">如房源情况有变动请及时进行信息的更新</div>
+          {/qb:tag}
+          </td>
+        </tr>
+      </table>
+       <div class="sidecontainer mt10"> 
+        <div class="head">{qb:tag name='pc_house_list_ad' type='text'}<span>赞助商</span>{/qb:tag}</div>
+        <div class="cont"> 
+            {qb:tag name='pc_house_list_cz_ad' val='listdb' type="images"}
+        <!-- 
+              <div class="list_rad"><a href="#" target="_blank"><img src="__STATIC__/house/demo/adr1.gif" width="220" height="60"/></a></div>
+              <div class="list_rad"><a href="#" target="_blank"><img src="__STATIC__/house/demo/adr2.gif" width="220" height="60"/></a></div>
+              <div class="list_rad"><a href="#" target="_blank"><img src="__STATIC__/house/demo/adr3.gif" width="220" height="60"/></a></div>
+               -->
+                {volist name="$listdb" id="rs"}
+            <div class="list_rad"><a href="#" target="_blank"><img src="{$rs.picurl}" onError="this.src='__STATIC__/house/demo/adr3.gif'" width="220" height="60"/></a></div>
+                {/volist}
+          {/qb:tag}
+        </div>
+      </div>

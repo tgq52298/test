@@ -1,0 +1,197 @@
+{extend name="$index_style_layout" /}
+
+<!--SEO相关-->
+{block name="head_title"}{$info.title}{/block}
+{block name="head_keword"}{$info.keywords?:$info.title}  {$s_info.name} {/block}
+{block name="head_description"}{:get_word(del_html($info['content']),300)}{/block}
+
+
+{block name="body_AllScorllSlide"}
+	{if $info['qun']['banner']}
+		<div class="qb_ui_AllscrollBanner" style="height:250px;"><a href="{:urls('qun/content/show',['id'=>$info['qun']['id']])}"><img src="{:tempdir($info['qun']['banner'])}" /></a></div>
+	{elseif $info['qun']/}
+		<div class="qb_ui_AllscrollBanner" style="height:200px;position:relative;"><a href="{:urls('qun/content/show',['id'=>$info['qun']['id']])}"><img onerror="this.src='__STATIC__/images/s0.jpg'" src="__STATIC__/images/qun-banner.jpg" /><em class="fa fa-twitter" style="position:absolute;left:20%;top:50px;color:#FFF;font-size:60px;"> {$info['qun']['title']}</em></a></div>
+	{else /}
+		<div class="qb_ui_AllscrollBanner" style="height:200px;"><img onerror="this.src='__STATIC__/images/s0.jpg'" src="__STATIC__/qibo/banner.jpg" /></div>
+	{/if}
+{/block}
+
+{block name="body_content"}
+
+<!-- 圈子公告 -->
+{include file="content/notice" /}
+
+<link rel="stylesheet" href="__STATIC__/bbs/list.css">
+<link rel="stylesheet" href="__STATIC__/bbs/pc_show.css">
+<!--<script type="text/javascript" src="__STATIC__/js/jquery.zclip.min.js"> </script>-->
+<div class="MainContainer">
+	<!-- 栏目列表 -->
+	{include file="scroll_sort" /}
+	<div class="Container">
+		<div class="LeftCnt">
+			<!--主体内容开始-->
+			<div class="ShowContent" style="position: relative;">
+				{eq name="$info.status" value="2"}<div style="position: absolute;left:430px;top:70px;filter: z-index: 1;"><img style="opacity:0.1;filter:alpha(opacity=10);" src="__STATIC__/images/recom.png"></div>{/eq}
+				<div class="topinfo">
+					<div class="guide"><a href="{:urls('index/index')}"><i class="fa fa-home">社区主页</i></a>　 
+					{notempty name="$info.qun"}
+					 <a href="{:urls('qun/content/show',['id'=>$info[ext_id]])}"><i class="fa fa-group">{$info['qun']['title']}</i></a>　
+					{/notempty}
+					{notempty name="$s_info"}
+					  <a href="{:urls('content/index',['fid'=>$fid])}"><i class="fa fa-th-list"> {$s_info.name}</i></a>
+					{/notempty}
+					</div>
+					<dl class="SharBox">
+						<dt><span onClick="$('.SharBox dd').fadeIn();" style="margin-right:20px;"><i class="fa fa-share-square-o"></i>分享</span> <span onclick="add_fav({$id})"> <li class="fa fa-fw fa-heart"></li>收藏</span>    <span style="margin-left:20px;"><a style="color:#888;" data-title="欢迎举报" class="_pop"  href="{:urls('gongdan/content/show',['id'=>$webdb.reportid?:1])}?iframe=1&order_field_2={:urlencode($info.title)}&order_field_3={:urlencode(get_url('location'))}"><li class="fa fa-bullhorn"></li>举报</a></span></dt>
+						<dd>
+							<div class="bshare-custom">
+								<a title="分享到微信" class="bshare-weixin"></a>
+								<a title="分享到新浪微博" class="bshare-sinaminiblog"></a>
+								<a title="分享到Facebook" class="bshare-facebook"></a>
+								<a title="分享到QQ空间" class="bshare-qzone"></a>
+								<a title="分享到Twitter" class="bshare-twitter"></a>
+								<a title="分享到Google+" class="bshare-gplus"></a>
+								<a title="分享到QQ好友" class="bshare-qqim"></a>
+							</div>
+							<div class="exit" onClick="$('.SharBox dd').fadeOut();">X</div>
+						</dd>				
+					</dl>					
+				</div>
+				<div class="title">{$info.title}</div>
+
+				<!--<div id="liwuCanvas">给礼物指定位置</div>-->
+				<!--直播播放器开始-->
+				<div style="display:none;" class="play_warp">
+					<iframe name="iframe_play" class="iframe_play" id="iframe_play" src="about:blank" style="width:100%;height:400px;display:none;" scrolling="no" frameborder="0" allowfullscreen="true"></iframe>
+				</div>
+				<!--直播播放器结束-->
+
+				<div class="thebase" style="background:#F9F9F9;">
+					<ul>
+						<ol><a href="{:get_url('user',$info['uid'])}" target="_blank"><img src="{$info.uid|get_user_icon}" onerror="this.src='__STATIC__/images/nobody.gif'"  onmouseover="changeShowImg($(this),'over');" onmouseout="changeShowImg($(this),'out');" ></a></ol>
+						<li>
+							<div><span onclick="sendmsg('{$info.uid|get_user_name}')">{$info.uid|get_user_name}</span> {if config('webdb.show_pay_money')}<i>消费{:fun('count@rmb',$info.uid)}元</i>{/if} <em class="si si-speedometer"> {$info.create_time|format_time=true} {$info.create_time|format_time="H:i"}</em> {if $info.phone_type} <em class="fa fa-mobile-phone" style="color:#999;">  {$info.phone_type}</em>{else /} <em class="fa fa-laptop" style="color:#999;"></em>{/if}</div>
+							<div><a href="#">{:getGroupByid(get_user($info['uid'])['groupid']?:'')}</a></div>
+						</li>
+					</ul>
+					<dl>
+						<dt><i class="si si-eye"></i>{$info.view}</dt>
+						<dd>
+						<i class="fa fa-commenting-o"></i>{$info.replynum} 
+						<!--操作菜单-->
+						{include file="content/menu"}
+						</dd>
+					</dl>
+				</div>		
+				
+				<div class="content_html">				
+					{$info.content}
+					
+					{if $info.mvurl}<video src="{$info.mvurl|tempdir}" controls="controls" style="width:100%;">您的浏览器不支持播放该视频！</video>{/if}
+
+					{volist name="$info.picurls" id="rs"}
+					{php}if(strstr($info['content'],basename($rs['picurl'])))continue;{/php}
+					</br><img  style="margin-bottom:10px;" src="{$rs.picurl}"/>
+					{/volist}
+				</div>
+
+				<div class="content_act">
+					<div onclick="TopicAgree()"><span><i class="fa fa-thumbs-o-up"></i></span><em id="topic_agree">{$info.agree}</em></div>
+					{notempty name=":plugins_config('givemoney')"}<div><span class="give-money" data-id="{$id}"><i class="si si-present"></i></span><em>打赏</em></div>{/notempty}
+					<div onclick="add_fav({$id})"><span><i class="fa fa-fw fa-star-o"></i></span><em>收藏</em></div>
+					{empty name="$info.lock"}<div onclick="replyuser(0)"><span style="margin-left:15px;"><i class="fa fa-edit"></i></span><em>点击回复</em></div>{/empty}
+				</div>
+
+				<!--用户打赏列表开始-->
+				<div class="showdsBox">
+					<dl>
+						<dt id="jifen_list_warp_rid0">
+						<!--
+						<a href="/member.php/home/1.html"><span><img src="http://x1php168.oss-cn-beijing.aliyuncs.com/20191021/d96174685976881a6b8590af210ad2d6.jpeg" onerror="this.src='/public/static/images/nobody.gif'"></span><em>0.30</em><label>元</label></a>
+						-->
+						</dt>
+						<!--<dd onclick="show_more_reward(77,0);$('.MoreInfoBox').fadeIn();">更多<i class="fa fa-angle-right"></i></dd>-->
+					</dl>
+				</div>
+				<!--用户打赏列表结束-->
+			</div>
+			<!--主体内容结束-->
+
+			<!--贴子回复内容-->
+			{include file="content/pc_model/reply_list" /}
+
+
+			{qb:hy name="pc_bbs_show_main" where="index_style/default/bbs/content/pc_model/tag_topic,index_style/default/bbs/content/pc_model/reply" val="datas" type="labelmodel" time="600"}
+				{$datas}
+			{/qb:hy}
+
+		</div>
+		<div class="RightCnt">
+			<div class="RightSide">
+			{qb:hy name="pc_bbs_show_side" where="index_style/default/bbs/content/pc_model/chat,btn_quninfo,qun_bbslist,bbs_sort,good_bbslist,imgcode" val="datas" type="labelmodel" time="600"}
+				{$datas}
+			{/qb:hy}
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<!--弹层回复表单-->
+<div style="display:none;" class="div-replayBox">
+	<ul class="replayBox" style="text-align:center;">
+	<ol><textarea onkeydown="keySend(event);" style="width:560px;height:400px;margin:10px;" placeholder="Ctrl+回车,可快速发表内容!
+截图提示：按住“Ctrl、Alt、A”这三个键，点击“完成”后，在此输入框Ctr+V粘贴即可实现截图上传" onfocus="$(this).attr('placeholder','')"></textarea></ol>
+	<li style="text-align:left;padding-left:18px;margin-bottom:10px;">
+		 {for start="1" end="23"}
+		<em onclick="choose_face(this,'[face{$i}]')"><img src="__STATIC__/images/qqface/{$i}.gif"></em>
+		{/for}
+	</li>
+	<li><button onclick="layer.closeAll();" style="padding:10px;">取消</button>  <!--<button onclick='layer.alert("帮助提示：<br>在任何界面，同时按住“Ctrl、Alt、A”这三个键截图，点击“完成”后，然后在输入框Ctr+V粘贴即可实现截图上传",{title:false,btn:"我知道了"})' style="padding:10px;">截图</button>-->  <button style="margin-left:50px;padding:10px;" onclick="pop_post();">确定提交</button></li>
+	</ul>
+</div>
+
+
+<div class="topUpCont">
+    <ul>
+    	<ol><i class="fa fa-angle-double-up"></i></ol>
+        <li>回到顶部</li>
+    </ul>
+</div>
+
+
+<script type="text/javascript">
+//打赏积分
+var sys_dirname = "{:config('system_dirname')}";
+var give_money_url = "{:purl('givemoney/api/give','index')}";
+var count_money_url = "{:purl('givemoney/api/count','index')}";
+var getlist_money_url = "{:purl('givemoney/api/getlist','index')}";
+var fav_add_url = "{:purl('fav/api/add')}?type={:config('system_dirname')}";	//收藏夹
+var post_msg_url = "{:murl('member/wxapp.msg/add')}";	//给用户发消息
+var edit_reply_url = "{:urls('reply/edit')}?id=";	//修改回复
+var edit_topic_url = "{:urls('content/edit')}?id=";	//修改主题
+var topic_agree_url = "{:urls('wxapp.post/agree',['id'=>$id])}"; //主题点赞
+var reply_agree_url = "{:urls('wxapp.reply/agree')}?id="; //回复点赞
+var my_uid = "{$userdb.uid}";
+var login_url = "{:get_url('login')}"; //登录地址
+var login_check_url = "{:urls('index/wxapp.login/web_login_check')}";	//登录检测地址
+var view_check_password ="{:urls('wxapp.viewcheck/ckpwd')}";	//密码查看权限检查
+var view_check_pay_url = "{:urls('wxapp.viewcheck/ckmoney')}";	//权限积分检查
+var give_money_list_url = "{:purl('givemoney/api/get_lists')}?sysname=bbs&id={$id}"; //积分打赏用户列表
+var cut_pic_save_url = "{:urls('index/attachment/upload','dir=bbspasepic&from=base64&module=bbs')}"; //截图保持地址
+var delete_reply_url = "{:urls('wxapp.reply/delete')}?id=";
+var delete_topic_url = "{:urls('wxapp.post/delete')}?id=";
+var bbs_url = "{:urls('index/index')}";
+var ueditor,is_ueditor = false;
+</script>
+
+<!--百度编辑器-->
+<script src="__STATIC__/libs/ueditor/ueditor.config.js"></script>
+<script src="__STATIC__/libs/ueditor/ueditor.all.min.js"></script>
+<!--分享-->
+<script type="text/javascript" charset="utf-8" src="https://down.php168.com/buttonLite.js"></script>
+<script type="text/javascript" charset="utf-8" src="https://down.php168.com/bshareC0.js"></script>
+<!--表情处理-->
+<script src="__STATIC__/js/insert.js"></script>
+<script src="__STATIC__/bbs/pc_show.js?f"></script>
+{/block}

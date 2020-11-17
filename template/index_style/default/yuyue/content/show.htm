@@ -1,0 +1,395 @@
+{extend name="$index_style_layout" /}
+
+<!--SEO相关-->
+{block name="head_title"}{$info.title}{/block}
+{block name="head_keword"}{$info.keywords?:$info.title}  {$s_info.name} {/block}
+{block name="head_description"}{:get_word(del_html($info['content']),300)}{/block}
+
+{block name="body_content"}
+
+<link rel="stylesheet" href="__STATIC__/mui/css/mui.min.css">
+<script type="text/javascript" src="__STATIC__/mui/js/mui.min.js"></script>
+
+<!--幻灯片开始---->
+<link href="__STATIC__/libs/owlcarousel/css/owl.carousel.css" rel="stylesheet">
+<link href="__STATIC__/libs/owlcarousel/css/owl.theme.css" rel="stylesheet">
+<link href="__STATIC__/libs/owlcarousel/css/owl.transitions.css" rel="stylesheet">
+<script src="__STATIC__/libs/owlcarousel/js/owl.carousel.js"></script>
+<style type="text/css">
+#owl-demo { width: 100%; margin-left: auto; margin-right: auto;}
+#owl-demo .item{ display: block;}
+#owl-demo img { display: block; width: 100%;}
+</style>
+<script>
+$(function(){
+	$('#owl-demo').owlCarousel({
+		items: 1,
+		autoPlay: 4000,
+		autoHeight: true,	//如果不想自适应高度就把true改成false
+		transitionStyle: 'fade'
+	});
+});
+</script>
+{qb:showpage name="shop_show_rollpic"}
+<div id="owl-demo" class="owl-carousel">			
+{volist name="info.picurls" id="rs"}
+	<a class="item"><img src="{$rs.picurl}" alt=""></a>
+{/volist}
+</div>
+{/qb:showpage}
+<!--幻灯片结束---->
+
+<link rel="stylesheet" href="__STATIC__/index/default/show.css">
+<div class="ShowContBox">
+	<div class="BaseInfos">
+		<div class="title">
+			<a href="#">预约</a>
+			<span>{$info.title}</span>
+		</div>
+		<dl class="others">
+			{if $info.fewmoney>0}
+			<dt>
+				<div><em>所需订金：</em>&yen;<span>{$info.fewmoney}</span></div>
+				<!--<p style="text-decoration:none;">价格:&yen;{$info.price}</p>-->
+			</dt>
+			{/if}
+			<dd>
+			{if $info.end_time&&strtotime($info.end_time)>time()}
+				距结束:<em>{:intval(strtotime($info.end_time)-time())}</em><span></span>
+				{elseif $info.end_time  /}
+				{$info.end_time}
+			{/if}
+			</dd>
+		</dl>
+<style type="text/css">
+.show-price div{
+	font-size:16px;
+}
+</style>
+		{if $info.price_changetype>0}
+		<dl class="others show-price">
+			<dt>
+				<div><em>{$info.price_changetype?'当前价':'价格'}：</em> <b class="cprice">{$info|get_now_price}</b> 元</div>				 
+			</dt>
+			<!--<dt>
+				<div style="text-decoration:line-through"><em>市场价：</em> {$info.market_price} 元</div> 
+			</dt>-->			 
+		</dl>
+		{/if}
+		<dl class="others" style="display:none;">
+			<dt>
+				<div><em>成团人数：</em> {$info.min_user} 人</div>
+				 <p class="num_li" style="text-decoration:none;{$info.max_user?'':'display:none;'}">总库存: <i class="max_num">{$info.max_user}</i> 份</p> 
+			</dt>
+			<dt>
+				<div onclick="showpayding()"><em>成功下订：</em> <i class="sell_num">{$info.fewnum}</i> 人 <em>查看</em></div> 
+			</dt>			 
+		</dl>
+		
+		{if $info.each_money>0}
+		<dl class="others">
+			<dt>
+				<div><em>成团后每增加一人再减：</em>{$info.each_money} 元</div>				 
+			</dt>
+		</dl>
+		<dl class="others">
+			<dt>
+				<div><em>价格最大可优惠到底价为：</em>{$info.bottom_price} 元</div>				 
+			</dt>
+		</dl>
+		{/if}
+
+{qb:showpage field="picurl,title,content,keywords,price,type1,type2,type3,end_time,fewmoney,min_user,max_user,sncode,fx1,fx2,fx3,onlybuyone,market_price,map,each_money,bottom_price,paytype,stocktype"}
+<dl class="others">
+			<dt>
+				<div><em>{$rs.title}：</em>{$rs.value}</div>				 
+			</dt>
+</dl>
+{/qb:showpage}
+		<!--a href="{:auto_url('order/add',['id'=>$id])}"><button type="butter">立即购买</button></a-->
+	</div>
+	<div style="background: #FFF;margin-top: 15px;">
+		<div class="qb_ui_wap_select_shoptype">
+{php}
+$field_array=get_field($info['mid']);
+$array1=get_shop_type('type1',$info);
+$array2=get_shop_type('type2',$info);
+$array3=get_shop_type('type3',$info);
+{/php}
+{notempty name="array1"}
+			<ul class="shoptype1">
+				<ol>{$field_array.type1.title}</ol>
+				<li>
+				{volist name="array1" id="rs"}
+					<div data-price="{$rs.price}" data-num="{$rs.num===null?-1:$rs.num}">{$rs.title}</div>
+				{/volist}
+				</li>
+			</ul>
+{/notempty}
+{notempty name="array2"}
+			<ul class="shoptype2">
+				<ol>{$field_array.type2.title}</ol>
+				<li>
+				{volist name="array2" id="rs"}
+					<div>{$rs.title}</div>
+				{/volist}
+				</li>
+			</ul>
+{/notempty}
+{notempty name="array3"}
+			<ul class="shoptype3">
+				<ol>{$field_array.type3.title}</ol>
+				<li>
+				{volist name="array3" id="rs"}
+					<div>{$rs.title}</div>
+				{/volist}
+				</li>
+			</ul>
+{/notempty}
+ 
+
+<script type="text/javascript">
+var order_day=0,order_tid=0;
+var order_time_array = new Array();
+{volist name=":get_order_time($info)" id="rs"}
+order_time_array[{$key}] = {:json_encode($rs.time,JSON_UNESCAPED_UNICODE)};
+{/volist}
+
+$(function(){
+	$(".shoptype_day div").click(function(){
+		var i = $(this).index();
+		$(this).addClass('ck').siblings().removeClass('ck');
+		order_day = $(this).data('key');
+		order_tid = 0;
+		
+		var str = "";
+		order_time_array[i].forEach((rs)=>{
+			str += `<div data-id="${rs.id}" data-num="${rs.num}" data-price="${rs.price}">${rs.name}</div>`;
+		});
+		$(".shoptype_time li").html(str);
+		$(".shoptype_time").show();
+		$(".shoptype_time div").click(function(){
+			$(this).addClass('ck').siblings().removeClass('ck');
+			order_tid = $(this).data('id');
+			var num = $(this).data('num');
+			if(num>0){
+				$('.max_num').html(num);
+				$('.num_li').show();
+			}else{
+				$('.max_num').html("{$info.max_user}");
+				if("{$info.max_user}"<1){$('.num_li').hide();}
+			}
+			$.get("{:urls('wxapp.car/count',['id'=>$id])}?order_day="+order_day+"&order_tid="+order_tid,function(res){
+				if(res.code==0){
+					$('.max_num').html(res.data.totalnum-res.data.sellnum);
+					$('.sell_num').html(res.data.sellnum);	
+				}							
+			});
+		});
+	});
+});
+</script>
+{if $info._stocktype==2}
+			<ul class="shoptype_day">
+				<ol>预约日期</ol>
+				<li>
+					{volist name=":get_order_time($info)" id="rs"}<div data-key="{$rs['day']['key']}">{$rs['day']['title']}</div>{/volist}
+				</li>
+			</ul>
+			<ul class="shoptype_time">
+				<ol>选择时间段</ol>
+				<li>
+					<!--<div class="ck">早上10点-12点</div>-->
+				</li>
+			</ul>
+{/if}
+
+			<dl>
+				<dt>数量</dt>
+				<dd class="chnageBuyNum">
+					<span class="fa fa-minus"></span>
+					<div><input type="text" value="1"/></div>
+					<em class="fa fa-plus"></em>
+				</dd>
+			</dl> 
+			{if ($num=count(explode(',',str_replace(['、','，'],',',$userdb['qun_group'][$info['ext_id']]['nickname']))))>1}
+			<div style="color:red;text-align:center;font-weight:bold;">
+			你有 {$num} 个成员,请选择相应数量
+			</div>{/if}
+			<div class="butters">
+				<span><button onclick="BuyThisShop(3)">{if $info._paytype==2}免费预约{else /}我要预定{/if}</button></span>
+				<!--<span><button onclick="BuyThisShop(2)">立即购买</button></span>
+				<em><button onclick="BuyThisShop(1)">加入购物车</button></em>-->
+			</div>
+<script type="text/javascript">
+$.get("{:urls('api/check_buy',['id'=>$id])}",function(res){
+	if(res.code==1){
+		$(".butters button").removeAttr("onclick");
+		$(".butters button").css("background","#dddddd");
+		$(".butters button").html(res.msg);
+	}
+});
+</script>
+
+		</div>
+		<script>
+			var type1=0;
+			var type2=0;
+			var type3=0;
+			var shopnum=1;
+			$('.shoptype1 li div').click(function(){
+				$('.shoptype1 li div').removeClass('ck');
+				$(this).addClass('ck');
+				type1=$(this).index()+1;
+				var thisprice = $(this).data('price');
+				var thisnum = $(this).data('num');
+				if(thisprice>0){
+					$('.cprice').html(thisprice);
+				}else{
+					$('.cprice').html("{$info.price}");
+				}
+				if(thisnum>-1){
+					$('.max_num').html(thisnum);
+					$('.num_li').show();
+				}else{
+					$('.max_num').html("{$info.max_user}");
+					if("{$info.max_user}"<1){$('.num_li').hide();}
+				}
+			});
+			$('.shoptype2 li div').click(function(){
+				$('.shoptype2 li div').removeClass('ck');
+				$(this).addClass('ck');
+				type2=$(this).index()+1;
+			});
+			$('.shoptype3 li div').click(function(){
+				$('.shoptype3 li div').removeClass('ck');
+				$(this).addClass('ck');
+				type3=$(this).index()+1;
+			});
+			$('.chnageBuyNum em').click(function(){
+				shopnum++;
+				$('.chnageBuyNum div input').val(shopnum);
+			});
+			$('.chnageBuyNum span').click(function(){
+				shopnum--;
+				if(shopnum<1){
+					layer.alert('购买数量不能小于1');
+					shopnum=1;
+				}
+				$('.chnageBuyNum div input').val(shopnum);
+			});
+
+			function check_login(){
+				if("{$userdb.uid}"==""){
+					layer.confirm('你还没登录,不能购买,你要登录吗？', {
+						btn : [ '登录', '取消' ]
+					}, function(index) {
+						window.location.href = "{:get_url('login')}";
+					}); 
+					return false;
+				}
+				return true;
+			}
+
+			function BuyThisShop(totype){
+				if(check_login()!==true)return ;
+				if( (type1==0&&$(".shoptype1").length>0)||(type2==0&&$(".shoptype2").length>0)||(type3==0&&$(".shoptype3").length>0) ){
+					layer.alert('没有选择商品类型');
+				}else if( (!order_day&&$(".shoptype_day div").length>0)||(!order_tid&&$(".shoptype_time div").length>0) ){
+					layer.alert('请选择预约时间');
+				}else{
+					var gotourl="{:urls('car/add')}?shopid={$id}&type1="+type1+"&type2="+type2+"&type3="+type3+"&num="+shopnum+"&order_day="+order_day+"&order_tid="+order_tid;
+					$.get(gotourl+"&"+Math.random(),function(res){
+						if(res.code==0){			
+							if(totype==1){
+								layer.msg('成功加入购物车');
+							}else if(totype==3){	//立即订购
+								window.location.href="{:urls('order/add',['id'=>$id])}?order_day="+order_day+"&order_tid="+order_tid;
+							}else{
+								window.location.href="{:urls('car/index')}";
+							}
+						}else{
+							layer.alert('提示:'+res.msg);
+						}
+					});					
+				}				
+			}
+			$('.chnageBuyNum div input').change(function(){
+				shopnum=parseInt($(this).val());
+				if(shopnum<1){
+					layer.alert('购买数量不能小于1');
+					shopnum=1;
+					$(this).val(shopnum);
+				}
+			});
+		</script>
+	</div>
+
+	{qb:hy name="wap_yuyueshow_content001" val="datas" type="labelmodel"  where="index_style/default/yuyue/content/wap_model/quninfo,about,comment,index_style/default/index/userkefu,index_style/default/index/footmenu"} {$datas} {/qb:hy}
+
+
+
+
+</div>
+<script type="text/javascript" src="__STATIC__/index/default/showtime.js"></script>
+<script type="text/javascript">
+var checktime=0;
+function show_time(){
+	checktime++;
+	var thetime=parseInt($('.BaseInfos .others dd em').html())-checktime;
+	if(thetime>0){
+		$('.BaseInfos .others dd span').html(format_time(thetime));
+	}else{
+		//$('.BaseInfos .others dd span').html('活动结束！');
+	}
+}
+setInterval("show_time()",1000);
+
+function thisimg_over(imgobjs){
+	imgobjs.animate({"max-width":"150%","max-height":"150%"},300);
+}
+function thisimg_out(imgobjs){
+	imgobjs.animate({"max-width":"100%","max-height":"100%"},300);
+}
+
+</script>
+
+
+<!-- 分享海报二维码宣传推广图片 -->
+{include file="$haibao" /}
+{include file="../../../haibao_style/btn" /}
+<!--<div style="position:fixed;right:30px;top:80px;z-index:200;width:30px;font-size:10px;line-height:10px;color:#000;opacity:0.7;"><i id="share_code" onclick="share_btn()" style="font-size:30px;" class="fa fa-qrcode"></i>海报</div>-->
+
+<!-- 微信分享 -->
+{php}$userdb&&empty(input('p_uid'))&&$share['link']=get_url('location').(strstr(get_url('location'),'?')?'&':'?').'p_uid='.$userdb['uid'];{/php}
+{include file="index@share"/}
+<script type="text/javascript">
+//{if (input('p_uid')!=''&&input('p_uid')==$userdb['uid'])}SharShowMsg();{/if}
+</script>
+
+<!--
+微信分享插件里边有这段代码了
+<script type="text/javascript" src="https://res.wx.qq.com/open/js/jweixin-1.3.2.js"></script>
+-->
+<script type="text/javascript">
+wx.miniProgram.getEnv(function (res) { 
+	if (res.miniprogram==true) { 
+		var info = { 
+			title: '{$info.title}',
+			picurl: '{$info.picurl}',
+			url: "{:get_url(urls('show',['id'=>$id]))}?p_uid={$userdb.uid}",
+		}; 
+		var json = JSON.stringify(info); 
+		wx.miniProgram.postMessage({ 
+			data: info, 
+		}); 
+	} 
+}); 
+</script>
+
+
+{include file="content/common_inc" /}
+{include file="content/notice_inc" /}
+{/block}
+
+{block name="body_Footcont"} {/block}

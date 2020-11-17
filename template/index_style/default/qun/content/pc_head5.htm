@@ -1,0 +1,13 @@
+<link rel="stylesheet" type="text/css" href="__STATIC__/group/hyshow/base.css">
+<link rel="stylesheet" type="text/css" href="__STATIC__/group/hyshow/base.css">
+<div class='mainBanner'>
+    <img src='{$info.banner}' onerror="this.src='__STATIC__/group/hyshow/shopbanner.jpg'" style="width:1200px;" />
+</div>
+<div class='Mainmenu'>
+    <ul>
+        <li {if CK==='index'}class="ck"{/if}><a href="{:urls('content/show',['id'=>$id])}">商铺首页</a></li>      
+		<li {if CK==='shop'}class="ck"{/if}><a href="{:urls('shop/index',['aid'=>$id])}">所有产品</a></li>
+		<li {if CK==='news'}class="ck"{/if}><a href="{:urls('cms/index',['aid'=>$id,'mid'=>1])}">行业资讯</a></li>
+		<li {if CK==='ping'}class="ck"{/if}><a href="{:urls('bbs/index',['aid'=>$id,'mid'=>2])}">顾客点评</a></li>
+    </ul>
+</div>

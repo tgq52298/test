@@ -1,0 +1,64 @@
+{extend name="$index_style_layout" /}
+
+<!--SEO相关-->
+{block name="head_title"}{:del_html(get_sort($fid,'seo_title')?:get_sort($fid))}{/block}
+{block name="head_keword"}{:del_html(get_sort($fid,'seo_keywords')?:get_sort($fid))}{/block}
+{block name="head_description"}{:get_sort($fid,'seo_description')}{/block}
+
+{block name="body_content"}
+<link rel="stylesheet" type="text/css" href="__STATIC__/bespeak/default/pc/list.css"/>
+
+<div class='wrap'>
+    <div class='main_box'>
+    	<div class='bespeak_banner'>
+    		{qb:tag name="pcbespeak_list1_banner1" type="image"}
+    		<!--<a href="#"> <img src="__STATIC__/bespeak/default/demo/banner2.png"/></a> --> 
+    		{/qb:tag}
+    	</div>
+
+        <!-- content_first  s -->
+    	<div class='content_first'>
+        	<h3>{$info.name}</h3>
+            <div class="conten_list">
+                    {qb:listpage name="pcbespeak_list_fuwu_page_listdata1" field="title" type="bespeak" rows="12" mid='1' order="list" where="status>0"}
+                    <div class="list_box {if !($i % 4)}Mg{/if}">
+                        <dl >
+                            <dt>
+                                <a href="{$rs.url}">
+                                    <div class="pic"><img src="{$rs[picurl]}" onError="this.src='__STATIC__/images/nopic.png'" border="0" /></div>
+                                    <div class="black_div">
+                                        <div class="black_box"></div>
+                                        <div class="images">
+                                            <h2>扫一扫手机查看</h2>
+                                            <img src="{:get_qrcode($rs['url'])}"/>
+                                        </div>
+                                    </div>
+                                </a>
+                            </dt>
+                            <dd class="bespeak_title"><a href="{$rs.url}"><h2>{$rs[title]}</h2></a></dd>
+                            <dd class="jieshao">
+                                {if $rs.price}<span class="sf">收费标准：<em>{$rs.price}</em></span>{/if}
+                                {if $rs.service_time}<span class="fw">服务时间：<em>{$rs.service_time}</em></span>{/if}
+                                </dd>
+                                <dd class="yuyue">
+                                    <div class="btn"><a href="{:urls('order/add',['id'=>$rs['id']])}" class='_pop' onclick="cklogin();">立即预约</a></div>
+                                    <div class="renqi"><span  >人气：<em>{$rs.view}</em></span></div>
+                            </dd>
+                        </dl>
+                    </div>
+                    {/qb:listpage}
+            </div>
+    		<div class="showpage">{$pages}</div>
+        </div> 
+    </div>
+<script>
+// 没登陆则关闭弹框
+function cklogin(){
+    var login= {if $userdb.uid}{$userdb.uid}{else/}0{/if};
+    if(login==0){
+        setTimeout("layer.closeAll('iframe')", 600 );
+    }
+}
+</script>
+</div>
+{/block}

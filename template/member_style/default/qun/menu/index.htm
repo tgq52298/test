@@ -1,0 +1,12 @@
+{extend name="$member_style_layout" /}
+
+{block name="title"} {$tab_ext.page_title} {/block}
+
+{block name="content"}
+	{include file="member@common/menu" /}
+	{include file="member@common/table02" /}
+	{if $type<2}
+	说明:这里添加的菜单是替换系统底部的菜单,需要扫码才能有效果!
+	<center><img src="{:get_qrcode(iurl('content/show',['id'=>input('aid'),'my_qid'=>input('aid')]))}" width="150" height="150" /></center>
+	{/if}
+{/block}

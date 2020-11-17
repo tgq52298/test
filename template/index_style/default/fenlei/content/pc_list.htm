@@ -1,0 +1,111 @@
+﻿{extend name="$index_style_layout" /}
+
+<!--SEO相关-->
+{block name="head_title"}{$fid?($info['seo_title']?:$info['name']):$m_info['title']}{/block}
+{block name="head_keword"}{$fid?($info['seo_keywords']?:$info['name']):$m_info['title']}{/block}
+{block name="head_description"}{$info.seo_description}{/block}
+
+{block name="body_AllScorllSlide"}
+<!--通栏横幅图片__STATIC__/css/qb_ui.css中控制图片宽度百分百高度行内样式设置，如不设置不小于100px---->
+{qb:tag name="web_banner_pic01" type="image"}
+<!--
+<div class="qb_ui_AllscrollBanner" style="height:300px;">
+	<a href="#1"><img src="__STATIC__/images/s0.jpg"></a>
+</div>
+-->
+<div class="qb_ui_AllscrollBanner" style="height:300px;">
+	<a href="{$url}"><img src="{$picurl}"></a>
+</div>
+{/qb:tag}
+{/block}
+{block name="body_content"}
+<link rel="stylesheet" type="text/css" href="__STATIC__/fenlei/list.css">
+<div class="FenLieContainer">
+	<div class="Main">
+		<ul class="ThisSorts">
+
+{volist name=":(count(get_sort($fid,'name','sons'))<2?get_sort($fid,'name','brother'):get_sort($fid,'name','sons'))" id="name"}
+			<li><a href="{:urls('index',['fid'=>$key])}" {if $fid==$key}style="color:red;"{/if}>{$name}</a></li>
+{/volist}
+
+	
+		</ul>
+		<div class="SearchType">
+		<dl><dt>区域:</dt><dd>
+					<a href='{:urls("index",fun("field@make_filter_url","street_id,zone_id,page"))}' {if input('zone_id')===null} class="ck"{/if}>不限</a>  
+				{volist name=":get_area('','',input('city_id')?:($webdb['city_id']?:6))" id="name"}
+					<a href='{:urls("index","zone_id=$key&".fun("field@make_filter_url","zone_id,page"))}' {if input('zone_id')==$key} class="ck"{/if}>{$name}</a>
+				{/volist}
+				{if input('zone_id')}
+					<div>
+					{volist name=":get_area('','',input('zone_id'))" id="name"}
+						<a href='{:urls("index","street_id=$key&".fun("field@make_filter_url","street_id,page"))}' {if input('street_id')==$key}style="color:red;"{/if}>{$name}</a>
+					{/volist}
+					</div>
+				{/if}
+		</dd></dl>
+
+{volist name=":fun('field@list_filter',$mid)" id="rs"}
+			<dl><dt>{$rs.title}:</dt><dd>
+					<a href='{:urls("index","fid=$fid&$rs[opt_url]")}' {if input($rs['name'])===null}class="ck"{/if}>不限</a>  
+				{volist name="$rs.opt" id="vs"}
+					<a href='{:urls("index","fid=$fid&$vs[url]")}' {if input($rs['name'])==$vs['key']}class="ck"{/if}>{$vs.title}</a>
+				{/volist}
+			</dd></dl>
+{/volist}
+		</div>
+		<div class="Mhead">
+			<div class="tag">{$s_info.name}</div>
+			<div class="post"><a href="{:urls('add','fid='.$fid)}">免费发布此类信息</a></div>
+		</div>
+		<div class="ListInfo">
+			
+		<!--name是标签名，跟通用标签不能重名，rows取几条数据,order按什么方式排序，list代表可控排序，id即时间,view代表浏览量-->
+		{qb:listpage name="pcfenlei_list_page_listdata0" field="title"  rows="8" order="list"}
+			<dl>
+				<dt><a href='bencandy.php?fid=11&id=4'><img src="{$rs.picurl}" onerror="this.src='__STATIC__/images/nopic.png'"/></a></dt>
+				<dd>
+					<h4><a href="{$rs.url}">{$rs.title|get_word=100}</a> {if count($rs.picurls)}<span>[{:count($rs.picurls)}图]</span>{/if}</h4>
+					{foreach name="fields" item="vs" key="k"}
+					<div>{$vs.title}:<em>{$rs[$k]}</em></div>
+					{/foreach}
+
+					<div>发布者:<em>{$rs.uid|get_user_name}</em></div>
+					<div>浏览:<em>{$rs.view}</em></div>
+					<div>发布时间:<em>{$rs.create_time|format_time=true}</em></div>
+				</dd>
+			</dl>
+		{/qb:listpage}
+		{$pages}
+
+			
+		</div>
+	</div>
+	<div class="Side">
+		<!--包含的文件在此目录/fenlei/index/side.htm-->
+		{include file="index/side" /}
+		<div class="sidecont">
+			<div class="head">热门信息</div>
+			<ul class="List">
+
+{qb:tag name="pc_fenlei_list_side_001" type="fenlei" rows="5" union="mid" order="view"}
+            	<li><span>{$i}</span><a href="{$rs.url}">{$rs.title}</a></li>
+{/qb:tag}
+
+			</ul>
+		</div>
+		<div class="sidecont">
+			<div class="head">推荐信息</div>
+			<ul class="List">
+
+{qb:tag name="pc_fenlei_list_side_002" type="fenlei" rows="5" status="2" union="mid" order="id"}
+            	<li><span>{$i}</span><a href="{$rs.url}">{$rs.title}</a></li>
+{/qb:tag}
+
+			</ul>
+		</div>
+	</div>
+</div>
+
+
+{/block}

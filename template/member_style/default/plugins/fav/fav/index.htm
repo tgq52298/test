@@ -1,0 +1,69 @@
+{extend name="$member_style_layout" /}
+
+{block name="title"}我的收藏夹{/block}
+{block name="content"}
+
+<style>
+.ListContainer{
+	min-height:700px;
+}
+.CommentList{
+	border-top:#DDD solid 1px;
+	border-bottom:#DDD solid 1px;
+	margin:10px auto;
+	background:#FFF;
+	font-size:14px;
+}
+.CommentList .title{
+	padding:5px 10px;
+	line-height:20px;
+}
+.CommentList .info .UserTime{
+	height:20px;
+	line-height:20px;
+	padding:0 10px;
+	overflow:hidden;
+	text-align:right;
+	color:#999;
+}
+.CommentList .info .UserTime .userL{
+	float:left;
+}
+.CommentList .info .UserTime .timeR{
+	float:right;
+}
+.CommentList .info .CommentSubmits{
+	border-top:#DDD dotted 1px;
+	text-align:center;
+	padding:0 5px 5px 5px;
+	margin-top:5px;
+}
+.CommentList .info .CommentSubmits a{
+	display:inline-block;
+	line-height:25px;
+	padding:0 10px;
+	border:#DDD solid 1px;
+	margin:5px 5px 0 5px;
+	color:#666;
+}	
+</style>
+<script>$('.fa-envelope').addClass('blue');</script>
+<div class="ListContainer">	 
+{volist name="listdb" id="rs"}
+    <div class='CommentList'>
+		<div class='title'>
+			<a href="{$rs.url}">{$rs.title}</a>
+		</div>
+		<div class='info'>
+			<div class='UserTime'><span class='userL'>
+	频道：<a href="{:iurl($rs[module_dir].'/index/index')}">{$rs.module_name}</a>
+			</span><span class='timeR'>{$rs.create_time}</span></div>
+			<div class='CommentSubmits'>  <a href="{:purl('delete',['id'=>$rs['id']])}">删除</a> </div>                
+		</div>
+    </div>
+{/volist}
+	<div class="Showpage">{$pages}</div>
+</div>
+
+
+{/block}

@@ -1,0 +1,73 @@
+{if $i==1}
+<style type="text/css">
+	.show-price{
+		height:30px;
+		width:100%;
+	}
+	.show-price dd{
+		height:30px;
+		float:left;
+	}
+	.show-price dd:nth-child(2){
+		float:right;
+	}
+
+/* 丝带 */
+.box-ribbon {
+	color: #fff;
+    position: absolute;
+    line-height: 24px;
+    text-align: center;
+    top: 18px;
+    right: -68px;
+    width: 200px;
+    height: 25px;
+    padding: 5px;
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.13);
+    transform: rotate(45deg);
+    background-color: #5DB9E4;
+	opacity:0.8;
+	z-index:9;
+}
+.disable-buy{
+	background-color: #666;
+}
+</style>
+<script type="text/javascript">
+var load_waplist = 0;
+$(document).ready(function (){
+	if(load_waplist){
+		return ;
+	}
+	$(".box-ribbon").each(function(){
+		var that = $(this);
+		var id = $(this).data("id");
+		$.get("{:urls('api/check_buy')}?id="+id,function(res){
+			if(res.code==1){
+				that.html(res.msg);
+				that.addClass('disable-buy');
+				var o = $(".qb_ui_listShop_type2 a[name='i"+id+"']");
+				o.html('查看');
+				o.css({'background':'#888',});
+			}
+		});
+	});
+	load_waplist++;
+});
+</script>
+{/if}
+<div class="qb_ui_listShop_type2">
+	<ul style="background:#F9F9F9;">
+		<ol><a href="{$rs.url}">
+				<div class="box-ribbon" data-id="{$rs.id}">活动进行中...</div>
+			<img src="{$rs.picurl}" onerror="this.src='/public/static/images/nopic.png'" onmouseover='thisimg_over($(this))' onmouseout='thisimg_out($(this))'/>
+		</a></ol>
+		<li>
+
+			<div><a href="{$rs.url}">{$rs.title|get_word=100}</a></div>
+			<div class="show-price"><dd>所需圈币:{$rs.qun_money} 个</dd> </div>
+			<p><span>价格：&yen;{$rs|get_now_price}</span><a href="{$rs.url}" name="i{$rs.id}">预约</a></p>
+
+		</li>
+	</ul>				
+</div>

@@ -1,0 +1,1 @@
+UPDATE  `qb_qunrenzheng_field` SET  `options` =  'plugins\\qunrenzheng\\model\\Content@getAllQunByUid' WHERE `name` = 'qun_id';

@@ -1,0 +1,35 @@
+{extend name="$member_style_layout" /}
+
+{block name="title"}
+我应聘的职位
+{/block}
+{block name="content"}
+
+
+
+<link rel="stylesheet" type="text/css" href="__STATIC__/hr/default/wap/article.css">
+
+<div class="MainContNa">
+	<!-- <div class="head"><div class="tag">我申请应聘的职位列表</div></div> -->
+    <div class="cont">
+
+{volist name="listdb" id="rs"}
+          <div class='ArticleList'>
+              <div class='title'>{$rs[title]}</div>
+              <div class='time'>应聘人数：{:get_apply_num($rs.id)}个 &nbsp;<a href="{:get_hy_url($rs.uid,$rs.ext_id,$rs.ext_sys)}" target="_blank" >{:get_hy_name($rs.uid,$rs.ext_id,$rs.ext_sys)}</a></div>
+              <div class='operation'>
+                   <a href="{$rs.url}">查看</a>
+                   <a href="{:urls('delapply',['ids'=>$rs['cid']])}">删除</a>      
+              </div>
+          </div>
+{/volist}
+
+       {$pages}
+    </div>
+</div>
+
+
+
+
+
+{/block}

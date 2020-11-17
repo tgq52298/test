@@ -1,0 +1,133 @@
+<!--有用户在线的圈子-->
+<script type="text/javascript">
+var show_qun_member = 1;	//圈子有多少会员在线才显示
+var show_qun_totaluser = 2;	//圈子有多少人,包含游客在线才显示.与上面的条件满足一个即可
+var hide_qun_ids = ",{$webdb['M__qun']['hide_online_qunid']},"; //隐藏某些圈子,多个用逗号隔开
+var show_chat_type = 0;  //0显示第一个在线圈子的聊天窗口,1永久只显示某个,2有在线就显示在线的第一个,没在线就显示固定的某个
+var show_chat_id = 0;	//指定显示某个圈子的聊天窗口
+</script>
+{qb:hy name="pc_bbs_index_qunonline" type="myform" conf="index_style/default/bbs/index/pc_model/qun_online.php"}
+<script type="text/javascript">
+show_qun_member = "{$_cfg.member_num}";
+show_qun_totaluser = "{$_cfg.total_num}";
+hide_qun_ids = ",{$_cfg.hide_qun},";
+show_chat_type = "{$_cfg.show_type}";
+show_chat_id = "{$_cfg.show_qunid}";
+</script>
+{/qb:hy}
+		<div class="list_qun_num taglabel" style="display:none;">
+					<ul class="list" v-for="rs in listdb">
+						<li class="icon"><a :href="'/index.php/qun/show-'+rs.id+'.html'" target="_blank" style="border-radius: 5px;"><img style="border-radius: 5px;" :src="rs.picurl" onerror="this.src='__STATIC__/images/nopic.png'"></a></li>
+						<li class="info">
+							<div class="title"><i class="glyphicon glyphicon-fire" style="font-size:16px;color:orange;"></i> <a target="_blank" :href="'/index.php/qun/show-'+rs.id+'.html'">{{rs.title}} 有<b style="color:red;">{{rs.num}}</b>人在线</a>
+							</div>
+							<div class="more">圈主:<a :href="'/member.php/home/'+rs.uid+'.html'" target="_blank">{{rs.username}}</a> <span><i class="fa fa-clock-o"></i>活跃时间:{{rs.time}} <i class="fa fa-fw fa-user-o"></i>会员总数:  {{rs.usernum}} 位</span></div>
+						</li>
+						<li>
+							<div class="play_voice">
+								<span class="line1"></span>
+								<span class="line2"></span>
+								<span class="line3"></span>
+								<span class="line4"></span>
+							</div>
+						</li>
+					</ul>
+		</div>
+<script src="__STATIC__/js/core/vue.js"></script>
+<script type="text/javascript">
+var vues = new Vue({
+	el: '.list_qun_num',
+	data: {
+		listdb: [],
+	},
+	watch:{
+      listdb: function() {
+        this.$nextTick(function(){	//数据渲染完毕才执行
+			$('.list_qun_num').show();
+        })
+      }
+    },
+	methods: {
+		add_data:function(array,ar){
+			array.forEach((rs)=>{
+				ar.forEach((qs)=>{
+					if(qs.id==rs.id){
+						rs.time = qs.time;
+						rs.num = qs.num;
+					}
+				})
+				this.listdb.push(rs);
+			});			
+		}
+	}		  
+});
+
+$(function(){
+	var w_s,CID;
+	connect_ws();
+});
+
+function connect_ws(){
+	w_s = new WebSocket("{:fun('Gatewayclient@client_url')}");
+	w_s.onopen = function(e) {	//w_s.readyState CONNECTING: 0 OPEN: 1 CLOSING: 2 CLOSED: 3
+		setTimeout(function() {
+			if(CID==undefined){
+				console.log('clientId获取失败,WebSocket连接不顺畅',w_s.readyState);
+				if(w_s.readyState==1||w_s.readyState==0){	////0是连接中,1是已连接上
+					w_s.close();
+				}
+				connect_ws();
+			}else{
+				console.log('WebSocket连接上了 '+CID,w_s.readyState);
+			}		
+		}, 1500 );
+	};
+
+	w_s.onmessage = function(e){
+		var obj = {};
+		try {
+			obj = JSON.parse(e.data);
+		}catch(err){
+			console.log(err);
+		}
+		if(obj.type=='connect'){		
+			CID = obj.client_id;
+			w_s.send('{"type":"get_qun_num","url":"'+window.location.href+'"}');
+		}else if(obj.type=='qun-num'){
+			var ar = [];
+			var ChatId = show_chat_type==1 ? show_chat_id : 0;
+			obj.qun.forEach((rs,i)=>{
+				if(rs.unum<show_qun_member && rs.num<show_qun_totaluser){	//人数条件都不符合
+					return ;
+				}
+				if(hide_qun_ids.indexOf(','+rs.id+',')>-1){
+					return ;	//黑名单
+				}else if(rs.num==1 && rs.total_time>1800){ //如果圈子在线人数只有一人,并且时间超过了半小时,就不显示了,避免显示太多的圈子,影响界面
+					return ;
+				}
+				if(ChatId==0){
+					ChatId = rs.id;
+				}			
+				ar.push(rs.id);
+			});
+			
+			setTimeout(function(){
+				if(show_chat_type==2 && ChatId==0){
+					ChatId = show_chat_id;	//没在线就显示固定的某个
+				}
+				if($("#iframe_msg").length<1){
+					layer.msg("聊天窗口模块没添加或者还没加载成功!");
+				}else if(ChatId>0){
+					$("#iframe_msg").show();
+					$("#iframe_msg").attr('src',"{:urls('index/msg/index')}?uid=-"+ChatId);
+				}
+			},1000);
+			$.post("{:urls('qun/wxapp.qun/getbyids')}",{'ids':ar.join(',')},function(res){
+				if(res.code==0){
+					vues.add_data(res.data,obj.qun);
+				}
+			});		
+		}
+	}
+}
+</script>

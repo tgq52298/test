@@ -1,0 +1,3 @@
+INSERT INTO `qb_qun_field` (`id`, `name`, `title`, `type`, `field_type`, `value`, `options`, `about`, `show`, `mid`, `ajax_url`, `next_items`, `param`, `format`, `table`, `level`, `key`, `option`, `pid`, `list`, `listshow`, `ifsearch`, `ifmust`, `nav`) VALUES(0, 'sncode', '成员加入授权码', 'textarea', 'text NOT NULL', '', '', '每个授权码换一行<a href="http://www.qibosoft.com/get_sn.php" target="_blank">批量生成授权码</a>', 1, 1, '', '', '', '', '', 2, '', '', '', 0, 0, 0, 0, '');
+UPDATE `qb_qun_field` SET  `options` =  '0|需要人工审核\r\n1|自动通过审核\r\n-1|只能通过授权码加入\r\n-2|禁止加入' WHERE `name` = 'autoyz';
+ALTER TABLE  `qb_qun_content1` ADD  `sncode` TEXT NOT NULL COMMENT  '申请加入需要的授权码';

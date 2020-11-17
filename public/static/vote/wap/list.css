@@ -1,0 +1,143 @@
+.ListContnaier{
+	max-width:640px;
+	margin:auto;
+	position:relative;
+	overflow:hidden;
+}
+.ListContnaier .topCont{
+	background:#2985C1;
+	color:#FFF;
+}
+.ListContnaier .topCont .name a{
+	display:block;
+	padding:5px 0 5px 10px;
+	line-height:30px;
+	font-size:18px;
+	color:#FFF;
+}
+.ListContnaier .topCont .descrips{
+	padding:5px 5px 5px 10px;
+	line-height:25px;
+	font-size:14px;
+	background:#ADD9F6;
+	color:#666;
+}
+.ListContnaier .topCont .join_but{
+	background:#ADD9F6;
+	height:35px;
+	padding:0 10px 10px 0;
+}
+.ListContnaier .topCont .join_but a{
+	float:right;
+	height:35px;
+	line-height:35px;
+	width:100px;
+	text-align:center;
+	color:#fff;
+	background:#F15351;
+	border-radius:6px;
+}
+.ListContnaier .topCont .times{
+	padding:10px 5px 10px 5px;
+	line-height:25px;
+	font-size:14px;
+}
+.ListContnaier .topCont .times span{
+	display:inline-block;
+	margin-left:calc(50% - 105px);
+	padding-left:35px;
+	height:32px;
+	line-height:32px;
+	background:url(time1.jpg) no-repeat;
+}
+.ListContnaier .topCont .time2 span{
+	background:url(time2.jpg) no-repeat;
+}
+.ListContnaier .ListVotes{
+	padding:0 5px;
+}
+.ListContnaier .ListVotes:after{
+	content:'';
+	display:block;
+	width:100%;
+	height:1px;
+	clear:both;
+}
+.ListContnaier .ListVotes .Lists{
+	width:50%;
+	overflow:hidden;
+	float:left;
+} 
+.ListContnaier .ListVotes .Lists dl{
+	border:#DDD solid 1px;
+	margin:10px 5px 0 5px;
+	border-radius:5px;
+}
+.ListContnaier .ListVotes .Lists dl dt{
+	margin:5px;
+	text-align:center;	
+}
+.ListContnaier .ListVotes .Lists dl dt img{
+	max-width:100%;
+}
+.ListContnaier .ListVotes .Lists dl dd h3{
+	background:#309CE3;
+	padding:5px;
+}
+.ListContnaier .ListVotes .Lists dl dd h3 a,.ListContnaier .ListVotes .Lists dl dd h3 span{
+	display:block;
+	text-align:center;
+	line-height:20px;
+	height:20px;
+	overflow:hidden;
+	font-weight:normal;
+	color:#FFF;
+}
+.ListContnaier .ListVotes .Lists dl dd p{
+	padding:5px 5px 5px 10px;
+	font-size:14px;
+	line-height:20px;
+	color:#666;
+}
+.ListContnaier .ListVotes .Lists dl dd div{
+	width:85px;
+	height:30px;
+	margin:5px auto 10px;
+	background:url(vote0.png) center top no-repeat;
+	overflow:hidden;
+}
+.ListContnaier .ListVotes .Lists dl dd div.select{
+	background:url(vote1.png) center top no-repeat;
+}
+.ListContnaier .ListVotes .Lists dl dd div	span{
+	display:block;
+	width:85px;
+	height:30px;
+	background:url(votea0.png) center top no-repeat;
+	overflow:hidden;
+}
+.ListContnaier .ListVotes .Lists dl dd div.select span{
+	background:url(votea1.png) center top no-repeat;
+}
+.ListContnaier .ListVotes .Lists dl dd div input{
+	display:none;
+}
+.ListContnaier .submits{
+	text-align:center;
+	padding:15px 0 15px 0;
+	width:100%;
+}
+.ListContnaier .submits span{
+	display:inline-block;
+	height:60px;
+	line-height:60px;
+	width:60%;
+	background:#F15351;
+	color:#FFF;
+	font-size:20px;
+	border-radius:5px;
+}
+.ordertype{width:100%; height:32px; padding-top:10px;}
+.ordertype span{float:left; width:50%;}
+.ordertype span a{display:block; width:80px; margin:0 auto; line-height:30px; text-align:center; border:1px solid #3e9bf7; border-radius:5px; font-size:14px; color:#3e9bf7;}
+.ordertype span.ck a{border:1px solid #f35250; color:#f35250;}

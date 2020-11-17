@@ -1,0 +1,128 @@
+﻿{extend name="$index_style_layout" /}
+<!--SEO相关-->
+{block name="head_title"}{$info.title}{/block}
+{block name="head_keword"}{$info.keywords?:$info.title}  {$s_info.name} {/block}
+{block name="head_description"}{:get_word(del_html($info['content']),300)}{/block}
+
+
+{block name="body_content"}
+
+
+<link rel="stylesheet" href="__STATIC__/vote/pc/bencandy.css">
+<style>
+.Content{
+    width: 1200px;
+    margin: 0 auto;
+    overflow: hidden;
+}
+</style>
+<div class='Content'>    <!-- Content  S -->
+
+<div class="VoteContainer">   <!-- VoteContainer s -->
+
+	<div class="Main">
+		<div class="BaseInfo">
+			<ul class="member">
+				<ol><a href="{:get_url('user',$info['uid'])}"><img src="{$info.uid|get_user_icon}" onError="this.src='__STATIC__/images/noface.png'"/></a></ol>
+				<li>
+					<a href="{:get_url('user',$info['uid'])}">{:get_user($info.uid)['username']}</a>
+					<div>{:date("Y-m-d H:i:s",$info.create_time)} <span>票数：<em id='vote_agree'>{$info.agree}</em></span> <span class="eye">浏览<em id='vote_view'>{$info.view}</em></span></div>
+				</li>
+			</ul>
+			<div class="vote"><a href="javascript:;" onclick="AgreeVote({$info.id},{$info.fid},0)">给Ta一票</a></div>
+			<div class="content">{$info.content}</div>
+		</div>
+		<!-- 待用  组图展示 -->
+		{if count($listdb)>3 }
+			<div class="ListImgs">
+				<div><img src='$imgurl' onError="this.src='__STATIC__/images/nopic.png'"/></div>
+			</div>
+		{/if}
+	</div>
+	<script>
+		setInterval(function(){
+			var id = {$info.id},mid = {$info.mid};
+			$.get("{:urls('content/info')}?id="+id+'&'+Math.random(),function(res){
+				var oldVoteAgree = $('#vote_agree').html();
+				var voteAgree = res.agree;
+				var voteView = res.view;
+				$('#vote_agree').html(voteAgree);
+				$('#vote_view').html(voteView);
+			})
+		}, 3000);
+
+		function AgreeVote(ids,fid,type){	
+			$.get("{:urls('content/agree_vote')}?ids="+ids+"&fid="+fid+"&type="+type+"&"+Math.random(),function(res){
+				if(res.code==0){
+					var num =  $('#topic_agree').html();
+					num++;
+					$('#topic_agree').html(num);
+					layer.msg("投票成功！",{time:1500});
+					window.location.reload();
+				}else{
+					// layer.msg('投票失败:'_res.msg);
+					layer.msg("投票失败:"+res.msg,{time:1500});
+				}	
+			});
+		}
+	</script>
+
+
+
+	<div class="Side">
+
+		<div class="sideconts">
+			<div class="head">关于活动</div>
+			<div class="AboutVote">
+				<div class="title"><a href="{:urls('index',['fid'=>$info.fid])}">{$s_info.name}</a></div>
+				<ul class="time">
+					<li>报名：{if $s_info.joinbegintime}{:format_time($s_info.joinbegintime,'Y-m-d H:i')}{else /}不限时间{/if}至 
+				{if $s_info.joinendtime}{:format_time($s_info.joinendtime,'Y-m-d H:i')}{else /}不限时间{/if}</li>
+					<li>投票：{if $s_info.begintime}{:format_time($s_info.begintime,'Y-m-d H:i')}{else /}不限时间{/if}至 
+				{if $s_info.endtime}{:format_time($s_info.endtime,'Y-m-d H:i')}{else /}不限时间{/if}</li>
+				</ul>
+				<div class="join"><a href="{:murl('add',['fid'=>$fid])}" class='_pop'>我要报名</a></div>
+			</div>
+		</div>
+
+
+		<div class="sideconts">
+			<div class="head">会员相关</div>
+			<div class="wxCode">
+				<div>微信扫一扫免费投票</div>
+				<p><img src="{:get_qrcode(get_url('location'))}"></p>
+			</div>
+		</div>
+			<div class="sideconts">
+				<div class="head">票数排行榜</div>
+				<div class="voteTop">
+				{qb:tag name="pc_vote_index_ranking_list" type='vote' rows="10" union='fid' order="agree" where="agree>0"}
+					<dl class="list list{$i}">
+						<dt><span>{$i}</span><a href="{:get_url('user',$rs.uid)}"><img src="{$rs.uid|get_user_icon}" onError="this.src='__STATIC__/images/noface.png'"/></a></dt>
+						<dd><a href="{$rs.url}">{$rs.title}</a><span>票数：{$rs.agree}</span></dd>
+					</dl>
+				{/qb:tag}
+				</div>
+			</div>
+	</div>
+
+
+
+
+
+
+
+</div> <!-- VoteContainer e -->
+
+</div>   <!-- Content  E -->
+
+
+
+
+
+
+
+
+
+
+{/block}

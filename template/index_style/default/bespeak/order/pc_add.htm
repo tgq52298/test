@@ -1,0 +1,159 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>在线预约</title>
+</head>
+<body>
+	
+
+
+
+<style>
+.PostOrder{
+	max-width: 1200px;
+	border:#DDD solid 1px;
+	min-height: 500px;
+	margin:20px auto;
+	padding: 20px 0;
+	box-shadow: 2px 2px 5px #999;
+}
+.PostOrder .tag{
+	width:90%;
+	height: 50px;
+	line-height: 50px;
+	margin:0px auto 25px auto;
+	border-bottom: #DDD dotted 5px;
+	padding-bottom: 10px;
+	position: relative;
+	padding-left: 50px;
+	font-size:26px;
+}
+.PostOrder .tag i{
+	position: absolute;
+	font-size: 40px;
+	left: 5px;
+	top:5px;
+	color: #999;
+}
+.PostOrder ul{
+	display: table;
+	width: 80%;
+	margin: 0 auto 15px auto;
+	border-bottom: #DDD dotted 1px;
+}
+.PostOrder ul ol,.PostOrder ul li{
+	display: table-cell;
+	padding: 5px 5px 20px 5px;
+	vertical-align: middle;
+	font-size: 16px;
+}
+.PostOrder ul ol{
+	width:70px;
+	text-align: center;
+	color: #666;	
+}
+.PostOrder ul li input{
+	border: #DDD solid 1px;
+	line-height: 35px;
+	text-indent: 5px;
+	outline: none;
+}
+.PostOrder dl{
+	display: table;
+	width: 80%;
+	margin: 0 auto 15px auto;
+	font-size:16px;
+}
+.PostOrder dl dt,.PostOrder dl dd{
+	display: table-cell;
+	padding: 5px;
+	vertical-align: middle;
+}
+.PostOrder dl dt{
+	width:70px;
+}
+.PostOrder dl dd input[type="radio"]{
+	margin: 0 5px 0 10px;
+}
+.PostOrder div.butter{
+	text-align: center;
+	padding-top: 30px;
+}
+.PostOrder div.butter button{
+	border: 0px;
+	line-height: 40px;
+	padding: 0 30px;
+	background: #EBEEF0;
+	border-radius: 5px;
+	color: #888;
+	font-size: 20px;
+	cursor: pointer;
+	margin: 0 10px;
+}
+.PostOrder div.butter button[type=submit]{
+	background: #F60;
+	color: #FFF;
+}
+.c_b{color:blue;}	
+</style>
+<div class="PostOrder">
+	<div class="tag"><i class="fa fa-wpforms"></i>预约服务{if input('id')} ：<a href="javascript:;" class='c_b'>{:get_one_contents(input('id'))['title']}</a> {/if}</div>
+	<form action="{:urls('add')}" method="post"  onSubmit="return checks();">
+
+	<ul>
+		<ol>联系人</ol>
+		<li> <input placeholder="请输入联系人" type="text" name="order_linkman" id="atc_order_linkman" style="" class="layui-input c_order_linkman "value="{$userdb.truename}"></li>
+	</ul>	
+	<ul>
+		<ol>联系电话</ol>
+		<li> <input placeholder="请输入联系电话" type="text" name="order_telphone" id="atc_order_telphone" style="" class="layui-input c_order_telphone " value="{$userdb.mobphone}"></li>
+	</ul>
+{qb:form name="xxx" field="title,picurl,order_linkman,order_telphone" mid="-1"}
+		<ul>
+			<ol>{$rs.title}</ol>
+			<li>{$rs.value}</li>
+		</ul>
+{/qb:form}
+
+		<div class="butter">
+			<input type="hidden" name='fuwu_id' value="{:input('id')}">
+			<button type="submit">提交</button>
+			<button type="button" onclick="javascript:history.back(-1);return false;">返回</button>
+		</div>
+	</form>
+</div>
+<script>
+function checks(){
+	var linkman=$('#atc_order_linkman').val();
+	var time=$('#atc_order_bespeak_time').val();
+	var phone=$('#atc_order_telphone').val();
+	var address=$('#atc_order_address').val();
+	if(linkman==''){
+		layer.tips('联系人不能为空!', '#atc_order_linkman', {
+		  tips: [2, '#78BA32']
+		});
+		return false;
+	}
+	if(time==''){
+		layer.tips('时间不能为空!', '#atc_order_bespeak_time', {
+		  tips: [2, '#78BA32']
+		});
+		return false;
+	}
+	if(phone==''){
+		layer.tips('电话不能为空!', '#atc_order_telphone', {
+		  tips: [2, '#78BA32']
+		});
+		return false;
+	}
+	if(address==''){
+		layer.tips('服务地址不能为空!', '#atc_order_address', {
+		  tips: [2, '#78BA32']
+		});
+		return false;
+	}
+}
+</script>
+</body>
+</html>

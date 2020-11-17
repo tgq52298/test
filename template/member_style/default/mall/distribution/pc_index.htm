@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>我的分销客户</title>
+<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<!-- <link rel="stylesheet" href="__STATIC__/css/qb_ui.css"> -->
+<link rel="stylesheet" href="__STATIC__/layui/css/layui.css">
+<link rel="stylesheet" href="__STATIC__/layui/css/admin.css">
+<!-- <script type="text/javascript" src="__STATIC__/layui/layui.js"></script> -->
+<style>
+.c_r{color:red;}
+.c_8{color:#888;}
+.pagination{
+	text-align: center;
+	width: 100%;
+	clear: both;
+	padding: 10px 0;
+}
+.pagination li{
+	display: inline-block;
+	line-height: 30px;	
+	margin: 0 5px;	
+}
+.pagination li a,.pagination li span{
+	display: block;
+	border: #DDD solid 1px;
+	padding: 0 8px;
+	color: #666;
+}
+.pagination li a,.pagination li span{
+	color: #999;
+}
+.pagination li a:hover{
+	border:#F30 solid 1px;
+	background: #F60;
+	color: #FFF;
+}
+.pagination li.active span{
+	border:#21806E solid 1px;
+	background: #64C2B0;
+	color: #FFF;
+}
+</style>
+</head>
+<body>
+<a href="{:urls('index')}" class='layui-btn  layui-btn-normal' >全部</a>
+<a href="{:urls('index',['level'=>1])}" class='layui-btn  layui-btn-normal' >一级分销客户</a>
+<a href="{:urls('index',['level'=>2])}" class='layui-btn  layui-btn-normal' >二级分销客户</a>
+<a href="{:urls('index',['level'=>3])}" class='layui-btn  layui-btn-normal' >三级分销客户</a>
+<fieldset class="layui-elem-field layui-field-title">
+  <legend> 我的分销客户 </legend>  
+   <legend> <span class='c_8'>累计到账佣金：</span><span class='c_r'>{$total_money}元</span> </legend>  
+</fieldset>
+<table class="layui-table" lay-even="" lay-skin="nob">
+	<thead>
+		<tr>
+			<th>商品名称</th>
+			<th>价格</th>
+			<th>数量</th>
+			<th>总价</th>
+			
+			<th>购买时间</th>
+			<th>购买者</th>
+			<th>分销级别</th>
+			<th>分销提成</th>
+			
+			<th>佣金结算（元）</th>
+			<th>佣金状态</th>
+			<th>到账时间</th>
+		</tr> 
+	</thead>
+	<tbody>
+		{volist name='listdb' id='rs'}
+			<tr>
+				<td><a href="{:iurl('content/show',['id'=>$rs['shopid']])}" target="_blank">{$rs.title}</a></td>
+				<td>{$rs.price}</td>
+				<td>{$rs.buynum}</td>
+				<td>{$rs.totalmoney}</td>
+				<td>{$rs.create_time}</td>
+				<td><a href="{:get_url('user',$rs['buid'])}" target="_blank">{:get_user_name($rs.buid)}</a></td>
+				<td>{$rs.distribution_level}</td>
+				<td>{$rs.distribution_money}</td>
+
+				
+				<td>{$rs.truemoney}</td>
+				
+				<td>
+					{switch name="$rs.status" }
+					{case value="1"}已发放{/case}
+					{default /}没发放 
+					{/switch}
+				</td>
+				<td>{$rs['transfer_time']?=date('Y-m-d H:i:s',$rs['transfer_time'])} </td>
+	
+			</tr>
+		{/volist}
+	</tbody>
+
+</table> 
+
+<div id="Showpage">{$pages}</div>
+
+<script>
+	
+</script>
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,42 @@
+{extend name="$index_style_layout" /}
+{block name="head_title"}确定购买商品{/block}
+{block name="body_content"}
+<link rel="stylesheet" href="__STATIC__/css/wap_order.css">
+<div class="PostOrder">
+	<form action="{:urls('add')}" method="post" onsubmit="return check_post();">
+{if empty($f_array)}
+		<ul>
+			<ol><i class="si si-user"></i></ol>
+			<li><input type="text" name="linkman" placeholder="请输入联系人" value="{$userdb.username}"></li>
+		</ul>
+		<ul>
+			<ol><i class="fa fa-volume-control-phone"></i></ol>
+			<li><input type="text" name="telphone" placeholder="请输入联系电话" ></li>
+		</ul>
+{/if}
+{qb:form name="xxx" field="linkman,telphone" mid="-1" f_array="$f_array"}
+		<ul class="{$rs.ifmust?'must-choose':''} {$rs.customize}" data-name="{$rs.name}" data-type="{$rs.type}" data-title="{$rs.title}">
+			<ol><i class="fa fa-angle-right"></i></ol>
+			<li><dd class="title">{$rs.title}</dd> {$rs.value}</li>
+		</ul>
+{/qb:form}
+
+{if $money>0}
+		<dl>
+			<dt>支付方式</dt>
+			<dd>
+				{if empty($shopdb['paytype'])||$shopdb['paytype']==1}<input type="radio" name="ifolpay" value="1" checked />线上付款( {$money} 元){/if}
+				{if empty($shopdb['paytype'])||$shopdb['paytype']==2}<input type="radio" name="ifolpay" value="0" {$shopdb['paytype']?' checked ':''}  />现场付款{/if}
+			</dd>
+		</dl>
+{/if}
+
+		<div>
+			<button type="submit">提交</button>
+			<input type="hidden" name="order_field" id="order_field">
+			<button type="button" onclick="javascript:history.back(-1);return false;">返回</button>
+		</div>
+	</form>
+</div>
+<script type="text/javascript" src="__STATIC__/js/order.js"></script>
+{/block}

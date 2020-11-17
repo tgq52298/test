@@ -1,0 +1,38 @@
+{extend name="index:layout" /}
+
+{block name="menu"}{/block}
+
+{block name="content"}
+<form name="formlist" method="post" action="">
+    <div class="MainContainers">
+    <div class="Header"><span class="tag">下载小程序</span><span class="more">&gt;&gt;</span></div>
+        <div class="Conter">
+            <table class="FormTable">
+                <tr> 
+                    <td colspan="2" class='red'>你需要使用小程序开发工具才能把下载回来的小程序文件上传到微信服务器</td>
+                </tr>
+
+                <tr> 
+                    <td class="tdL">
+					1、下载之前,请先配置好各项参数,比如网址与小程序名称及小程序APPid<br>
+					2、<a href="https://www.kancloud.cn/php168/x1_of_qibo/634576" target="_blank">查看如何使用开发工具上传文件到微信服务器</a><br>
+					3、<a href="https://developers.weixin.qq.com/miniprogram/dev/devtools/download.html" target="_blank">下载小程序开发工具</a></td>
+                 
+                </tr>
+                
+                <tr> 
+                 
+                <td> 
+                     
+                    <div class="submits"><input type='submit' name='w' value='立即下载' /></div>
+                    </td>
+                </tr>
+
+
+            </table>
+
+        </div>
+    </div>
+</form>
+
+{/block}

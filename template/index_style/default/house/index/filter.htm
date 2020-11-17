@@ -1,0 +1,68 @@
+      
+<table width="100%" border="0" cellspacing="0" cellpadding="0" id="top_searchs">
+    <tr>
+      <td class="top"><div class="L">{$info.name}房源分类检索</div><div class="R"></div></td>
+    </tr>
+    
+    <tr>
+      <td class="main" height="100">
+
+
+        <table width="100%" border="0" cellspacing="0" cellpadding="0" id="zone_street_menu">
+          <tr> 
+            <td class="zone" id="zone_td">
+            <div class="m-zoneChoose">区{:input('name')}域:</div>
+            <span id="zone_span_0"><a href='{:urls("index",make_filter_url("street_id,zone_id,page"))}' {if input('zone_id')==''}style="color:yellow;background: #379BE9;border-radius: 3px; margin: 0 5px 0 0;padding: 0 5px;"{/if} class="choose">不限</a> </span> 
+          {volist name=":get_area('','',input('city_id')?:($webdb['city_id']?:6))" id="name"}
+             <span id="zone_span_{$key}"><a href='{:urls("index","zone_id=$key&".make_filter_url("zone_id,page"))}' {if input('zone_id')==$key}style="color:red;"{/if}>{$name}</a></span>
+          {/volist}
+            </td>
+          </tr>
+          <tr> 
+            <td class="street" id="street_td"> 
+          {if input('zone_id')}
+            {volist name=":get_area('','',input('zone_id'))" id="name"}
+              <a id="street_a_{$key}" href='{:urls("index","street_id=$key&".make_filter_url("street_id,page"))}' {if input('street_id')==$key}style="color:red;"{/if}>{$name}</a>
+            {/volist}
+          {/if}
+            </td>
+          </tr>
+        </table>
+
+        <SCRIPT LANGUAGE="JavaScript">
+      
+        function zone_menu(zone_id){
+          obj=document.getElementById("zone_td").getElementsByTagName("span");
+          for(var i=0;i< obj.length;i++ ){
+            obj[i].className='';
+          }
+          // document.getElementById("zone_span_"+zone_id).className='choose';
+        }
+        zone_menu("{:input('zone_id')}");
+        function street_menu(street_id){
+          obj=document.getElementById("street_td").getElementsByTagName("a");
+          for(var i=0;i< obj.length;i++ ){
+            obj[i].className='';
+          }
+          if(document.getElementById("street_a_"+street_id)!=null){
+            // document.getElementById("street_a_"+street_id).className='choose';
+          }
+        }
+        street_menu("{:input('street_id')}");
+        </SCRIPT>
+
+
+
+        <div class="listsearch"> 
+          {volist name=":get_filter_fields($mid)" id="rs"}
+          <div><span class='t'>{$rs.title}:</span><span class='f'>
+            <a href='{:urls("index","fid=$fid&$rs[opt_url]")}' {if input($rs['name'])==''}style="color:yellow;background: #379BE9;border-radius: 3px; margin: 0 5px 0 0;padding: 0 5px;"{/if} class="ck">不限</a>  
+          {volist name="$rs.opt" id="vs"}
+            <a href='{:urls("index","fid=$fid&$vs[url]")}' {if input($rs['name'])==$vs['key']}style="color:red;"{/if}>{$vs.title}</a>
+          {/volist}
+          </span></div>
+          {/volist}
+        </div>
+      </td>
+    </tr>
+</table>

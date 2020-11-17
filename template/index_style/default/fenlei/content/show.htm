@@ -1,0 +1,151 @@
+{extend name="$index_style_layout" /}
+
+<!--SEO相关-->
+{block name="head_title"}{$info.title}{/block}
+{block name="head_keword"}{$info.keywords?:$info.title}  {$s_info.name} {/block}
+{block name="head_description"}{:get_word(del_html($info['content']),300)}{/block}
+
+{block name="body_content"}
+<link rel="stylesheet" href="__STATIC__/index/default/article.css">
+
+<style type="text/css">
+.ArticleContBox .topBoxs{
+	border-top:6px solid #eee;
+	border-bottom:6px solid #eee;
+	padding:5px 0 5px 0;
+	background:#fff;
+}
+.ArticleContBox .topBoxs li.atten{
+	width:90%;
+	margin:auto;
+	padding-left: 15px;
+	padding-right: 15px;
+}
+.ArticleContBox .topBoxs li.atten a{
+	display: block;
+	text-align: center;
+	line-height: 40px;
+	border: #2A87E5 solid 1px;
+	border-radius: 5px;
+	color: #2A87E5;
+	font-size:18px;
+}
+</style>
+
+<div class="ArticleContBox">
+	
+	<ul class="topBoxs">		 
+		<li class="atten"><a href="{:urls('content/add',['fid'=>$fid])}">免费发布信息</a></li>
+	</ul>
+
+	<div class="MainInfos">
+		<div class="title">{$info.title}</div>
+		<div class="infos">
+			<span><i class="glyphicon glyphicon-time"></i> {:date("m-d H:i",$info.create_time)}</span>
+			<span><i class="si si-eye"></i> {$info.view}</span> 
+			<span onclick="delinfo({$info.id})"><i class="fa fa-trash-o"></i> 删除</span> 
+			<span onclick="editinfo({$info.id})"><i class="fa fa-edit"></i> 修改</span> 
+		</div>
+		<div class="ShowContent">
+			{$info.content}
+			 
+				{volist name="$info.picurls" id="rs"}
+				</br><img src="{$rs.picurl}"/>
+				{/volist}
+		</div>
+	</div>
+	<!--自定义字段-->
+	<div class="OtherInfos">
+{qb:showpage name="xxx" field="title,content,picurl,maps"}
+		<div class="SideBox">
+			<div class="tag"><span>{title}</span></div>
+			<div class="cont">{value}</div>
+		</div>
+{/qb:showpage}
+	</div>
+
+{notempty name="$info.maps"}
+	<div class="showmaps">
+	<iframe src="{:urls('index/map/index')}?xy={$info.maps}&title={$info.title|urlencode}"  width="100%" height="350" scrolling="no" frameborder="0" ></iframe>
+	</div>
+{/notempty}
+
+	<!--引用评论-->
+	{qb:comment name="commentwap01" rows='5'}
+		{include file="content/comment" /}
+	{/qb:comment}
+	<div class="ShowMoreInfos">
+		<div class="head"><i class="si si-book-open"></i> 更多信息</div>
+		<div class="ListMoreInfos">
+{qb:tag name="fenlei_list_page_listdata02" type="fenlei" union="mid" order="id"}
+			<div class="Lists">
+				<ul>
+{notempty name="rs.picurl"}
+					<ol><a href="{$rs.url}"><img src="{$rs.picurl}" onmouseover='thisimg_over($(this))' onmouseout='thisimg_out($(this))'/></a></ol>
+{/notempty}
+					<li>
+						<div class="t"><a href="{$rs.url}">{$rs.title}</a></div>
+						<div class="m"><span><i class="glyphicon glyphicon-time"></i> {$rs.time}</span><em> <i class="si si-eye"></i> {$rs.view}</em></div>
+					</li>
+				</ul>
+			</div>
+{/qb:tag}
+
+		</div>
+		<div class="ShowMoreButter"><button type="butter" onclick="ShowMoreInfo()">查看更多</button></div>
+	</div>
+</div>
+<script type="text/javascript">
+//修改信息
+function editinfo(aid){
+	location.href = "{:urls('content/edit')}?id="+aid;
+}
+
+//删除信息
+function delinfo(aid){
+	$.get("{:urls('wxapp.post/delete')}?id="+aid,function(res){
+		if(res.code==0){
+			layer.msg("删除成功！",{time:500});
+			location.href = "{:urls('content/index',['fid'=>$fid])}";
+		}else{
+			layer.msg("删除失败:"+res.msg,{time:2500});
+		}	
+	});
+}
+
+var morepage=1;
+var url='{qb:url name="fenlei_list_page_listdata02" /}';//异步获取更多内容的url
+function ShowMoreInfo(){	
+	morepage++;	
+	$.get(url+morepage+'&'+Math.random(),function(res){
+		if(res.code==0){
+			if(res.data==''){
+				layer.msg("已经显示完了！",{time:500});
+				$('.ShowMoreButter button').attr('onclick','');
+				$('.ShowMoreButter button').html('显示完了');
+				$('.ShowMoreButter button').css({'background':'#CCC'});
+			}else{
+				res.data="<span class='pages"+morepage+"'>"+res.data+"</span>";			
+				$('.ListMoreInfos').append(res.data);
+				$('.ListMoreInfos .pages'+morepage).hide();
+				$('.ListMoreInfos .pages'+morepage).show(500);
+			}
+		}else{
+			layer.msg(res.msg,{time:2500});
+		}
+	});
+}
+function thisimg_over(imgobjs){
+	imgobjs.animate({"max-width":"150%","max-height":"150%"},300);
+}
+function thisimg_out(imgobjs){
+	imgobjs.animate({"max-width":"100%","max-height":"100%"},300);
+}
+</script>
+
+<!-- 分享海报二维码宣传推广图片 -->
+{include file="$haibao" /}
+{include file="../../../haibao_style/btn" /}
+<!--<div style="position:fixed;right:30px;top:80px;z-index:200;width:30px;font-size:10px;line-height:10px;color:#000;opacity:0.7;"><i id="share_code" onclick="share_btn()" style="font-size:30px;" class="fa fa-qrcode"></i>海报</div>-->
+
+{/block}

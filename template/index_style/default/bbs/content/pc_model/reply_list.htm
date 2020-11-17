@@ -1,0 +1,62 @@
+			<div class="ShowComment">
+				<ul class="head">
+					<ol>全部留言</ol>
+					<li>共 <span id="commentnum">{$info.replynum}</span> 条</li>
+				</ul>
+{qb:reply name="pcbbs_reply" rows="15"}
+				<div class="ListComment">
+				{volist name="listdb" id="rs"}
+					<div class="lists">
+						<ul>
+							<ol><a href="{:get_url('user',$rs['uid'])}" target="_blank"><img src="{$rs.icon}" onerror="this.src='__STATIC__/images/nobody.gif'"  onmouseover="changeShowImg($(this),'over');" onmouseout="changeShowImg($(this),'out');" ></a></ol>
+							<li>
+								<div class="info"><a href="javascript::" onclick="sendmsg('{$rs.username}')">{$rs.username} </a><span>{:getGroupByid(get_user($rs['uid'])['groupid']?:'')} </span><em> {if config('webdb.show_pay_money')}消费:{:fun('count@rmb',$rs.uid)}元{/if} {$rs.time}  {$rs.create_time|format_time="H:i"} {if $rs.phone_type} <dd class="fa fa-mobile-phone">  {$rs.phone_type}</dd>{/if}</em><i class="lou">{$i}楼</i></div>
+								<div class="cnt replycontent" style="word-break:break-all;">
+								{$rs.content}
+								{if $rs.picurls}
+									{volist name="$rs.picurls" id="ps"}
+										<br><img style="margin-bottom:8px;" src="{$ps.picurl}">
+									{/volist}
+								{/if}
+								</div>
+								<div class="showdsBox"><dl><dt id="jifen_list_warp_rid{$rs.id}"></dt></dl></div><!--用户打赏列表-->
+								<div class="replaycomment repalyinfs{$rs.id}">
+									{volist name="rs.children" id="vs"}
+									<dl class="r_dl">
+										<dt class="r_dt"><a href="javascript::" onclick="sendmsg('{$vs.username}')">{$vs.username} </a> {if config('webdb.show_pay_money')}<i style="color:#888;"> 消费:{:fun('count@rmb',$vs.uid)}元  </i>{/if} {if $vs.phone_type} <em class="fa fa-mobile-phone">  {$vs.phone_type}</em>{/if}<em> {$vs.time}</em></dt>
+										<dd style="word-break:break-all;" class="replycontent">
+										{$vs.content}  
+										{if $vs.picurls}
+											{volist name="$vs.picurls" id="ps"}
+												<br><img style="margin-bottom:8px;" src="{$ps.picurl}">
+											{/volist}
+										{/if}
+										{empty name="$info.lock"}<i class="c-act fa fa-commenting-o" title="引用回复" onclick="replyuser({$vs.pid},'@{$vs.username} ')"></i>{/empty}
+										<i class="c-act give-money si si-present" data-id="{$aid}" data-rid="{$vs.id}" title="打赏积分"></i>
+										<i class="c-act upnum fa fa-thumbs-o-up" onclick="reply_agree({$vs.id})" data-rid="{$vs.id}" title="点赞"></i>
+										{if ($this->admin || $vs['uid']==$this->user['uid'])}<i title="删除回复" onclick="layer.confirm('您确定要删除吗?',{btn: ['确定', '取消']}, function(){delinfo({$aid},{$vs.id})});" class="c-act del fa fa-trash-o"></i>{/if} </dd>
+										<div class="showdsBox"><dl><dt id="jifen_list_warp_rid{$vs.id}"></dt></dl></div><!--用户打赏列-->
+									</dl>
+									 {/volist}
+								</div>
+							</li>
+						</ul>
+						<div class="other">
+							<i class="fa fa-thumbs-o-up" onclick="reply_agree({$rs.id})"></i><span onclick="reply_agree({$rs.id})" class="upnum replyAgree{$rs.id}" title="点赞">{$rs.agree}</span>
+							{notempty name=":plugins_config('givemoney')"}<a href="javascript::" title="打赏积分"><span class="give-money" data-id="{$aid}" data-rid="{$rs.id}"><i class="si si-present"></i></span><em>打赏</em></a>{/notempty}
+							{empty name="$info.lock"}<a onclick="replyuser({$rs.id})" href="javascript::"><i class="fa fa-commenting-o"></i>回复</a>{/empty}
+							{if ($this->admin || $rs['uid']==$this->user['uid'])}<i onclick="layer.confirm('您确定要删除吗?',{btn: ['确定', '取消']}, function(){delinfo({$aid},{$rs.id})});" class="fa fa-trash-o"></i>{/if}
+						</div>
+{if get_user($rs.uid)['introduce']!=''}
+						<div class="user_sign"><a href="{:urls('index/jump/qun',['uid'=>$rs.uid])}" target="_blank">{:str_replace("\\n",'<br>',preg_replace('/<([^<]*)>/is','',get_user($rs.uid)['introduce']))}</a></div>
+{/if}
+					</div>
+				{/volist}
+				</div>
+				<div class="ShowMoreComment"><span onclick="ShowMoreComment()">更多回复<i class="fa fa-angle-double-down"></i></span></div>
+		<script type="text/javascript">
+		var posturl="{:fun('label@reply_api','posturl',$aid,$cfg_array)}";
+		var pageurl="{:fun('label@reply_api','pageurl',$aid,$cfg_array)}";
+		</script>
+{/qb:reply}
+			</div>

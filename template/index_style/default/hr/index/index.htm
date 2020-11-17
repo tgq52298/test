@@ -1,0 +1,177 @@
+{extend name="$index_style_layout" /}
+
+<!--SEO相关-->
+{block name="head_title"}{$webdb.mseo_title?:$webdb.seo_title}{/block}
+{block name="head_keword"}{$webdb.mseo_keyword?:$webdb.seo_keyword}{/block}
+{block name="head_description"}{$webdb.mseo_description?:$webdb.seo_description}{/block}
+
+{block name="body_content"}
+
+<link type="text/css" rel="stylesheet" href="__STATIC__/hr/default/wap/index.css" />
+
+<div class="m-main">
+
+
+	<div class="ctrl">
+		<ul>
+		{qb:tag name='waphr_index_bigsort_head' type="text"}
+			<li class="qiye geren"><a href="javascript:;">企业服务</a></li>
+			<li class="geren"><a href="javascript:;">个人服务</a></li>
+			<span></span>
+		{/qb:tag}
+		</ul>
+	</div>
+
+	{qb:tag name='waphr_index_action_btnlink' type="text"}
+	<ul class="nav"> 
+		<li><a href="{:murl('content/postnew')}">发布职位</a></li>
+		<li><a href="{:murl('content/index',['mid'=>1])}">职位管理</a></li>
+		<li><a href="{:murl('content/jobvita',['mid'=>2])}">求职信</a></li>
+		<li><a href="{:urls('content/index',['mid'=>2])}">找人才</a></li>
+	</ul>
+	<ul class="nav" style="height:0;"> 
+		<li><a href="{:murl('content/checkvita',['mid'=>2])}">更新简历</a></li>
+		<li><a href="{:murl('content/checkvita',['mid'=>2,'type'=>2])}">查看简历</a></li>
+		<li><a href="{:murl('content/jobvita',['mid'=>1])}">申请的职位</a></li>
+	</ul>
+	{/qb:tag}
+
+	<div class='ListMoreSorts'>
+		{volist name=":get_sons(get_sort())" id="rs"}
+			{if get_sort($rs['id'],mid)!=2}
+				<dl>
+					<dt><a href="{:urls('content/index','fid='.$rs['id'])}">{$rs.name}</a></dt>
+					<dd>
+						{volist name="$rs.sons" id="vs"}
+						<a href="{:urls('content/index','fid='.$vs['id'])}" {if input('fid')==$vs[id]} style="color:red;"{/if}>{$vs.name}</a>
+						{/volist}
+					</dd>
+				</dl>
+			{/if}
+		{/volist}
+	</div>
+
+	{qb:tag name='waphr_index_action_btn' type="text"}
+	<div class="btn">
+		<a href="javascript:;">按类目查看招聘职位</a>
+	</div>
+	{/qb:tag}
+
+
+	<div class="newJob">
+		{qb:tag name='waphr_index_newjob_head' type="text"}<div class="title"><span>最新职位</span></div>{/qb:tag}
+
+		{qb:tag name="waphr_index_newjob_data" field="title" type="hr" rows="10" order="id" mid="1" where="status>0"}
+		<div class="list">
+			<div class="left">
+				<div class="select"></div>
+			</div>
+			<div class="right">
+				<p class="rightL1">
+					<a href="{$rs.url}">{$rs.title}</a><span>{$rs.wage}</span>
+				</p>
+				<p class="rightL2">
+					<span>{$rs.workplace}</span><span><a href="{:get_hy_url($rs.uid,$rs.ext_id,$rs.ext_sys)}">{:get_hy_name($rs.uid,$rs.ext_id,$rs.ext_sys)}</a></span>
+				</p>
+				<p class="rightL3"><span>{$rs.time}</span></p>
+			</div>
+		</div>
+		{/qb:tag}
+	   
+		<div class="Ability">
+			{qb:tag name='waphr_index_newvita_head' type="text"}<div class="title"><span>最新人才</span></div>{/qb:tag}
+			{qb:tag name="waphr_index_newvita_data" field="title" type="hr" rows="10" order="id" mid="2" where="status>0"}
+			<dl>
+				<dt><a href="{$rs.url}"><img src="{$rs.picurl}" onError="this.src='__STATIC__/images/noface.png'"/></a></dt>
+				<dd>
+					<div ><span class="name">{$rs.truename}</span><em>{$rs.title}</em><em>{$rs.workyear}</em><em>{$rs.school_age}</em></div>
+					<div class="gongzi"><span>期望薪资 <em>{$rs.wage}</em></span><span>{$rs.time}</span></div>
+				</dd>
+			</dl>
+			{/qb:tag}
+		</div>
+	</div>
+
+
+</div>
+<div class="fullbg" id="fullbg1"></div>
+<SCRIPT LANGUAGE="JavaScript">
+function pic_height(){
+	$(".Ability dl dt").each(function(){
+		var this_H=$(this).width()*2;
+		if(this_H>102){
+		this_H = 102;
+		}
+		$(this).css({"height":this_H+'px',"line-height":this_H+'px'});
+	});
+}
+pic_height();
+$(window).resize(function(){
+	pic_height()
+});
+$('.ctrl ul li').eq(0).click(function(){
+	ShowMore_type($('.nav').eq(0),100,$('.nav').eq(1));
+	$(this).addClass("qiye").siblings().removeClass("qiye");
+});
+$('.ctrl ul li').eq(1).click(function(){
+	ShowMore_type($('.nav').eq(1),100,$('.nav').eq(0));
+	$(this).addClass("qiye").siblings().removeClass("qiye");
+});
+function ShowMore_type(o,heights,other){
+	if(o.hasClass("showThis")){
+		o.removeClass('showThis');
+		o.animate({'height':'0px'},300);
+	}else{
+		o.addClass('showThis');
+		o.animate({'height':heights+'px'},300);
+	}	
+	other.removeClass('showThis');
+
+	other.animate({'height':'0px'},300);
+}
+function format_height(o1,o2){
+	var fullbg_H;
+	if(o1.height()>$("body").height() && o1.height()>$("window").height()){
+		fullbg_H=o1.height();
+	}
+	else if ($(window).height() > $("body").height()){
+		fullbg_H=$(window).height();
+	}else{
+		fullbg_H=$('body').height();
+	}
+	o1.height(fullbg_H);
+	o2.height(fullbg_H);
+}
+function Show_mode(o1,o2){
+	o2.css({'display':'block'}).stop().animate({'opacity':.6},500,function(){
+		o1.css({'display':'block'}).stop().animate({'right':'0px'},300);
+	});	
+}
+function Hide_mode(o1,o2){
+	o2.animate({'opacity':0},300,function(){
+		$(this).css({'display':'none'});
+	});
+	setTimeout(function(){
+		o1.stop().animate({'right':'-250px'},300,function(){
+			$(this).css({'display':'none'});
+		});
+	}, 500);
+}
+
+$('.btn a').click(function(){	
+	Show_mode($(".ListMoreSorts"),$('#fullbg1'));
+	format_height($(".ListMoreSorts"),$('#fullbg1'));
+});
+$('#fullbg1').click(function(){
+	Hide_mode($(".ListMoreSorts"),$('#fullbg1'))
+});
+
+</SCRIPT>
+
+
+
+
+
+
+
+{/block}

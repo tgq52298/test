@@ -1,0 +1,263 @@
+﻿{extend name="$index_style_layout" /}
+
+<!--SEO相关-->
+{block name="head_title"}{$fid?($info['seo_title']?:$info['name']):$m_info['title']}{/block}
+{block name="head_keword"}{$fid?($info['seo_keywords']?:$info['name']):$m_info['title']}{/block}
+{block name="head_description"}{$info.seo_description}{/block}
+
+
+{block name="body_content"}
+
+<link rel="stylesheet" href="__STATIC__/vote/pc/list.css">
+<style>
+.Content{
+    width: 1200px;
+    margin: 0 auto;
+    overflow: hidden;
+}
+</style>
+<div class='Content'>
+
+
+<div class="TopContainer">
+	<div class="Votename"><span>{$info.name}</span></div>
+	<div class="BaseInfo">
+		<div class="times">
+			<div class="join">
+				报名时间：{if $info.joinbegintime}{:format_time($info.joinbegintime,'Y-m-d H:i')}{else /}不限时间{/if}至 
+				{if $info.joinendtime}{:format_time($info.joinendtime,'Y-m-d H:i')}{else /}不限时间{/if}
+			</div>
+			<div class="vote">
+				投票时间：{if $info.begintime}{:format_time($info.begintime,'Y-m-d H:i')}{else /}不限时间{/if}至 
+				{if $info.endtime}{:format_time($info.endtime,'Y-m-d H:i')}{else /}不限时间{/if}
+			</div>
+			<div class="tjcont">
+				<ul>
+					<ol>参与选手</ol>
+					<li>{$TotalNum}</li>
+				</ul>
+				<ul>
+					<ol>累计投票</ol>
+					<li>{$TotalVoteNum}</li>
+				</ul>
+				<ul>
+					<ol>访问量</ol>
+					<li>{$TotalViewNum}</li>
+				</ul>
+			</div>
+			<div class="joins"><a href="./member/post.php?fid=$fid">我要报名</a></div>
+		</div>
+		<div class="aboutVote">
+			<div class="tag">活动介绍</div>
+			<div class="cont2">
+				{$info.description}
+			</div>
+			<div class="showmore">更多 +</div>
+		</div>
+	</div>
+</div>
+
+
+
+
+<div class="Containers">
+<!--
+EOT;
+$listtype1=$listtype?$listtype:'default';
+$listtypes[$listtype1]="class='ck'";
+print <<<EOT
+-->
+	<ul class="ListType">
+		<li {$listtypes['default']}><a href="?fid=$fid" class="default">默认</a></li>
+		<li {$listtypes['hits']}><a href="?fid=$fid&listtype=hits">人气</a></li>
+		<li {$listtypes['digg_num']}><a href="?fid=$fid&listtype=digg_num">票数</a></li>
+	</ul>
+	<form name="formvote" method="post" action="vote.php?action=vote&fid=$fid">
+	<div class="ListVotes">
+		<div class="Lists Lists0"></div>
+		<div class="Lists"></div>
+		<div class="Lists"></div>
+		
+		<div class="Lists"> <!-- R S -->
+			<div class="sideconts">
+				<div class="head">会员相关</div>
+				<div class="wxCode">
+					<div>微信扫一扫免费投票</div>
+					<p><img src="{:get_qrcode(get_url('location'))}"></p>
+				</div>
+			</div>
+			<div class="sideconts">
+				<div class="head">票数排行榜</div>
+				<div class="voteTop">
+				{qb:tag name="pc_vote_index_ranking_list" type='vote' rows="10" union='fid' order="agree" where="agree>0"}
+					<dl class="list list{$i}">
+						<dt><span>{$i}</span><a href="{$rs.url}"><img src="{:tempdir($this->user['icon'])}" onError="this.src='__STATIC__/images/noface.png'"/></a></dt>
+						<dd><a href="{$rs.url}">{$rs.title}</a><span>票数：{$rs.agree}</span></dd>
+					</dl>
+				{/qb:tag}
+				</div>
+			</div>
+		</div><!--  R E -->
+
+	</div>
+	<div class="submits"><span>投票</span></div>
+	</form>
+</div>
+
+
+<div class="fullbg" id="fullbg1"></div>
+<div class="Showdescrip"></div>
+<div class="WebSeitUrl">$webdb[www_url]</div>
+<script type="text/javascript">
+<!--
+var Listvote = new Array(); 
+var iHeight,iTempHeight,thisrow;
+{$listvotes}
+for(var i=0; i<Listvote.length; i++){
+	iHeight = -1;
+	$('.ListVotes .Lists').each(function(){
+		iTempHeight = Number( $(this).height() );
+		if(iHeight==-1 || iHeight>iTempHeight){
+			iHeight = iTempHeight;
+			thisrow = $(this);
+		}
+	});
+	thisrow.append(Listvote[i]);
+	alert(Listvote[i]);
+}
+function ChangeSelect(objs){
+	var thisinput=objs.find('input');
+	if (thisinput.attr('checked')){
+		thisinput.attr("checked",false);
+	}else{
+		thisinput.attr("checked",true);
+	}
+	$('.sideVote dd div input').each(function(){
+		var thedd=$(this).parent();
+		if($(this).attr('checked')){
+			thedd.addClass('select');
+		}else{
+			thedd.removeClass('select');
+		}
+	});
+}
+$('.submits span').click(function(){
+	$('form[name="formvote"]').submit();
+});
+
+
+function show_nav(node,fullbg){
+	fullbg.css({'display':'block'}).stop().animate({'opacity':.6},300,function(){
+		node.css({'display':'block'}).stop().animate({'opacity':1},300);
+	});
+}
+
+function hide_nav(node,fullbg){
+	node.stop().animate({'opacity':0},300,function(){\$(this).css({'display':'none'});});
+	setTimeout(function(){
+		fullbg.stop().animate({'opacity':0},300,function(){\$(this).css({'display':'none'});});
+	}, 200)
+}
+
+function formatsize(node){	
+	node.css({'max-width':\$(window).width()+'px','max-height':\$(window).height()+'px'});
+	var LeftW=(\$(window).width()-node.width())/2;
+	var LeftH=(\$(window).height()-node.height())/2;
+	node.css({'left':LeftW+'px','top':LeftH+'px'});
+}
+
+$('.aboutVote .showmore').click(function(){
+	var words=$('.aboutVote .cont2').html();
+	$('.Showdescrip').html(words);
+	formatsize($('.Showdescrip'));	
+	show_nav($('.Showdescrip'),$('#fullbg1'));
+});
+
+$('#fullbg1').click(function(){
+	hide_nav($('.Showdescrip'),$('#fullbg1'));
+});
+
+// $(".WebSeitUrl").hide();
+// var page=$page,loading=1,WebSeitUrl=$(".WebSeitUrl").html();
+// $(window).scroll(function(){
+// 	// 当滚动到最底部以上100像素时， 加载新内容
+// 	if ($(document).height() - $(this).scrollTop() <1000 && loading==1){
+// 		page++;
+// 		loading=0;
+// 		var urls='?fid=$fid&listtype=$listtype&type=date&page='+page;
+// 		loadMore(urls);
+// 	} 	
+// });
+function loadMore(urls){
+	$.ajax({
+		url : urls+'&'+Math.random(),
+		dataType : 'json',
+		success : function(json){
+			if(typeof json == 'object'){
+				var oProducts, Therows, iHeights, iTempHeights,show_htmls,Theitems;
+				if(json.length>0){					
+					loading=1;
+				}else{
+					loading=0;					
+				}
+				for(var i=0; i<json.length; i++){
+					oProducts = json[i];					
+					iHeights = -1;
+					$('.ListVotes .Lists').each(function(){
+						iTempHeights = Number( $(this).height() );
+						if(iHeights==-1 || iHeights>iTempHeights){
+							iHeights = iTempHeights;
+							Therows = $(this);
+						}
+					});
+					show_htmls=oProducts.htmls;
+					Theitems = $(show_htmls).hide();
+					Therows.append(Theitems);
+					Theitems.fadeIn();
+				}
+			}
+		}
+	});
+}
+</script>
+
+
+
+
+
+
+</div> <!-- Content  E-->
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="__STATIC__/index/default/pclist.css">
+<div class="ArticlMainContainer">
+	<div class="LeftsCnt">
+		{include file="content/left" /}
+	</div>
+	<div class="RightCnt">
+		<!--name是标签名，跟通用标签不能重名，rows取几条数据,order按什么方式排序，list代表可控排序，id即时间,view代表浏览量-->
+		{qb:listpage name="news_list_page_listdata0" rows="8" order="list"}
+			<ul class="qb_ui_ListArticleTimeTitleCnt">
+				<ol>
+					<dl><dt>{:date("d",$rs.create_time)}</dt><dd>{:date("Y-m",$rs.create_time)}</dd></dl>
+				</ol>
+				<li>
+					<h3><a href="{$rs.url}">{$rs.title|get_word=100}</a></h3>
+					<p>{$rs.content|get_word=200}</p>
+				</li>
+			</ul>
+		{/qb:listpage}
+		{$pages}
+	</div>
+</div>
+{/block}

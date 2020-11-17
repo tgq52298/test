@@ -1,0 +1,345 @@
+@charset "utf-8";
+div, span, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, code, del, dfn, em, q, dl, dt, dd, ol, ul, li, fieldset, form, legend, caption, tbody, tfoot, thead, article, aside, dialog, figure, footer, header, hgroup, nav, section{
+	margin: 0px;
+	padding: 0px;
+}
+[v-cloak] { display: none !important; }
+h1,h2,h3,h4,h5,h6 {
+	font-size:14px;
+	 font-weight:normal;
+	}
+ul, li, dl, dt, dd, ol {
+	list-style: none;
+}
+img {
+	border: 0;
+	padding: 0;
+	vertical-align:middle;
+}
+a{
+	text-decoration:none;
+	color:#333;
+}
+a:hover{
+	color: #009FE9;
+}
+body{
+	margin: 0px;
+	padding: 0px;
+	font-size:14px;
+	background-color:#fff;
+	color:#333;
+	font-family:"Microsoft Yahei";
+}
+.body-bg{
+	background: #eee;
+}
+.ksbody{
+	clear: both;
+	float: none;
+	width:1200px;
+	margin-right: auto;
+	margin-left: auto;
+}
+.mt25{
+	margin-top: 25px;
+}
+.fl{float:left;}
+.fr{float:right;}
+/*清除浮动*/
+.clearfix:after{content:" ";clear:both;height:0;visibility:hidden;display:block;}
+.clearfix{*zoom:1;}
+/*---头部----*/
+.header .head-top{
+	background: #EEEEEE;
+	border-bottom: 1px solid #ddd;
+	height: 35px;
+	line-height: 35px;
+	color: #999;
+}
+.head-top a{
+	color: #999;
+	display: inline-block;
+}
+.head-top a:hover{
+	color: #2273C0;
+}
+.head-top span{
+	display: inline-block;
+	padding: 0px 10px;
+}
+.head-box{
+	background: #fff;
+	height: 115px;
+}
+.head-box  .logo{
+	display: block;
+	float: left;
+	margin-top: 15px;
+}
+.head-box .search-box{
+	float: right;
+	width: 330px;
+	margin-top: 35px;
+	border: 1px solid #ccc;
+	height: 38px;
+	overflow: hidden;
+ 	-webkit-border-radius:10px;
+ 	-moz-border-radius:10px;
+  -ms-border-radius:10px;
+ 	-o-border-radius:10px;
+	border-radius: 10px;
+}
+.search-box .input-class{
+	float: left;
+	width: 220px;
+	height: 36px;
+	line-height: 36px;
+	border: none;
+	padding-left: 35px;
+	outline: none;
+	font-family:"Microsoft Yahei";
+	background:#fff url(./search.png) no-repeat 10px center;
+}
+.search-box .button{
+	float: right;
+	width: 60px;
+	height: 100%;
+	line-height: 100%;
+	color: #fff;
+	border: none;
+	font-family:"Microsoft Yahei";
+	font-size: 16px;
+	text-align: center;
+	background: #2273C0;
+	cursor: pointer;
+}
+.head-nav-bd{
+	background: #2273C0;
+	height: 36px;
+}
+.head-nav{
+	width: 1200px;
+	margin: 0 auto;
+	position: relative;
+}
+.head-nav .nav li{
+	float: left;
+}
+.nav li a{
+	float: left;
+	width: 150px;
+	font-size: 16px;
+	text-align: center;
+	color: #fff;
+	line-height: 36px;
+	display: block;
+	margin-right: 5px;
+}
+.nav li.current a,.nav li a:hover{
+	background: #42ABFB;
+}
+.float-box {
+	position: relative;
+	margin: 0 auto;
+	width: 1200px;
+}
+.focal-area-nav{
+	width: 215px;
+	position: absolute;
+	top:0;
+	left: 0px;
+	height: 435px;
+	background: #4A4A4A;
+	z-index: 99;
+}
+.focal-area-nav li{
+	border-top: 1px solid #999;
+}
+.focal-area-nav li:first-child{
+	border-top: none;
+}
+.focal-area-nav .u-navitem{
+  height: 61px;
+  line-height: 61px;
+  padding:0px  30px 0px 50px;
+  color: #fff;
+  font-size: 16px;
+  overflow: hidden;
+}
+.focal-area-nav .u-navitem .tit{
+	float: left;
+	display: block;
+	color: #fff;
+	font-size: 16px;
+}
+.focal-area-nav .u-navitem .more{
+	float: right;
+	color: #fff;
+}
+.focal-area-nav .g-subshow{
+	position: absolute;
+	left:215px;
+	top:0px;
+	width: 613px;
+  height: 435px;
+  padding: 0 30px;
+  color: #fff;
+  background: #898989;
+  display: none;
+}
+.focal-area-nav .htitel{
+	display: inline-block;
+	margin-top: 10px;
+	font-size: 16px;
+	line-height: 35px;
+	border-bottom: 2px solid #fff;
+}
+.g-subshow .subnav{
+	padding: 10px 0px;
+}
+.g-subshow .subnav a{
+	display: inline-block;
+	color: #fff;
+	line-height: 30px;
+	padding-right: 15px;
+}
+.g-subshow .subnav a:hover{
+	text-decoration: underline;
+}
+.focal-area-nav   .u-navitem.on{
+	background: #898989;
+}
+.focal-area-nav .u-navitem.on a{
+	color: #fff;
+}
+.footer{
+	background: #fff;
+	padding: 30px 0px;
+	text-align: center;
+	color: #666;
+	font-size: 12px;
+	line-height: 30px;
+}
+/*其他共用*/
+.k-test-content{
+	width: 1200px;
+	margin: 0 auto;
+	padding: 15px 20px 25px;
+}
+.k-test-content .content-left{
+	float: left;
+	width: 813px;
+}
+.k-test-content .text-content{
+	background: #fff;
+	padding: 15px 0px 30px;
+}
+.test-titel{
+	position: relative;
+}
+.test-titel .titel{
+	position: absolute;
+	left: -8px;
+	top:0;
+	color: #fff;
+	font-size: 18px;
+	text-align: center;
+	width: 139px;
+	height: 31px;
+	padding-top: 5px;
+	line-height: 31px;
+	background: url(./bg01.png) no-repeat left  center;
+}
+.test-titel .more{
+	float: right;
+	line-height: 36px;
+	margin-right: 15px;
+	font-family: "宋体";
+	font-size: 12px;
+	color: #999;
+}
+.test-titel .btn{
+	border: 1px solid #CCCCCC;
+	width: 15px;
+	height: 15px;
+	text-align: center;
+	line-height: 15px;
+	border-radius: 3px;
+	display: inline-block;
+	margin-right: 5px;
+}
+.test-titel .more:hover{
+	color: #2273C0;
+}
+.k-test-content .content-right{
+	float: right;
+	width: 365px;
+}
+.k-test-content .hot-test-con{
+	background: #fff;
+	border: 1px solid #ccc;
+	padding: 15px 0px 30px;
+}
+.hot-test-con .hot-list{
+	padding: 20px 20px 0px;
+	margin-top: 15px;
+}
+/*右侧*/
+.hot-list li{
+	margin-top: 29px;
+	height: 28px;
+	line-height: 28px;
+	overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.hot-list li em{
+	width: 28px;
+	height: 28px;
+	text-align: center;
+	line-height: 28px;
+	background: #999;
+	color: #fff;
+	font-size: 16px;
+	margin-right: 10px;
+	display: inline-block;
+	font-style: normal;
+}
+.hot-list li .bg01{
+	background: #FF0000;
+}
+.hot-list li .bg02{
+	background: #FF7F00;
+}
+.hot-list li .bg03{
+	background:#B0B000;
+}
+/*分页*/
+.pagination-div{
+	padding:0;
+	margin:0;
+}
+.pagination.pagination-centered{
+width: 100%;
+	padding: 50px 0px;
+	text-align: center;
+	font-size:0;
+}
+.pagination.pagination-centered li{
+	display: inline-block;
+	margin: 0px 2px;
+}
+.pagination.pagination-centered li a{
+	font-size:14px;
+	display:block;
+	height: 28px;
+	line-height: 28px;
+	border: 1px solid #ddd;
+	padding: 0px 12px;
+}
+.pagination.pagination-centered li.active a{
+	background: #578EDD;
+	color: #fff;
+	border-color: #578EDD;
+}

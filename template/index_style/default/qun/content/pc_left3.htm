@@ -1,0 +1,57 @@
+		<div class="companyBase">
+            <div class="head">名片信息</div>
+            <div class="cont">
+                <div class="icon"><span><em><img src="{:tempdir($rs.banner?:$rs.picurl)}" onerror="this.src='__STATIC__/group/qun-bg.jpg';"/></em></span>
+                </div>
+                <div class="title">{$rs.title}</div>
+                <div class="renzhengicon">
+                    <img src="__STATIC__/group/hyshow/2.png" />
+                </div>
+                <dl class="other">
+                    <dt>联系人：{$info.uid|get_user_name}</dt>
+                    <dd>登记时间：{$info.create_time|format_time="Y-m-d H:i"}</dd>
+                </dl>
+            </div>
+        </div>
+        <div class="AddFavorite">
+            <span onclick="joinGroup({$id})"><em>收藏名片</em></span>
+<SCRIPT LANGUAGE="JavaScript">
+function joinGroup(id){
+	var url = "{:urls('wxapp.member/join',['id'=>$id])}?"+Math.random();
+	$.get(url,function(res){
+		if(res.code==0){
+			layer.alert("收藏成功！");
+			//$(".JoinBut").hide();
+		}else if(res.code==2){
+			join_need_sn(url);
+		}else{
+			layer.alert("收藏失败:"+res.msg);
+		}	
+	});
+}
+function join_need_sn(url){
+	var index = layer.prompt({
+		   title : '请输入正确的授权码,才能加入',
+		   formType:0,
+	},function(val, index){
+		$.post(url,{'sncode':val},function(res){
+			if(res.code==0){
+				layer.msg('加入成功');
+				layer.close(index);
+			}else{
+				layer.msg('加入失败,'+res.msg,{time:1000});
+			}
+		});		
+	});
+}
+</SCRIPT>
+        </div>
+        <div class="sendmsg"><a href="{:murl('member/msg/add',['uid'=>$info.uid])}" class="_pop"><span>发送站内信息</span></a>
+        </div>
+        <div class="tjInfo">
+            <div class="head">统计信息</div>
+            <ul>
+                <li>收藏:<span>{$info.usernum}</span>次</li>
+                <li>浏览量:<span>{$info.view}</span>次</li>
+            </ul>
+        </div>

@@ -1,0 +1,127 @@
+{extend name="$index_style_layout" /}
+
+<!--SEO相关-->
+{block name="head_title"}{$webdb.mseo_title?:$webdb.seo_title}{/block}
+{block name="head_keword"}{$webdb.mseo_keyword?:$webdb.seo_keyword}{/block}
+{block name="head_description"}{$webdb.mseo_description?:$webdb.seo_description}{/block}
+
+{block name="body_content"}
+
+
+
+
+<link rel="stylesheet" type="text/css" href="__STATIC__/bespeak/default/wap/wapindex.css"/>
+<style>
+.show_near{
+    height: 30px;
+    line-height: 28px;
+    width: 98%;
+    text-align: center;
+    font-size: 16px;
+    border: 1px solid #44C185;
+    background-color: #fff;
+    border-radius: 33px;
+    margin: auto;
+}
+.show_near a{display:block;color:#44C185;}
+.R{position:relative;}
+.Listall dl dd p.ListPrice span.R{height:26px;line-height:26px;}
+.Listall .R a.ac_tel{color:#fff;width: 70px;height: 26px;line-height: 26px;text-align: center;background: #1E9FFF;border-radius: 3px;position:absolute;top:-5px;right:0}
+</style>
+<div class='m-main'>
+	<div class='show_near'><a href="{:urls('near/index')}">查看附近商家</a></div>
+	<section class="s-skin m-nav">
+	<ul>
+		{volist name=":get_sons(get_sort())" id="rs"}
+		<li><a href="{:urls('content/index','fid='.$rs['id'])}"><span><img src="{:tempdir($rs.ico)}" onError="this.src='__STATIC__/bespeak/default/wap/ficon1.png'"/>&nbsp;{$rs.name}</span></a></li>
+		{/volist}	
+	</ul>
+	</section>
+
+	<section class="s-skin m-modleCont">
+		<div class="modleCont">
+			<h2>{qb:tag name="wapbespeak_index_fuwu_head" type="text"}<a>上门服务</a>{/qb:tag}</h2>
+			<div class="allCont">
+				<ul>
+					{qb:listpage name="wapbespeak_index_fuwu_page_listdata1" field="title" type="bespeak" rows="4" mid='1' order="list" where="status>0"}
+					<li>
+						<a href="{$rs.url}"><div class="List">
+						<div class="ListPic"><img src="{$rs.picurl}" onError="this.src='__STATIC__/images/nopic.png'"/></div>
+						<h3>{$rs.title}</h3>
+						</div></a>
+					</li>
+					{/qb:listpage}
+				</ul>
+			</div>
+		</div>
+	</section>
+
+<section class="s-skin m-Hot">
+	<div class="Listall HotCont">
+		<h2>{qb:tag name="wapbespeak_index_yuyue_head" type="text"}<a>服务预约</a>{/qb:tag}</h2>
+
+		{qb:listpage name="wapbespeak_yuyue_page_listdata1" field="title" type="bespeak" rows="4" mid='1' order="list" where="status>0"}
+			<dl>
+			<dt class="L"> <a href="{$rs.url}"><img src="{$rs.picurl}"/></a></dt>
+			<dd class="R">
+				{if $rs['telphone']} <a href="tel:{$rs.telphone}" class="ac_tel">拨打电话</a> {/if}
+				<h3><a href="{$rs.url}">{$rs.title}</a></h3>
+				<p class="ListPrice"><span class="L">{if get_ordernum($rs.id)>0}已有{:get_ordernum($rs.id)}人预约{else/}暂没用户预约{/if}</span><span class="R"><a href="{:urls('order/add',['id'=>$rs['id']])}" class='_pop' onclick="cklogin();">立即预约</a></span></p>
+				<p class="ListOther"><span class="L">发布人：{:get_user($rs.uid)['username']}</span><span class="R">发布时间：{$rs.create_time|format_time="Y-m-d"}</span></p>
+			</dd>
+			</dl>
+		{/qb:listpage}
+	</div>
+</section> 
+  <div class="ShowMoreShop" onclick="showMoreCont();"><span>点击查看更多</span></div>
+<script>
+// 没登陆则关闭弹框
+function cklogin(){
+	var login= {if $userdb.uid}{$userdb.uid}{else/}0{/if};
+	if(login==0){
+		setTimeout("layer.closeAll('iframe')", 600 );
+	}
+}
+
+var page=1;
+var rows=4;
+function showMoreCont(){
+	$(".ShowMore").html("内容加载中……");
+	page++;
+	$.get('{qb:list_url name="wapbespeak_yuyue_page_listdata1" /}'+page,function(res){
+		if(res.code==0){
+			if(res.data==''){
+				layer.msg("已经显示完了！",{time:500});
+				$(".ShowMoreShop").hide();
+			}else{
+				$('.HotCont').append(res.data);
+				$(".ShowMoreShop").html("<span>点击查看更多</span>");
+				// countlist();
+				//scroll_get = true;  //这一行仅仅是匹配滚动显示更多.如果没使用滚动特效,可以删除
+			}
+		}else{
+			layer.msg(res.msg,{time:2500});
+		}
+	});
+
+}
+// function countlist(){
+// 	if($(".HotCont dl").length%rows!=0){
+// 		$(".ShowMoreShop").hide();
+// 	}
+// }
+// countlist();
+
+
+
+
+
+
+
+
+</script>
+
+
+</div>
+
+{/block}

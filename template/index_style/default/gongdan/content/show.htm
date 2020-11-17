@@ -1,0 +1,225 @@
+{extend name="$index_style_layout" /}
+
+<!--SEO相关-->
+{block name="head_title"}{$info.title}{/block}
+{block name="head_keword"}{$info.keywords?:$info.title}  {$s_info.name} {/block}
+{block name="head_description"}{:get_word(del_html($info['content']),300)}{/block}
+
+{block name="body_content"}
+<!--幻灯片开始---->
+{qb:showpage name="shop_show_rollpic"}
+<link rel="stylesheet" href="__STATIC__/index/default/slider.css">
+<div id="slider" class="mui-slider" >
+	<div class="mui-slider-group mui-slider-loop">
+		<div class="mui-slider-item mui-slider-item-duplicate"><a href="#"><img src="{:end($info['picurls'])['picurl']}"></a></div>
+{volist name="info.picurls" id="rs"}
+		<div class="mui-slider-item"><a href="#"><img src="{$rs.picurl}"></a></div>
+{/volist}
+		<div class="mui-slider-item mui-slider-item-duplicate"><a href="#"><img src="{$info.picurls.0.picurl}"></a></div>
+	</div>
+	<div class="mui-slider-indicator">
+{volist name="info.picurls" id="pic"}
+		<div class="mui-indicator {eq name='i' value='1'}mui-active{/eq}"></div>
+{/volist}
+	</div>
+</div>
+{/qb:showpage}
+<!--幻灯片结束---->
+
+<link rel="stylesheet" href="__STATIC__/index/default/show.css">
+<div class="ShowContBox">
+	<div class="BaseInfos">
+		<div class="title">
+			<a href="#">工单</a>
+			<span>{$info.title}</span>
+		</div>
+		<dl class="others">
+			<dt>
+				<div> {$info.create_time|format_time}</div>				 
+			</dt>
+{if $info.begin_time&&strtotime($info.begin_time)>time()}
+			<dd>距离开始：<em>{:intval(strtotime($info.begin_time)-time())}</em> <span></span></dd>
+{elseif $info.end_time&&strtotime($info.end_time)>time()}
+			<dd>距离结束：<em>{:intval(strtotime($info.end_time)-time())}</em> <span></span></dd>
+{elseif $info.end_time&&strtotime($info.end_time)<time()}
+			<dd><span><i>已结束</i></span></dd>
+{else /}
+			<dd><span><i>进行中</i></span></dd>
+{/if}
+		</dl>
+
+{qb:showpage field="picurl,title,content,keywords,price,type1,type2,type3,num"}
+<dl class="others">
+			<dt>
+				<div><em>{$rs.title}：</em>{$rs.value}</div>				 
+			</dt>
+</dl>
+{/qb:showpage}
+<dl class="others">
+			<dt>
+				<div><em>已提交：</em>{$info.order_num} 人</div>				 
+			</dt>
+</dl>
+ 
+	</div>
+	<div style="background: #FFF;margin-top: 15px;">
+		<div class="qb_ui_wap_select_shoptype" style="display:none;">
+			<dl>
+				<dt>参与人数</dt>
+				<dd class="chnageBuyNum">
+					<span class="fa fa-minus"></span>
+					<div><input type="text" value="1"/></div>
+					<em class="fa fa-plus"></em>
+				</dd>
+			</dl>
+			 
+		</div>
+
+<!--表单开始-->
+<script type="text/javascript">
+$(function(){
+	$.get("{:urls('car/act')}?shopid={$id}&num=1&"+Math.random(),function(d){
+		if(d=='ok'){			
+			//layer.msg('成功加入购物车');
+		}else{
+			layer.alert(d.msg);
+			$(".PostOrder").hide();
+		}
+	});
+});
+</script>
+<a name="post"></a>
+<style type="text/css">
+input[type=color], input[type=date], input[type=datetime-local], input[type=datetime], input[type=email], input[type=month], input[type=number], input[type=password], input[type=search], input[type=tel], input[type=text], input[type=time], input[type=url], input[type=week], select, textarea {
+    height: auto;
+    margin-bottom: 0px;
+    padding: 0px 0px;
+}
+.mui-btn, button, input[type=button], input[type=reset], input[type=submit] {
+    padding: 0px 0px;
+}
+.PostOrder{
+	background:#f3f3f3;
+	padding:10px 0;
+}
+.PostOrder ul{
+	background:#fff;
+	margin:8px 0;
+	padding: 0 15px;
+}
+.PostOrder ul ol{
+	line-height:45px;
+	height:45px;
+	font-weight:bold;
+	color:#6b6a6a;
+}
+.PostOrder ul li{
+	padding-bottom:15px;
+}
+.PostOrder button{
+    width: 90%;
+    background: #FFA800;
+    color: #FFF;
+    line-height: 45px;
+    border: 0px;
+    border-radius: 5px;
+    outline: none;
+	font-size:20px;
+}
+.PostOrder .btn_warp{
+	background: #FFF;
+	text-align:center;
+	padding:15px 0 ;
+}
+.PostOrder ul li input[type=text]{
+	line-height:30px;
+	height:30px;
+	width:98%;
+	padding:0 5px;
+	border:1px solid #ffe5a9;
+	border-radius: 5px;
+}
+.PostOrder ul li textarea{
+	width:98%;
+	padding:0 5px;
+	border:1px solid #ffe5a9;
+	border-radius: 5px;
+}
+</style>
+<div class="PostOrder">
+	<form action="{:urls('order/add')}" method="post" onsubmit="return check_post();">
+{qb:form name="xxx" field="linkman,telphone" mid="-1" f_array="$f_array"}
+		<ul class="{$rs.ifmust?'must-choose':''} {$rs.customize}" data-name="{$rs.name}" data-type="{$rs.type}" data-title="{$rs.title}">
+			<ol>{$rs.title} {$rs.ifmust?'(必填)':''}</ol>
+			<li>{$rs.value}</li>
+		</ul>
+{/qb:form}
+		<div class="btn_warp">
+			<button type="submit">提交</button>
+			<input type="hidden" name="order_field" id="order_field">
+		</div>
+	</form>
+</div>
+<script type="text/javascript" src="__STATIC__/js/order.js"></script>
+<!--表单结束-->
+
+	</div>
+	<div class="ChangeShowCont">
+		<div class="mui-slider">
+			<div class="mui-slider-indicator mui-segmented-control mui-segmented-control-inverted">
+				<a class="mui-control-item" href="#mobileitem1">注意事项</a>
+				<a class="mui-control-item" href="#mobileitem2"></a>
+			</div>
+			<div class="mui-slider-progress-bar mui-col-xs-6"></div>
+			<div class="mui-slider-group">
+				<div id="mobileitem1" class="mui-slider-item mui-control-content mui-active">
+					<div class="contentinfo">
+					{$info.content}
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript" src="__STATIC__/index/default/showtime.js"></script>
+<script type="text/javascript">
+var checktime=0;
+function show_time(){
+	checktime++;
+	var thetime=parseInt($('.BaseInfos .others dd em').html())-checktime;
+	if(thetime>0){
+		$('.BaseInfos .others dd span').html(format_time(thetime));
+	}else{
+		//$('.BaseInfos .others dd span').html('活动结束！');
+	}
+}
+setInterval("show_time()",1000);
+
+function thisimg_over(imgobjs){
+	imgobjs.animate({"max-width":"150%","max-height":"150%"},300);
+}
+function thisimg_out(imgobjs){
+	imgobjs.animate({"max-width":"100%","max-height":"100%"},300);
+}
+
+</script>
+<style type="text/css">
+.apply{
+	text-align:center;
+	margin:10px;
+}
+.apply a{
+	color:blue;
+}
+</style>
+<div class="apply"><a href="{:murl('content/add',['fid'=>$fid,'aid'=>$id])}">我也建一个</a></div>
+
+<!-- 微信分享 -->
+{include file="index@share"/}
+
+<!-- 分享海报二维码宣传推广图片 -->
+{include file="$haibao" /}
+{include file="../../../haibao_style/btn" /}
+<!--<div style="position:fixed;right:30px;top:80px;z-index:200;width:30px;font-size:10px;line-height:10px;color:#000;opacity:0.7;"><i id="share_code" onclick="share_btn()" style="font-size:30px;" class="fa fa-qrcode"></i>海报</div>-->
+
+{/block}

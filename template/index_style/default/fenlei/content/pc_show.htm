@@ -1,0 +1,138 @@
+﻿{extend name="$index_style_layout" /}
+
+<!--SEO相关-->
+{block name="head_title"}{$info.title}{/block}
+{block name="head_keword"}{$info.keywords?:$info.title}  {$s_info.name} {/block}
+{block name="head_description"}{:get_word(del_html($info['content']),300)}{/block}
+
+{block name="body_AllScorllSlide"}
+<!--通栏横幅图片__STATIC__/css/qb_ui.css中控制图片宽度百分百高度行内样式设置，如不设置不小于100px---->
+{qb:tag name="cms_pc_show001" type="image"}
+<div class="qb_ui_AllscrollBanner" style="height:300px;">
+	<a href="#1"><img src="__STATIC__/images/s2.jpg"></a>
+</div>
+{/qb:tag}
+{/block}
+{block name="body_content"}
+
+<link rel="stylesheet" type="text/css" href="__STATIC__/fenlei/bencandy.css">
+
+<div class="FenLieContainer">
+    <div class="Main">
+        <div class="Mhead">
+            <div class="tag">{$s_info.name}</div>
+			<!--
+            <div class="baidu_share">                  
+                <div id="bdshare" class="bdshare_t bds_tools get-codes-bdshare">
+                    <span class="bds_more">分享到：</span>
+                    <a class="bds_qzone"></a>
+                    <a class="bds_tsina"></a>
+                    <a class="bds_tqq"></a>
+                    <a class="bds_renren"></a>
+                    <a class="shareCount"></a>
+                </div>
+                <script type="text/javascript" id="bdshare_js" data="type=tools&amp;uid="></script>
+                <script type="text/javascript" id="bdshell_js"></script>
+                <script type="text/javascript">
+                    document.getElementById("bdshell_js").src = "https://bdimg.share.baidu.com/static/js/shell_v2.js?cdnversion="
+                </script>                
+            </div>
+			-->
+            <div class="post"><a href="{:urls('add','fid='.$info['fid'])}">免费发布此类信息</a>
+            </div>
+        </div>
+        <dl class="AtcBox">
+            <dt>发布时间: {$info.create_time|format_time} 　浏览量: {$info.view} 次</dt>
+            <dd>
+                {if ($admin || $info['uid']==$userdb['uid'])}
+                <a href="{:urls('edit','id='.$id)}">修改</a>
+                <a href="#" onclick="delinfo({$id})">删除</a> {/if}
+                <script type="text/javascript">
+                    function delinfo(aid) {
+                        $.get("{:urls('wxapp.post/delete')}?id="+aid, function (res) {
+                            if (res.code == 0) {
+                                layer.alert("删除成功！");
+                                location.href = "{:urls('content/index',['fid'=>$fid])}";
+                            } else {
+                                layer.msg("删除失败:" + res.msg, {
+                                    time: 1500
+                                });
+                            }
+                        });
+                    }
+                </script>
+            </dd>
+        </dl>
+        <div class="BaseInfoTable">
+            <div class="ShowPic">
+                <div class="ShowShopPic">
+                    <div class="ShopPicShowStyle">
+                        <ul>
+                            {notempty name="$info.picurls"} {volist name="$info.picurls" id="rs"}
+                            <li><span><img src="{$rs.picurl}" onError="this.src='__STATIC__/images/nopic.png'"/></span>
+                            </li>
+                            {/volist} {else /}
+                            <li><span><img src="__STATIC__/images/nopic.png" /></span>
+                            </li>
+                            {/notempty}
+                        </ul>
+                    </div>
+                    <script type="text/javascript" src="__STATIC__/fenlei/showpic.js"></script>
+                </div>
+            </div>
+            <div class="ShowInfo">
+                <div class="title">{$info.title}</div>
+                <ul class="Infos">
+					<li><span>区域：</span>{$info.province_id|get_area} {$info.city_id|get_area} {$info.zone_id|get_area} {$info.street_id|get_area}</li>
+                    {qb:showpage field="title,content,picurl,telphone,maps"}
+                    <li><span>{title}：</span>{value}</li>
+                    {/qb:showpage}
+                </ul>
+                <div class="telphone"><span>电话号码:</span>{empty name="userdb"} {$info.telphone|substr=0,5}****** {else /} {$info.telphone} {/empty}</div>
+                <div class="moreaction">
+                    <input type="button" value="举报该信息" onClick="" class="zb" />
+                    <input type="button" value="推荐给朋友" onClick="window.location.href='mailto:';" class="tz" />
+                    <input type="button" value="加入收藏夹" onClick="" class="sc" />
+                </div>
+            </div>
+        </div>
+        <div class="InfoContent">
+            <div class="head">详细介绍</div>
+            <p>{$info.content}</p>
+        </div>
+		<!--引用评论碎片-->
+		{qb:comment name="commentpc001" rows='5'}
+			{include file="content/comment_pc" /}
+		{/qb:comment}
+    </div>
+    <div class="Side">
+        <!--包含的文件在此目录/fenlei/index/side.htm-->
+        {include file="index/side" /}
+{notempty name="$info.maps"}
+		<div class="sidecont">
+			<div class="head">地图位置</div>
+			<div style="padding:10px 0;"><iframe src="{:urls('index/map/index')}?xy={$info.maps}&title={$info.title|urlencode}"  width="100%" height="350" scrolling="no" frameborder="0" ></iframe></div>
+		</div>
+{/notempty}
+        <div class="sidecont">
+            <div class="head">热门信息</div>
+            <ul class="List">
+                {qb:tag name="pc_fenlei_show_side_001" type="fenlei" rows="5" union="mid" order="view"}
+                <li><span>{$i}</span><a href="{$rs.url}">{$rs.title}</a>
+                </li>
+                {/qb:tag}
+            </ul>
+        </div>
+        <div class="sidecont">
+            <div class="head">最新信息</div>
+            <ul class="List">
+                {qb:tag name="pc_fenlei_show_side_002" type="fenlei" rows="5" union="mid" order="id"}
+                <li><span>{$i}</span><a href="{$rs.url}">{$rs.title}</a>
+                </li>
+                {/qb:tag}
+
+            </ul>
+        </div>
+    </div>
+</div>
+{/block}

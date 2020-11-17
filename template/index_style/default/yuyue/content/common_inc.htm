@@ -1,0 +1,56 @@
+<style type="text/css">
+.youhui{
+	margin:20px;
+	font-size:14px;
+	line-height:200%;
+}
+.youhui .y_money{
+	color:red;
+	font-weight:bold;
+}
+.youhui .y_endtime{
+	color:blue;
+}
+</style>
+<div style="display:none" id="youhui_msg">
+	<div class="youhui">
+		恭喜你，领取到一张面值 <em class="y_money">0</em> 元的优惠券<br> 
+		<br> 有效期截止于：<em class="y_endtime">2020-12-12 23:59</em>
+		<br> 是否立即使用？
+	</div>
+</div>
+
+<script type='text/javascript'>
+{if config('use_youhui')}
+
+$(function(){
+	var yid = parseInt("{:input('yid')}"==""?0:"{:input('yid')}");	//优惠券ID
+	if(yid>0){
+		$.get("{:urls('wxapp.youhui/get_youhui',['id'=>$id])}?yid="+yid,function(res){
+			if(res.code==0){
+				if(res.data.ifuse>0){
+					return ; //已使用过，就不要再弹出提示
+				}
+				$("#youhui_msg .y_money").html(res.data.money);
+				$("#youhui_msg .y_endtime").html(res.data.end_time);
+				layer.open({
+					type:1,
+					content:$("#youhui_msg"),
+					shift: 1,
+					title:false,
+					btn:['立即使用','以后再说'],
+					yes:function(){
+						layer.closeAll();
+						BuyThisShop(3);
+					}
+				});
+			}else{
+				layer.alert(res.msg);
+			}
+		})
+	}
+});
+
+{/if}
+
+</script>

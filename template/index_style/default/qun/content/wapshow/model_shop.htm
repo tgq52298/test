@@ -1,0 +1,35 @@
+<!--圈子商品-->
+	<div class="SideBox">
+		<div class="head"><span class="tag">推荐商品</span><a href="{:urls('qun/shop/index',['id'=>$id])}" class="more">更多</a></div>
+		<ul class="listPhoto qun_wapshow_photo001">
+			{php}$sys_type=modules_config('appstore')?'appstore':(modules_config('booking')?'booking':'shop');{/php}
+			{//这里是动态判断调用不同的频道数据}
+			{qb:hy name="qun_wapshow_photo001" type="shop" union="sys_type" mid="-1" where="uid=$info.uid" order="id" by="desc" rows="2" js="qun_wapshow_photo001"}
+			<li><a href="{$rs.url}"><span><img src="{$rs.picurl}" onerror="this.src='__STATIC__/images/nopic.png'"></span><em>{$rs.title}</em></a>
+			<i class="glyphicon glyphicon-remove-sign act-delete" data-id="{$rs.id}" data-uid="{$rs.uid}" data-sys="shop"></i>
+			</li>
+			{/qb:hy}
+		</ul>
+		<div class="qb_ui_showmore" onclick='showMorePhoto("{qb:hy_url name="qun_wapshow_photo001"/}")'><i class="fa fa-angle-double-down"></i></div>
+	</div>
+<script type="text/javascript">
+var shop_photo_page = 1;
+function showMorePhoto(url){
+	shop_photo_page++;
+	$.get(url+shop_photo_page,function(res){
+		if(res.code==0){
+			if(res.data==''){
+				layer.msg("已经显示完了！",{time:500});
+				//$('.ShowMore1').hide();
+				$('.qb_ui_showmore').hide();
+			}else{
+				$('.qun_wapshow_photo001').append(res.data);
+				act_delete();
+				//act_top():
+			}
+		}else{
+			layer.msg(res.msg,{time:2500});
+		}
+	});
+}
+</script>

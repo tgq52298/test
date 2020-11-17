@@ -1,0 +1,21 @@
+<!--在线直播的圈子-->
+		<div class="pc_live_video taglabel">
+			{qb:tag name="pc_live_video" class="plugins\alilive\index\Index@label"}
+					<ul class="list">
+						<li class="icon"><a href="{:get_url('user',$rs.uid)}" target="_blank"><img src="{$rs.uid|get_user_icon}" onerror="this.src='__STATIC__/images/nobody.gif'"></a></li>
+						<li class="info">
+							<div class="title"><i class="fa fa-video-camera" style="font-size:16px;color:orange;"></i> <a target="_blank" href="/index.php/qun/show-{$rs.id}.html">{$rs.uid|get_user_name} 正在 {$rs.title} 进行视频直播</a>
+							</div>
+							<div class="more"><a href="{:get_url('user',$rs.uid)}" target="_blank">{$rs.uid|get_user_name}</a> <span><i class="fa fa-clock-o"></i>直播开始时间:  {$rs.start_time|format_time=true}</span></div>
+						</li>	
+						<li>
+							<div class="play_voice">
+								<span class="line1"></span>
+								<span class="line2"></span>
+								<span class="line3"></span>
+								<span class="line4"></span>
+							</div>
+						</li>
+					</ul>
+		{/qb:tag}
+		</div>

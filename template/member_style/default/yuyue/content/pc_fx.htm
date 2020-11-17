@@ -1,0 +1,125 @@
+{extend name="$member_style_layout" /}
+
+{block name="title"}我购买的商品{/block}
+{block name="content"}
+<style type="text/css">
+<!--
+.listshops{
+	border-bottom:#DDD dotted 1px;
+	padding:10px 10px 50px 150px;
+	min-height:60px;
+	position:relative;
+}
+.listshops .img{
+	width:120px;
+	height:90px;
+	border:#DDD solid 1px;
+	padding:1px;
+	overflow:hidden;
+	text-align:center;
+	line-height:85px;
+	position:absolute;
+	left:12px;
+	top:12px;
+}
+.listshops .img img{
+	max-width:120px;
+	max-height:90px;
+	vertical-align:middle;
+}
+.listshops .atcs{
+	width:500px;
+	height:32px;
+	position:absolute;
+	right:12px;
+	bottom:15px;
+	text-align:right;
+	line-height:30px;
+	word-spacing:10px;
+}
+.listshops .atcs a{
+	display:inline-block;
+	border:#F60 solid 1px;
+	border-radius:5px;
+	padding:0 15px;
+	background:#F90;
+	color:#FFF;
+}
+.listshops .atcs a.dels{
+	border:#F00 solid 1px;
+	background:#F30;
+}
+.listshops .atcs a.edits{
+	border:#124272 solid 1px;
+	background:#336699;
+}
+.listshops .title a{
+	display:block;
+	height:30px;
+	line-height:30px;
+	overflow:hidden;
+	font-size:16px;
+}
+.listshops .info{
+	height:25px;
+	line-height:25px;
+	overflow:hidden;
+	color:#888;
+	font-size:14px;
+}
+.listshops .info a{
+	color:#2BB8AA;
+}
+.listshops .info span{
+	color:#F60;
+}
+.listshops .price{
+	width:150px;
+	height:30px;
+	line-height:30px;
+	position:absolute;
+	left:150px;
+	bottom:20px;
+	font-size:14px;
+	color:#888;
+}
+.listshops .price span{
+	font-size:24px;
+	color:#F60;
+}
+.search{float:right; background:#fff; border-radius:3px; padding:5px; margin:10px 10px 0 0;}
+.search .keyWord{float:left; width:200px; height:30px; line-height:30px;}
+.search .keyWord input{width:100%; height:28px; padding-left:5px;}
+.search .button{float:left; width:60px; margin-left:20px;}
+.search .button input{width:100%; height:30px;}
+-->
+</style>
+<div class="MainCont">
+	<div class="head">
+	  <div class="tag">允许分销的商品</div>
+	   
+	</div>
+    <div class="cont">
+{volist name="listdb" id="rs"}
+		<div class="listshops">
+			<div class="img"><a href="{$rs.url}" target="_blank"><img src="{$rs.picurl}" onerror="this.src='__STATIC__/images/nopic.png';"/></a></div>
+			<div class="title"><a href="{$rs.url}" target="_blank">{$rs.title}</a></div>
+			<div class="info">分类:<a href="{$rs.sort_url}" target="_blank">{$rs.sort_name}</a> 发布:<span>{$rs.time}</span> 浏览:<span>{$rs.view}</span> {if $rs.end_time}结束:<span>{$rs.end_time} </span>{/if} {if $rs.max_user}上限:<span>{$rs.max_user}</span>人{/if} 成团:<span>{$rs.min_user}</span>人  </div>
+			<div class="price" style="width:auto;">  促销价:<span>{$rs.price}</span> 预付款:<span>{$rs.fewmoney}</span>
+			分销收益：1级<span>{$rs.fx1}</span> 
+			{if $rs.fx2>0}2级<span>{$rs.fx2}</span> {/if}
+			{if $rs.fx3>0}3级<span>{$rs.fx3}</span>  {/if}
+			</div>
+			<div class="atcs">
+				{if config('use_youhui')}<a href="{:urls('youhui/add',['aid'=>$rs.id])}" class="dels">创建优惠券</a>{/if}
+				 <a href="#" onclick="layer.alert('电脑端不适合分销,请用手机访问才能分销');" class="edits">转发分销</a>
+			</div>
+		</div>
+{/volist}
+
+        <div class="Showpage">{$pages}</div>
+    </div>
+</div>
+
+
+{/block}

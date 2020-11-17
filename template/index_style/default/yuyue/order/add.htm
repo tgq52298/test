@@ -1,0 +1,67 @@
+{extend name="$index_style_layout" /}
+{block name="head_title"}确定购买商品{/block}
+{block name="body_content"}
+<link rel="stylesheet" href="__STATIC__/css/wap_order.css">
+<div class="PostOrder">
+	<form action="" method="post" onsubmit="return check_post();">
+{if empty($f_array)}
+		<ul>
+			<ol><i class="si si-user"></i></ol>
+			<li><input type="text" name="linkman" placeholder="请输入联系人" value="{$userdb['qun_group'][$info['ext_id']]['nickname']?:$userdb.username}"></li>
+		</ul>
+{/if}
+		<!--
+		<ul>
+			<ol><i class="fa fa-volume-control-phone"></i></ol>
+			<li><input type="text" name="telphone" placeholder="请输入联系电话" ></li>
+		</ul>-->
+		<input type="hidden" name="user_note" placeholder="备注" value="{$userdb['qun_group'][$info['ext_id']]['about']}">
+
+{qb:form name="xxx" field="linkman,user_note" mid="-1" f_array="$f_array"}
+		<ul class="{$rs.ifmust?'must-choose':''} {$rs.customize}" data-type="{$rs.type}" data-title="{$rs.title}">
+			
+			<ol><i class="fa fa-angle-right"></i></ol>
+			<li><dd class="title">{$rs.title}</dd> {$rs.value}</li>
+		</ul>
+{/qb:form}
+		<dl style="display:none;">
+			<dt>支付类型</dt>
+			<dd>
+				<input type="radio" name="ifolpay" value="1" checked />在线付款
+				<input type="radio" name="ifolpay" value="0" />货到付款
+			</dd>
+		</dl>
+{if $youhui_db}
+		<dl style="display:none;">
+			<dt>特别提醒</dt>
+			<dd>
+				<input type="checkbox" name="yid" value="{$youhui_db[0]['id']}" checked > 你有一张 {$youhui_db[0]['money']}元 的优惠券可抵扣使用!
+			</dd>
+		</dl>
+{/if}
+
+{if $info.limitmoney>0&&$info.money_scale>0}
+		<dl>
+			<dt>支付</dt>
+			<dd><input type="text" name="user_jf" style="width:60px;" placeholder="请输入需要兑换多少{$webdb.MoneyName?:'积分'}" value="{$userdb.money<$info.limitmoney*$info.money_scale?$userdb.money:$info.limitmoney*$info.money_scale}">个{$webdb.MoneyName?:'积分'} 可抵 {:sprintf("%.2f",($userdb.money<$info.limitmoney*$info.money_scale?$userdb.money:$info.limitmoney*$info.money_scale)/$info.money_scale)} 元</dd>
+		</dl>
+{/if}
+
+		<div>
+			<button type="submit">确认提交</button>
+			<input type="hidden" name="order_field" id="order_field">
+			<button type="button" onclick="javascript:history.back(-1);return false;">返回</button>
+		</div>
+	</form>
+</div>
+<script type="text/javascript">
+$(function(){
+	$('form input[type="text"]').each(function(){
+		if($(this).prev().hasClass("title")){
+			$(this).prev().hide();	//文本框就不需要显示标题提示描述
+		}
+	});
+})
+</script>
+<script type="text/javascript" src="__STATIC__/booking/order.js"></script>
+{/block}

@@ -1,0 +1,46 @@
+{extend name="$member_style_layout" /}
+{block name="content"}
+	<style>
+		.fc_h2{font-size: 20px;color: #DADADA;}
+		.dl_border{border-bottom: 1px dashed #888;}
+		.fontsize_16{font-size:16px;}
+		.layui-form-pane .layui-form-label{ width: 78px;padding: 8px 3px;}
+		.layui-form-pane .layui-input-block{margin-left:78px;}
+		.add_btn{background: #009688;box-shadow: 0 4px 4px rgba(0,0,0, 0.5);color: #fff;padding: 3px 5px;}
+	</style>
+	{include file="member@common/form" /}
+	<script>
+		var len=$(".WapFormContainer dl").length-1;
+		console.log(len);
+		var dlHTML = "<dl style='background:#DADADA;' id='add_btn'><dt><span class='fa fa-fw fa-list'></span>试卷题目:</dt><dd><a href='javascript:;' onclick='add_issue();' class='add_btn'><span class='fa fa-fw fa-plus'></span>点击增加题目</a></dd></dl>";
+		$(".WapFormContainer").find("dl").eq(len).after(dlHTML);
+		// 生成html标签
+		function create_html(){
+			var new_len = $(".WapFormContainer dl").length;
+			var dl_html = "<dl class='dl_border'><dt><a href='javascript:;' class='glyphicon glyphicon-trash fontsize_16 del_html' title='移除该题目'>点击移除该题目</a></dt><dd><div class='layui-form-item'><label class='layui-form-label'>问题描述</label><div class='layui-input-block'><input type='text' name='issue_db["+new_len+"][title]' required  lay-verify='required' placeholder='请输入问题' autocomplete='off' class='layui-input'></div></div> <div class='layui-form-item'><label class='layui-form-label'>选项A</label><div class='layui-input-block'><input type='text' name='issue_db["+new_len+"][answer_a]' required  lay-verify='required' placeholder='请输入选项A' autocomplete='off' class='layui-input'></div></div><div class='layui-form-item'><label class='layui-form-label'>选项B</label><div class='layui-input-block'><input type='text' name='issue_db["+new_len+"][answer_b]' required  lay-verify='required' placeholder='请输入选项B' autocomplete='off' class='layui-input'></div></div><div class='layui-form-item'><label class='layui-form-label'>选项C</label><div class='layui-input-block'><input type='text' name='issue_db["+new_len+"][answer_c]' required  lay-verify='required' placeholder='请输入选项C' autocomplete='off' class='layui-input'></div></div><div class='layui-form-item'><label class='layui-form-label'>选项D</label><div class='layui-input-block'><input type='text' name='issue_db["+new_len+"][answer_d]' required  lay-verify='required' placeholder='请输入选项D' autocomplete='off' class='layui-input'></div></div><div class='layui-form-item' pane><label class='layui-form-label'>答案选项</label><div class='layui-input-block'><input type='radio' name='issue_db["+new_len+"][answer]' value='1' title='A' checked><input type='radio' name='issue_db["+new_len+"][answer]' value='2' title='B'><input type='radio' name='issue_db["+new_len+"][answer]' value='3' title='C'><input type='radio' name='issue_db["+new_len+"][answer]' value='4' title='D'></div></div></dd></dl>";
+			return dl_html;
+		}
+		// 添加问题
+		function add_issue(){
+			var las_len =$(".WapFormContainer dl").length;
+			var issue_html = create_html();
+			$('#add_btn').after(issue_html);
+			$('form').addClass("layui-form-pane");
+			layui.use(['form','element'], function(){
+			  var form = layui.form;
+			  var element = layui.element;
+			  form.render();
+			});
+		}
+		$(document).ready(function(){
+			// 默认生成3道题目填写表单
+			for(var i=0;i<3;i++){
+				add_issue();
+			}
+		})
+		// 移除题目，把移除绑定到加载函数内（委托事件）
+		$(document).on('click','.del_html',function(){
+			$(this).parents("dt").parents("dl").remove();
+		})
+	</script>
+{/block}

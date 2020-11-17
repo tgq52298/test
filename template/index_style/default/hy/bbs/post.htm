@@ -1,0 +1,151 @@
+﻿<!--
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>发表新贴</title>
+<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<link rel="stylesheet" href="__STATIC__/css/base.css">
+<link rel="stylesheet" href="__STATIC__/css/qb_ui.css">
+<link rel="stylesheet" href="__STATIC__/icon/icon.css">
+<script type="text/javascript" src="__STATIC__/js/core/jquery.min.js"></script>
+<script type="text/javascript" src="__STATIC__/layer/layer.js"></script>
+</head>
+<body>
+-->
+{extend name="$index_style_layout" /}
+{block name="head_title"}{:M('name')}{/block}
+
+{block name="body_content"}
+<link rel="stylesheet" href="__STATIC__/bbs/post.css">
+<div class="bbsContainer">
+<!--
+	<ul class="topBoxs">
+		<li class="logo"><a href="/"><img src="__STATIC__/bbs/logo1.png"></a></li>
+		<li class="info"><span>{:M('name')}</span><em>{$userdb.username}</em></li>
+		<li class="atten"><a href="{:get_url('member')}"><i class="si si-user"></i></a></li>
+	</ul>
+	<div class="quideBox"><a href="{:urls('index/index')}">返回主页</a> -&gt; {notempty name="fid"}<a href="{:urls('content/index',['fid'=>$fid])}">{:get_sort($fid)}</a> &gt;{/notempty} 发表帖子</div>
+-->
+	<form class="ajax-post" action="{:urls('content/post')}" method="post">
+	<div class="PostBox">
+		<ul>
+			<ol>标题</ol>
+			<li><input type="text" value="{$rsdb.title}" name="title" placeholder="请输入标题" required/></li>
+		</ul>
+{empty name="$info.bbs_fid"}
+		<ul>
+			<ol>所属栏目</ol>
+			<li>
+			<select name="fid">
+				<option value="0">请选择栏目</option>
+				{volist name="'bbs'|sort_config" id="rs"}
+				{eq name="$rs.mid" value="$mid"}
+				<option value="{$rs.id}" {eq name="$fid" value="$rs.id"}selected{/eq}>{$rs.title_prefix}{$rs.name}</option>
+				{/eq}
+				{/volist}
+			</select>
+		</li>
+		</ul>
+{else /}
+<input type="hidden" name="fid" value="{$info.bbs_fid}">
+{/empty}
+		<ul>
+			<ol>内容</ol>
+			<li>
+				<link rel="stylesheet" href="__STATIC__/libs/summernote/bootstrap.min.css" />
+				<script type="text/javascript" src="__STATIC__/libs/summernote/bootstrap.min.js"></script>
+				<link rel="stylesheet" href="__STATIC__/libs/summernote/summernote.css">
+				<script type="text/javascript" src="__STATIC__/libs/summernote/summernote.js"></script>
+				<script type="text/javascript">
+					$(function() {
+					  $('.summernote').summernote({
+						height: 200,
+						toolbar: false
+					  });
+					});
+				</script>
+				<textarea name="content" class="summernote" placeholder="请输入内容">{$rsdb.content}</textarea>
+			</li>
+		</ul>
+		<ul class="uploadImg">
+		    <div style="display:none;">
+				<input type="file" name="fileToUpload" id="fileToUpload" accept="image/*" multiple/>
+				<input type="text" name="picurl" value="{$rsdb.picurl}" id="compressValue"  style="width:100%;" /> 
+			</div>
+			<ol>点击上传图片</ol>
+			<li onclick='$("#fileToUpload").click()'><i class="si si-camera"></i></li>
+		</ul>
+		<div class="ListImgs"></div>
+		<div class="button"><button type="submit">{empty name='id'}发表帖子{else /}修改帖子{/empty}</button></div>		
+	</div>
+	</form>
+</div>
+
+<script type="text/javascript" src="__STATIC__/js/base64uppic.js"></script>
+<script type="text/javascript">
+		var severUrl = "{:urls('index/attachment/upload','dir=images&from=base64&module=bbs')}";
+		var pics = [];
+        //图片上传change事件
+        $('#fileToUpload').change(function(){			
+            uploadBtnChange($(this).attr("id"),'compressValue',pics,viewpics);
+        });
+
+		function viewpics(url,pic_array){
+			var html = '';
+			pic_array.forEach(function(f){
+				html += '<div><span><img src="/public/'+f+'"></span><em><i class="fa fa-remove"></i></em></div>';
+			});
+			$(".ListImgs").html(html);
+			addclick();
+		}
+
+		if($("#compressValue").val()!='')pics = $("#compressValue").val().split(',');
+		viewpics('',pics);		
+		
+
+		function addclick(){
+			$(".ListImgs em").click(function(e){
+				//这里删除的图片没有真正从服务器删除
+				$(this).parent().remove();
+				pics = [];
+				var obj = $(".ListImgs img");
+				obj.each(function(e){
+					var img = $(this).attr("src");
+					img = img.replace('/public/','');
+					pics.push(img);
+					$("#compressValue").val( pics.join(',') );
+				});
+				if(obj.length==0){
+					$("#compressValue").val('');
+				}			
+			});
+		}
+		addclick();
+
+
+var url = "{empty name='id'}{:urls('bbs/wxapp.post/add')}{else /}{:urls('bbs/wxapp.post/edit',['id'=>$id])}{/empty}?ext_id={$aid}";
+	
+	$(document).ready(function(){
+        $('.ajax-post').submit(function () {
+            var form_data = $(this).serialize();
+            $.post(url, form_data).success(function (res) {
+                if (res.code==0) {
+					layer.open({title: '提示',content: res.msg});
+                    setTimeout(function () {
+                        //location.href = "{:urls('show')}?id=" + res.data.id;
+						location.href="{:urls('content/show',['id'=>$aid])}"
+                    }, 100);
+                } else {
+					layer.open({title: '提示',content: res.msg});
+                }
+            }).fail(function () {
+				layer.open({title: '提示',content: '服务器发生错误'});
+            });
+            return false;
+        });
+    });
+</script>
+{/block}

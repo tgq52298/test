@@ -1,0 +1,296 @@
+.TopAdCont{
+	max-width:640px;
+	margin:auto;
+}
+.TopAdCont img{
+	max-width:100%;
+}
+.ActionBox{
+	max-width:640px;
+	margin:auto;
+	position:relative;
+	background:#FFF;
+	/*filter:alpha(opacity=60); 
+	-moz-opacity:0.6; 
+	opacity:0.6;*/
+	z-index:1000;
+	padding:5px 0;
+}
+.process{
+	width:99%;
+	margin:auto;
+	position:relative;
+	height:40px;
+	overflow:hidden;
+	padding-left:3px;		
+}
+.process li{
+	width:33%;
+	height:40px;
+	overflow:hidden;
+	float:left;
+	line-height:40px;	
+	position:relative;
+}
+.process li a{
+	display:block;
+	margin:0 20px 0 0;
+	padding-left:20px;
+	text-align:center;
+	height:40px;
+	line-height:40px;
+	overflow:hidden;
+	background:#ADADAD;
+	color:#FFF;
+}
+.process li:before,.process li:after{
+	content:'';
+	display:block;
+	width:0;
+	height:0;
+	position:absolute;
+	border:20px solid transparent;	
+}
+.process li:before{
+	border-left: 20px solid #FFF;
+	border-right:0;
+	left:0;
+	top:0;
+}
+.process li.li1:before{
+	display:none;
+}
+.process li:after{
+	border-left: 20px solid #ADADAD;
+	border-right:0;
+	right:0;
+	top:0;
+}
+.process li.ck a{
+	background:#12B978;
+}
+.process li.ck:after{
+	border-left: 20px solid #12B978;
+}
+/***/
+.SelectTyle{
+	width:100%;
+	height:40px;
+	overflow:hidden;
+	margin:auto;
+	position:relative;
+}
+.SelctBox{
+	position:absolute;
+	left:0;
+	top:0;
+}
+.SelctBox ul{
+	display:table;
+}
+.SelctBox ul ol,.SelctBox ul li{
+	display:table-cell;
+	height:40px;
+	vertical-align:middle;
+	line-height:30px;
+}
+.SelctBox ul a{
+	display:block;
+	width:80px;
+	height:30px;
+	text-align:center;
+	overflow:hidden;
+}
+.SelctBox ul a.ck{
+	background:#F60;
+	color:#FFF;
+	border-radius:5px;
+}
+.SelctBox ul span{
+	display:block;
+	width:80px;
+	height:30px;
+	padding-left:5px;
+}
+.ShowThisStyle{
+	max-width:640px;
+	margin:auto;
+	position:relative;
+}
+.ShowThisStyle:before{
+	content:'';
+	display:block;
+	width:100%;
+	height:1px;
+	padding-top:120%;
+}
+.ThisStyleBox{
+	position:absolute;
+	width:100%;	
+	height:100%;
+	overflow:hidden;
+	background:#666;
+	left:0;
+	top:0;
+}
+.ThisStyleIn{
+	position:absolute;
+	height:20%;
+	width:98%;
+	left:1%;
+	bottom:3%;	
+	overflow:hidden;
+}
+.ThisStyleInBox{
+	position:absolute;
+	left:0;
+	top:0;
+}
+.ThisStyleIn ul{
+	display:table;
+	height:100%;
+}
+.ThisStyleIn ul li{
+	display:table-cell;
+	padding:0 5px;
+	vertical-align:middle;
+}
+.ThisStyleIn ul li .img{
+	max-height:100px;
+	overflow:hidden;
+	text-align:center;
+	border:#666 solid 2px;
+}
+.ThisStyleIn ul li.ck .img{
+	border:#4D8BE2 solid 2px;
+}
+.ThisStyleIn ul li .img img{
+	width:60px;
+	height:100px;
+}
+.ShowMeney{
+	position:absolute;
+	width:150px;
+	height:150px;
+	left:1%;
+	top:1%;
+	overflow:hidden;
+}
+.ShowMeney div{
+	height:40px;
+	width:100%;
+	line-height:40px;
+	overflow:hidden;
+	text-align:center;
+	background:#F30;
+	color:#FFF;
+	transform: rotate(-45deg);
+	-o-transform: rotate(-45deg);
+	-webkit-transform: rotate(-45deg);
+	-moz-transform: rotate(-45deg);
+	position:absolute;
+	left:-40px;
+	top:15px;
+}
+.ShowBigImg{
+	position:absolute;
+	width:98%;
+	height:75%;
+	left:1%;
+	top:1%;
+	background:#FFF;
+	overflow:hidden;
+}
+.ShowBigImg div{
+	display:table;
+	width:100%;
+	height:100%;
+}
+.ShowBigImg div span{
+	display:table-cell;
+	text-align:center;
+	vertical-align:middle;
+}
+.ShowBigImg div span img{
+	max-width:100%;
+	max-height:100%;
+}
+.ShowBigImg div span a{
+	display:block;
+	width:60%;
+	height:40px;
+	text-align:center;
+	line-height:40px;
+	position:absolute;
+	left:20%;
+	bottom:10px;
+	background:#12B978;
+	color:#FFF;
+	border-radius:10px;
+}
+.ShowBigImg div span a em{
+	display:inline;
+	width:0px;
+	height:0px;
+	overflow:hidden;
+	position:absolute;
+	right:8px;
+	top:8px;
+	border:10px solid transparent;	
+	border-left: 10px solid #FFF;
+	border-right:0;
+}
+/**/
+.NoteWordBox{
+	position:fixed;
+	width:100%;
+	height:100%;
+	z-index:100000;
+	left:0;
+	top:0;
+	display:none;
+}
+.NoteWordBox .BackBox{
+	position:absolute;
+	width:100%;
+	height:100%;
+	background:rgba(0,0,0,0.6);
+	left:0;
+	top:0;
+}
+.NoteWordBox .NoteWord{
+	width:300px;
+	border:#F60 solid 1px;
+	margin:50px auto 0 auto;
+	background:#FFF;
+	border-radius:5px;
+	position:relative;
+}
+.NoteWordBox .NoteWord p{
+	padding:10px;
+	font-size:14px;
+}
+.NoteWordBox .NoteWord p em{
+	font-size:18px;
+	color:blue;
+}
+.NoteWordBox .NoteWord p span{
+	font-size:18px;
+	color:#F30;
+}
+.NoteWordBox .NoteWord .but{
+	text-align:center;
+	padding-bottom:15px;
+	line-height:30px;
+}
+.NoteWordBox .NoteWord .but a,.NoteWordBox .NoteWord .but span{
+	display:inline-block;
+	padding:0 10px;
+	background:blue;
+	color:#FFF;
+	border-radius:5px;
+}
+.NoteWordBox .NoteWord .but span{
+	background:#F30;
+	margin-left:10px;
+}

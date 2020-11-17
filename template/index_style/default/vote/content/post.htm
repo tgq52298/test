@@ -1,0 +1,153 @@
+﻿<!--
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>我要报名</title>
+<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<link rel="stylesheet" href="__STATIC__/css/base.css">
+<link rel="stylesheet" href="__STATIC__/css/qb_ui.css">
+<link rel="stylesheet" href="__STATIC__/icon/icon.css">
+<script type="text/javascript" src="__STATIC__/js/core/jquery.min.js"></script>
+<script type="text/javascript" src="__STATIC__/layer/layer.js"></script>
+</head>
+<body>
+-->
+{extend name="$index_style_layout" /}
+{block name="head_title"}{:M('name')} {/block}
+
+{block name="body_content"}
+<link rel="stylesheet" href="__STATIC__/vote/wap/post.css">
+<div class="bbsContainer">
+
+	<form class="ajax-post" action="{:urls('content/post')}" method="post">
+	<div class="PostBox">
+		{:hook_listen('template_form_head',$info,null,true)}
+		<ul>
+			<ol>选项标题</ol>
+			<li><input type="text" value="{$info.title}" name="title" placeholder="请输入选项标题" required/><input type="hidden" name='fid' value="{$fid}"></li>
+		</ul>
+		<ul class="uploadImg">
+		    <div style="display:none;">
+				<input type="file" name="fileToUpload" id="fileToUpload" accept="image/*" />
+				<input type="text" name="picurl" value="{$info.picurl}" id="compressValue"  style="width:100%;" /> 
+			</div>
+			<ol>点击上传封面图片</ol>
+			<li onclick='$("#fileToUpload").click()'><i class="si si-camera"></i></li>
+		</ul>
+		<div class="ListImgs"></div>
+		<ul>
+			<ol>联系电话</ol>
+			<li><input type="text" value="{$info.mobphone}" name="mobphone" placeholder="请输入联系电话，获奖后方便联系" /></li>
+		</ul>
+<!-- 		<ul>
+	<ol>所属栏目</ol>
+	<li>
+<select name="fid">
+	<option value="0">请选择栏目</option>
+	{volist name="''|sort_config" id="rs"}
+	<option value="{$rs.id}" {eq name="$fid" value="$rs.id"}selected{/eq}>{$rs.title_prefix}{$rs.name}</option>
+	{/volist}
+</select>
+</li>
+</ul>
+ -->
+		<ul>
+			<ol>相关描述(可填写自我介绍，拉票宣言等)</ol>
+			<li>
+				<link rel="stylesheet" href="__STATIC__/libs/summernote/bootstrap.min.css" />
+				<script type="text/javascript" src="__STATIC__/libs/summernote/bootstrap.min.js"></script>
+				<link rel="stylesheet" href="__STATIC__/libs/summernote/summernote.css">
+				<script type="text/javascript" src="__STATIC__/libs/summernote/summernote.js"></script>
+				<script type="text/javascript">
+					$(function() {
+					  $('.summernote').summernote({
+						height: 200,
+						toolbar: false
+					  });
+					});
+				</script>
+				<textarea name="content" class="summernote" placeholder="请输入内容">{$info.content}</textarea>
+			</li>
+		</ul>
+
+		
+		{:hook_listen('template_form_foot',$info,null,true)}
+		<div class="button"><button type="submit">{empty name='id'}提交报名{else /}修改报名{/empty}</button></div>		
+	</div>
+	</form>
+</div>
+
+<script type="text/javascript" src="__STATIC__/js/base64uppic.js"></script>
+<script type="text/javascript">
+		var severUrl = "{:urls('index/attachment/upload','dir=images&from=base64&module=vote')}";
+		var pics = [];
+        //图片上传change事件
+        $('#fileToUpload').change(function(){			
+            uploadBtnChange($(this).attr("id"),'compressValue',pics,viewpics);
+        });
+
+		function viewpics(url,pic_array){
+			var html = '';
+			pic_array.forEach(function(f){
+				html += '<div><span><img src="/public/'+f+'"></span><em><i class="fa fa-remove"></i></em></div>';
+			});
+			$(".ListImgs").html(html);
+			addclick();
+		}
+
+		if($("#compressValue").val()!='')pics = $("#compressValue").val().split(',');
+		viewpics('',pics);		
+		
+
+		function addclick(){
+			$(".ListImgs em").click(function(e){
+				//这里删除的图片没有真正从服务器删除
+				$(this).parent().remove();
+				pics = [];
+				var obj = $(".ListImgs img");
+				obj.each(function(e){
+					var img = $(this).attr("src");
+					img = img.replace('/public/','');
+					pics.push(img);
+					$("#compressValue").val( pics.join(',') );
+				});
+				if(obj.length==0){
+					$("#compressValue").val('');
+				}			
+			});
+		}
+		addclick();
+
+var havepost = false;
+var url = "{empty name='id'}{:urls('wxapp.post/add')}{else /}{:urls('wxapp.post/edit',['id'=>$id])}{/empty}";
+	
+	$(document).ready(function(){
+        $('.ajax-post').submit(function () {
+
+            var form_data = $(this).serialize();
+			if(havepost==true){
+				layer.msg('请不要重复提交');
+				return false;
+			}
+			havepost = true;
+            $.post(url, form_data).success(function (res) {
+            	havepost = false;
+                if (res.code==0) {
+					layer.open({title: '提示',content: res.msg});
+                    setTimeout(function () {
+                        location.href = "{:urls('show')}?id=" + res.data.id;
+                    }, 1500);
+                } else {
+					layer.open({title: '提示',content: res.msg});
+                }
+            }).fail(function () {
+				layer.open({title: '提示',content: '服务器发生错误'});
+            });
+            return false;
+        });
+    });
+</script>
+{/block}

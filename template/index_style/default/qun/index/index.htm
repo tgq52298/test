@@ -1,0 +1,25 @@
+{extend name="$index_style_layout" /}
+
+<!--SEO相关-->
+{block name="head_title"}{$webdb.mseo_title?:$webdb.seo_title}{/block}
+{block name="head_keword"}{$webdb.mseo_keyword?:$webdb.seo_keyword}{/block}
+{block name="head_description"}{$webdb.mseo_description?:$webdb.seo_description}{/block}
+
+{block name="body_content"}
+<link rel="stylesheet" href="__STATIC__/group/index.css">
+
+<!-- 滑动按钮要用到的CSS与JS文件,他涉及到三个class类 swiper-container swiper-wrapper swiper-slide -->
+<link href="__STATIC__/libs/swiper/swiper.min.css" rel="stylesheet">
+<script src="__STATIC__/libs/swiper/swiper.min.js"></script>
+
+<div class="MainContainer">
+{qb:hy name="wap_qun_index" where="index_style/default/qun/index/wap_index/search,index_style/default/qun/index/wap_index/sortmenu,index_style/default/qun/index/wap_index/moremenu,index_style/default/qun/index/wap_index/rolltitle,index_style/default/qun/index/wap_index/goodqun,index_style/default/qun/index/wap_index/more_list" val="datas" type="labelmodel"}
+	{$datas}
+{/qb:hy}
+</div>
+
+<!-- 微信分享 -->
+{php}$share=['title'=>$webdb['mseo_keyword'],'about'=>$webdb['mseo_description'],'picurl'=>tempdir($webdb['logo'])];{/php}
+{include file="index@share" /}
+
+{/block}

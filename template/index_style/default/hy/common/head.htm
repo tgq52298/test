@@ -1,0 +1,29 @@
+	<div class="ListBox">
+		<div class="list">
+			<ul>
+				<li class="img"><a href="{:urls('content/show',['id'=>$info.id])}"><img src="{$info.picurl}" onerror="this.src='__STATIC__/images/nopic.png'"></a></li>
+				<li class="info">
+					<div class="title"><a href="{:urls('content/show',['id'=>$info.id])}">{$info.title}</a></div>
+					<div class="cnt">商铺人气：<span>{$info.view}</span></div>
+					<div class="other">
+						<span><i class="fa fa-fw fa-phone-square"><a href="tel:{$info.telphone}">{$info.telphone}</a></i></span>
+						 
+					</div>
+				</li>
+				<li class="join">
+					<dl>
+						<dt><span onclick="addpost()">发布</span></dt>
+						<dd class="MorePost">
+							<em><i class="fa fa-angle-up"></i></em>
+							<div>
+							<a href="{:murl('shop/content/add',['mid'=>1,'ext_id'=>$info.id])}">商品</a>
+							<a href="{:urls('cms/add',['aid'=>$info.id,'mid'=>1])}">资讯</a>
+							<a href="{:urls('cms/add',['aid'=>$info.id,'mid'=>2])}">图片</a>
+							<a href="{:urls('bbs/add',['aid'=>$info.id])}">话题</a>
+							</div>
+						</dd>
+					</dl>
+				</li>
+			</ul>
+		</div>
+	</div>

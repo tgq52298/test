@@ -1,0 +1,309 @@
+{extend name="$member_style_layout" /}
+
+{block name="title"}订单资料详情{/block}
+
+{block name="content"}
+<style>
+.OrderInfo{
+	background:#FFF;
+	width:100%;
+	overflow:hidden;
+}
+.OrderInfo .head{
+	line-height:40px;
+	position:relative;
+	text-indent:30px;
+	font-size:20px;
+}
+.OrderInfo .head:before{
+	content:'';
+	display:block;
+	width:3px;
+	height:20px;
+	background:#F90;
+	position:absolute;
+	left:15px;
+	top:10px;
+	border-radius:2px;
+}
+.OrderInfo .shop dt,.orderinfo{
+	height:35px;
+	line-height:35px;
+	background:#EFEFEF;
+	border-top:#CCC solid 1px;
+	text-indent:15px;
+}
+.OrderInfo .shop dd,.totalnomey,.OrderInfo .infos{
+	border-top:#CCC solid 1px;
+}
+.OrderInfo ul{
+	display:table;
+	width:100%;
+}
+.OrderInfo ul ol,.OrderInfo ul li{
+	display:table-cell;
+	vertical-align:middle;
+}
+.OrderInfo .shop dd{
+	padding:5px 10px;
+}
+.OrderInfo .shop dd ul ol a{
+	display:block;
+	line-height:20px;
+	color:#369;
+	padding:5px 0;
+}
+.OrderInfo .shop dd ul li{
+	width:80px;
+	padding:5px 0 5px 5px;
+}
+.OrderInfo .shop dd ul li span,.OrderInfo .shop dd ul li em{
+	display:block;
+	height:20px;
+	line-height:20px;
+	text-align:right;
+	overflow:hidden;
+}
+.OrderInfo .shop dd ul li span{
+	color:#AAA;
+}
+.totalnomey li{
+	width:100px;
+	text-align:right;
+	height:50px;
+	color:#F60;
+	padding-right:10px;
+}
+.totalnomey ol{
+	padding-left:15px;
+}
+.OrderInfo .infos ol{
+	width:100px;
+	height:40px;
+	text-indent:15px;
+	color:#999;
+}
+.OrderInfo .infos li{
+	padding:5px;
+	line-height:20px;
+}
+.BackBut{
+	padding:10px 0 0 0;
+}
+.BackBut a{
+	display:block;
+	text-align:center;
+	line-height:40px;
+	background:#F90;
+	color:#FFF;
+}
+</style> 
+<div class="OrderInfo">
+	<div class="head">用户订单详情</div>
+	<dl class="shop">
+		<dt>订购商品</dt>
+		<dd>
+{volist name="info.shop_db" id="rs"}
+          <ul>
+            <ol><a href="{:iurl('content/show',['id'=>$rs['id']])}">{$info.shoptitle?:$rs.title}</a>
+			{if empty($info.shoptitle)&&($rs._type1||$rs._type2||$rs._type3)} <font color="red"> {$rs._type1} {$rs._type2} {$rs._type3} </font>{/if}
+			</ol>
+			<li>
+				<span>X{$rs._num}</span>
+				<em>&yen;{$rs._price}</em>
+			</li>
+          </ul>
+{/volist}
+		</dd>
+	</dl><!--
+	<ul class="totalnomey">
+		<ol>应付总额</ol>
+		<li>&yen;{$info.totalmoney}</li>
+	</ul>-->
+	<div class="orderinfo">订单信息</div>
+	<ul class="infos">
+		<ol>订单号:</ol>
+		<li>{$info.order_sn}</li>
+	</ul>
+	{if $info.shipping_code}
+	<ul class="infos">
+		<ol>序列号:</ol>
+		<li>{$info.shipping_name}{$info.shipping_code}</li>
+	</ul>
+	{/if}
+	<ul class="infos">
+		<ol>核销码:</ol>
+		<li>
+{if $rs._paytype==0&&$info.few_ifpay==0}
+			请支付订金后,才能生成核销码
+{else /}
+		<img src="{$code_img}" width="150">
+		{eq name="$info.receive_status" value="1"}<div style="color:red;">交易完成,已消费</div>{/eq}
+{/if}
+		</li>
+	</ul>
+	<ul class="infos">
+		<ol>订购者ID:</ol>
+		<li><a href="{:get_url('user',['uid'=>$info['uid']])}" target="_blank">{$info.uid|get_user_name}</a></li>
+	</ul>
+	<ul class="infos">
+		<ol>订购时间:</ol>
+		<li>{$info.create_time}</li>
+	</ul>
+{if $info.order_day}
+	<ul class="infos">
+		<ol>预约日期:</ol>
+		<li>{:format_order_time($info)} </li>
+	</ul>
+{/if}
+{if $info.qun_money>0}
+
+	<ul class="infos">
+		<ol>应付圈币:</ol>
+		<li>
+		{$info.qun_money} 币
+		</li>
+	</ul>
+	<ul class="infos">
+		<ol>支付与否:</ol>
+		<li>
+		{if $info.receive_status==1}
+			<font color="red">交易完毕</font>
+		{else /}
+			{eq name="$info.pay_status" value="1"}
+					已支付
+			{else /}
+				<a style="color:red;border:1px solid #ddd;padding:5px;" href="{:urls('pay_few',['id'=>$info['id']])}">未支付(立即支付)</a> 
+			{/eq}
+		{/if}
+		</li>
+	</ul>
+
+{elseif (is_numeric($rs._paytype)&&$rs._paytype==0)||(is_numeric($rs.paytype)&&$rs.paytype==0)}
+
+	<!--分期付款-->
+	<ul class="infos">
+		<ol>应付订金:</ol>
+		<li>
+		{$info.fewmoney}元
+		</li>
+	</ul>
+	<ul class="infos">
+		<ol>应付余款:</ol>
+		<li>
+		{$info.pay_money}元
+		</li>
+	</ul>
+
+	<ul class="infos">
+		<ol>付订金与否:</ol>
+		<li>
+		{if $info.few_ifpay==1}
+			{if $info.receive_status==0&&$info['shop_db'][0]['fewnum']<$info['shop_db'][0]['min_user']}
+				<a style="color:blue;border:1px solid #ddd;padding:3px;" href="javascript:tui_ding('{:urls('tui_ding',['id'=>$info['id']])}');" title="点击退订金">已付订金({$info.fewmoney}元,点击申请退订)</a>
+			{else /}
+				<font color="red">已付订金({$info.fewmoney}元)</font>
+			{/if}
+		{elseif $info.few_ifpay==-1 /}
+			退订受理中 
+		{else /}
+			{if $info.receive_status==1}
+				交易完毕
+			{else /}
+				<a style="color:red;border:1px solid #ddd;padding:3px;" href="{:urls('pay_few',['id'=>$info['id']])}" title="点击在线支付">未付订金({$info.fewmoney}元,点击立即支付)</a>
+			{/if}
+		{/if}
+		</li>
+	</ul>
+
+	<ul class="infos">
+		<ol>付余款与否:</ol>
+		<li>
+		{if $info.receive_status==1}
+			{eq name="$info.pay_status" value="1"}
+				<font color="red">交易完毕,线上付余款({$info.pay_money}元)</font>
+			{else /}
+				<font color="red">交易完毕,线下付余款({$info.pay_money}元)</font>
+			{/eq}
+		{else /}
+			{eq name="$info.pay_status" value="1"}
+				<font color="red">已付余款({$info.pay_money}元)</font>
+			{else /}
+				<a href="{:urls('pay',['id'=>$info['id']])}" style="color:red;border:1px solid #ddd;padding:3px;" title="点击在线支付">未付余款({$info.pay_money}元,点击立即支付)</a>
+			{/eq}
+		{/if}
+	</li>
+	</ul>
+
+{else /}
+
+	<!--非分期付款-->
+	<ul class="infos">
+		<ol>应付金额:</ol>
+		<li>
+		{$info.fewmoney}元
+		</li>
+	</ul>
+	<ul class="infos">
+		<ol>付款与否:</ol>
+		<li>
+		{if $info.receive_status==1}
+			{if $info.few_ifpay==1}
+				<font color="red">已消费,交易完毕,线上付款</font>
+			{else /}
+				<font color="red">已消费,交易完毕,线下付款</font>
+			{/if}
+		{else /}
+			{if $info.few_ifpay==1}
+				{if $info['shop_db'][0]['fewnum']<$info['shop_db'][0]['min_user']}
+					<a style="color:blue;border:1px solid #ddd;padding:3px;" href="{:urls('tui_order',['id'=>$info['id']])}" title="未成团,我要退款">已线上付款</a>
+				{else /}
+					<font color="red" title="已成团,不可退款">已线上付款</font>
+				{/if}
+			{elseif $info.few_ifpay==-1 /}
+				退款受理中 
+			{else /}
+				<a style="color:red;border:1px solid #ddd;padding:3px;" href="{:urls('pay_few',['id'=>$info['id']])}" title="点击在线付款">未付款(立即支付)</a>
+			{/if}
+		{/if}
+	</li>
+	</ul>
+	
+{/if}
+
+	<!--
+	<ul class="infos">
+		<ol>支付方式:</ol>
+		<li>{$info.pay_name}</li>
+	</ul>
+	-->
+	
+{qb:showpage field="picurl,title"}
+	<ul class="infos">
+		<ol>{$rs.title}:</ol>
+		<li>{$rs.value}</li>
+	</ul>
+{/qb:showpage}
+
+{volist name=":json_decode($info.order_field,true)" id="rs"}
+	<ul class="infos">
+		<ol>{$rs.title}:</ol>
+		<li>{$rs.value}</li>
+	</ul>
+{/volist}
+
+	<div class="BackBut"><a href="javascript:history.go(-1);">返回</a></div>
+	<div style="margin-top:50px;"></div>
+</div>
+
+<script type="text/javascript">
+function tui_ding(url){
+	layer.confirm('你确认要退订金吗？', {
+            btn : [ '确认', '取消' ]//按钮
+        }, function(index) {
+            layer.close(index);
+            location.href = url;
+        });
+}
+</script>
+{/block}

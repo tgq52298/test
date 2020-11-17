@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>{$fid_db.name}</title>
+<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<link rel="stylesheet" href="__STATIC__/css/base.css">
+<link rel="stylesheet" href="__STATIC__/css/qb_ui.css">
+<link rel="stylesheet" href="__STATIC__/icon/icon.css">
+<link rel="stylesheet" href="__STATIC__/mui/css/mui.min.css">
+<script type="text/javascript" src="__STATIC__/js/core/jquery.min.js"></script>
+<script type="text/javascript" src="__STATIC__/layer/layer.js"></script>
+<style>
+body{
+	background: #F5F5F5;
+}
+.OverContent{
+	max-width: 640px;
+	position: relative;
+	margin: auto;
+}
+.OverContent:before{
+	content: '';
+	display: block;
+	position: absolute;
+	width: 100%;
+	padding-top: 60%;
+	background: #00C454;
+	left: 0;
+	top:0;
+}
+.usericon{
+	position: relative;
+	width: 15%;
+	margin: auto;
+	padding: 2% 0;
+}
+.usericon img{
+	width:100%;
+	max-height: 120px;
+	border-radius: 50%;
+}
+.OverContent .title{
+	position: relative;
+	text-align: center;
+	padding: 10px;
+}
+.OverContent .title span{
+	display: inline-block;
+	background: #FFAD01;
+	color: #FFF;
+	padding: 5px 20px;
+	line-height: 30px;
+	font-size:20px;
+	border-radius: 5px;
+}
+.OverContent .MoreInfo{
+	position: relative;
+	width: 80%;
+	margin: 5% auto 0 auto;
+	background: #FFF;
+	box-shadow: 3px 3px 3px #AAA;
+	border-radius: 5px;
+	padding: 30px 0;
+}
+.OverContent .MoreInfo ul{
+	display: table;
+	width: 96%;
+	margin: 0 2%;
+}
+.OverContent .MoreInfo ul ol,.OverContent .MoreInfo ul li{
+	display: table-cell;
+	width: 50%;
+	vertical-align: middle;
+	text-align: center;
+}
+.OverContent .MoreInfo ul ol{
+	border-right: #EEE solid 1px;
+}
+.OverContent .MoreInfo ul div{
+	line-height: 40px;
+	color: #777;
+}
+.OverContent .MoreInfo ul p{
+	line-height: 50px;
+	color: #00C454;
+	font-size:26px;
+}
+.OverContent .MoreInfo ul a{
+	display: inline-block;
+	line-height: 40px;
+	width: 80%;
+	background: #00C454;
+	color: #FFF;
+	border-radius: 20px;
+}
+.OverContent .MoreInfo ul a:hover{
+	background: #F60;
+}
+</style>
+</head>
+<body>
+<div class="OverContent">
+	<div class="usericon">
+		<a href="{:get_url('user',"uid=$userdb[uid]")}" target="_blank">
+			<img src="{$userdb.icon|tempdir}" onerror="this.src='__STATIC__/images/nobody.gif'"/>
+		</a>
+	</div>
+	<div class="title"><span>{$s_info.name}</span></div>
+	<div class="MoreInfo">
+		<ul>
+			<ol>
+				<div>已答试题</div>
+				<p>{$answers}</p>
+				<a href="{:auto_url('show',['fid'=>$fid,'aid'=>$aid0])}">复查试卷</a>
+			</ol>
+			<li>
+				<div>试题数量</div>
+				<p>{$numbers}</p>
+				<a href="{:auto_url('putin',['fid'=>$fid])}">提交试卷</a>
+			</li>
+		</ul>
+	</div>
+</div>
+
+{include file="index@footmenu" /}
+</body>
+</html>

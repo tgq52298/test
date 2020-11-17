@@ -1,0 +1,175 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>{:M('name')} －  发表新贴</title>
+<meta http-equiv="X-UA-Compatible" content="IE=8"><!-- 强制ie8,for 360 -->
+<meta name="keywords" content='bbs'>
+<meta name="description" content='bbs'>
+<link rel="stylesheet" href="__STATIC__/css/pc_reset.css">
+<link rel="stylesheet" href="__STATIC__/css/qb_ui.css">
+<link rel="stylesheet" href="__STATIC__/icon/icon.css">
+<script type="text/javascript" src="__STATIC__/js/core/jquery.min.js"></script>
+<script type="text/javascript" src="__STATIC__/layer/layer.js"></script>
+</head>
+<body>
+<link rel="stylesheet" href="__STATIC__/bbs/head.css">
+<div class="HeadContainer">
+	<ul class="TopBox">
+		<li class="logo"><a href="#"><img src="__STATIC__/bbs/logo.png"></a></li>
+		<li class="menu">
+			<a href="#" class="ck">论坛首页</a>
+			<a href="#">门户系统</a>
+			<a href="#">技术联盟</a>
+			<a href="#">网站首页</a>
+		</li>
+		<li class="search">
+			<form action="#" method="post">
+				<dl>
+					<dt><input type="text" name="keyword" placeholder="输入关键字" required/><button type="submit"><i class="fa fa-search"></i></button></dt>
+					<dd><a href="#">登录</a> <a href="#">注册</a></dd>					
+				</dl>
+			</form>
+		</li>
+	</ul>
+</div>
+<link rel="stylesheet" href="__STATIC__/bbs/pcpost.css">
+<div class="MainContainer">
+	<div class="qideBox"><a href="{:urls('index/index')}">{:M('name')}</a> -&gt; <a href="{:urls('content/show',['id'=>$aid])}">{$info.title}</a> -&gt; {notempty name="fid"}<a href="{:urls('content/index',['fid'=>$fid])}">{:get_sort($fid)}</a> &gt;{/notempty} 发表帖子</div>
+	<form class="ajax-post" action="" method="post">
+	<div class="FormBox">
+		<dl>
+			<dt><input type="text" value="{$rsdb.title}" name="title" placeholder="请输入标题" required/></dt>
+			<dd>
+				<select name="fid">
+	<option value="0">请选择栏目</option>
+	{volist name="'cms'|sort_config" id="rs"}
+	{eq name="$rs.mid" value="$mid"}
+	<option value="{$rs.id}" {eq name="$fid" value="$rs.id"}selected{/eq}>{$rs.title_prefix}{$rs.name}</option>
+	{/eq}
+	{/volist}
+</select>
+			</dd>
+		</dl>
+		<div class="ueditor">
+<script id="content" class="js-ueditor" name="content" type="text/plain">{$rsdb.content}</script>
+<script type="text/javascript"> 
+jQuery(document).ready(function() {
+	//重新定义编辑器的宽度＝表单提交容器标签的宽度
+	$('#PostComment .ueditor').width($('#PostComment .submit').width());   
+    ueditor =  UE.getEditor($('.js-ueditor').attr('name'), {
+            initialFrameHeight:{eq name="mid" value="2"}150{else /}350{/eq},  //初始化编辑器高度,默认320
+            autoHeightEnabled:false,  //是否自动长高
+            maximumWords: 50000, //允许的最大字符数
+            serverUrl: '{:urls("index/attachment/upload","dir=images&from=ueditor&module=bbs")}',
+			{eq name="mid" value="2"}toolbars: [ ['fullscreen', 'source', 'undo', 'redo', 'bold','italic','fontsize','forecolor']]{/eq}
+        }); 
+});
+</script>
+<script src="__STATIC__/libs/ueditor/ueditor.config.js"></script>
+<script src="__STATIC__/libs/ueditor/ueditor.all.min.js"></script>
+		</div>
+		<ul class="uploadImg">
+			<div style="display:none;">
+				<input type="file" name="fileToUpload" id="fileToUpload" accept="image/*" multiple/>
+				{eq name="mid" value="2"}
+				<input type="text" name="pics" value="{$rsdb.pics}" id="picsValue"  style="width:100%;" /> 
+				{/eq}
+				<input type="text" name="picurl" value="{$rsdb.picurl}" id="compressValue"  style="width:100%;" /> 
+				
+			</div>
+			<ol>点击上传图片</ol>
+			<li onclick='$("#fileToUpload").click()'><i class="si si-camera"></i></li>
+		</ul>
+		<div class="ListImgs">
+		</div>
+		<div class="button"><button type="submit">{empty name='id'}确认发表{else /}确认修改{/empty}</button></div>	
+	</div>
+	</form>
+</div>
+
+<script type="text/javascript" src="__STATIC__/js/base64uppic.js"></script>
+<script type="text/javascript">
+		var severUrl = "{:urls('index/attachment/upload','dir=images&from=base64&module=cms')}";
+		var pics = [];
+        //图片上传change事件
+        $('#fileToUpload').change(function(){			
+            uploadBtnChange($(this).attr("id"),'compressValue',pics,viewpics);
+        });
+
+		function viewpics(url,pic_array){
+			var html = '';
+			pic_array.forEach(function(f){
+				html += '<div><span><img src="/public/'+f+'"></span><em><i class="fa fa-remove"></i></em></div>';
+			});
+			$(".ListImgs").html(html);
+			addclick();
+		}
+		if($("#compressValue").val()!='')pics = $("#compressValue").val().split(',');
+		viewpics('',pics);		
+		
+
+		function addclick(){
+			$(".ListImgs em").click(function(e){
+				//这里删除的图片没有真正从服务器删除
+				$(this).parent().remove();
+				pics = [];
+				var obj = $(".ListImgs img");
+				obj.each(function(e){
+					var img = $(this).attr("src");
+					img = img.replace('/public/','');
+					pics.push(img);
+					$("#compressValue").val( pics.join(',') );
+				});
+				if(obj.length==0){
+					$("#compressValue").val('');
+				}			
+			});
+		}
+		addclick();
+
+//图片模型特别处理
+function photo_model(post){
+	var mid = {$mid};
+	if(mid!=2){
+		return ;
+	}
+	if(post==true){
+		var picArray = [];
+		ar = $("#compressValue").val().split(',');
+		ar.forEach(function(picurl){
+			picArray.push({"picurl":picurl});
+		});		
+		$("#picsValue").val( JSON.stringify(picArray) )
+	}
+}
+
+var url = "{empty name='id'}{:urls('cms/wxapp.post/add')}{else /}{:urls('cms/wxapp.post/edit',['id'=>$id])}{/empty}?mid={$mid}&ext_id={$aid}";
+
+	$(document).ready(function(){
+        $('.ajax-post').submit(function () {			
+			var that  = ueditor;
+			photo_model(true);	//图片模型特别处理
+            var form_data = $(this).serialize();
+			if(that.hasContents()==false){
+				layer.alert('内容不能为空')
+				return false;
+			}
+            $.post(url, form_data).success(function (res) {
+                if(res.code==0){
+					layer.msg("{empty name='id'}发表成功！{else /}修改成功{/empty}");
+					//location.href="{:urls('cms/content/show')}?id=" + res.data.id;
+					location.href="{:urls('content/show',['id'=>$aid])}"
+				}else{
+					layer.alert('提交失败:' + res.msg);
+				}
+            }).fail(function () {
+				layer.open({title: '提示',content: '服务器发生错误'});
+            });
+            return false;
+        });
+    });
+ 
+</SCRIPT>
+</body>
+</html>

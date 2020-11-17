@@ -1,0 +1,26 @@
+{extend name="$index_style_layout" /}
+
+<!--SEO相关-->
+{block name="head_title"}{$info.title}{/block}
+{block name="head_keword"}{$info.keywords?:$info.title}  {$s_info.name} {/block}
+{block name="head_description"}{:get_word(del_html($info['content']),300)}{/block}
+
+
+{block name="body_AllScorllSlide"} {/block}
+
+
+{block name="body_content"}
+
+{include file="content/notice" /}
+
+{php}define('CK','ping');{/php}
+{include file="content/pc_head3" /}
+<div class="MainContainers">
+    <div class="LeftContainers">
+        {include file="content/pc_left3" /}
+    </div>
+    <div class="RightContainers">
+		{include file="../../default/bbs/qun/pc_ping_inc" /}
+    </div>
+</div>
+{/block}

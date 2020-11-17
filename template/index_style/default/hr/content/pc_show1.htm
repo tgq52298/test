@@ -1,0 +1,160 @@
+u{extend name="$index_style_layout" /}
+
+<!--SEO相关-->
+{block name="head_title"}{$info.title}{/block}
+{block name="head_keword"}{$info.title} {:get_sort($info.fid)}  {:M('name')}{/block}
+{block name="head_description"}{:get_word(del_html($info['content']),300)}{/block}
+
+
+{block name="body_content"}
+
+<link rel="stylesheet" type="text/css" href="__STATIC__/hr/default/pc/showjob.css">
+
+<div style="margin:15px auto; width:1200px;"> <!-- wrap S -->
+
+
+  <table class="jobtable" style="width:1200px; margin:15px auto;">
+    <tr> 
+      <td class="content_left"> 
+          <table class="left_table">
+            <tr> 
+                <td class="head_blue">{qb:tag name="pchr_show1_left" type="text"}<b>招聘单位</b>{/qb:tag}</td>
+            </tr>
+            <tr> 
+                <td class="company"> 
+                    <div class="com_name">
+                        <div class='show_rz'><img src="{:get_hy_renzheng_logo($info.uid,$info.ext_id,$info.ext_sys)}" alt=""></div>
+                        <a href="{:get_hy_url($info.uid,$info.ext_id,$info.ext_sys)}" target="_blank" class='show_name'><b>{:get_hy_name($info.uid,$info.ext_id,$info.ext_sys)}</b></a><br />
+                    </div>
+                    <em>{:get_hy_renzheng_grade($info.uid,$info.ext_id,$info.ext_sys)}</em>
+                    <div class="com_look">
+                        <a href="javascript:;" onclick="window.open('{:get_hy_url($info.uid,$info.ext_id,$info.ext_sys)}')">{qb:tag name="pchr_show1_toshow_title" type="text"}查看单位介绍{/qb:tag}</a>
+                    </div>
+                </td>
+            </tr>
+            <tr> 
+                <td  class="m_head"> {qb:tag name="pchr_show1_otherjob_title" type="text"}<span>其它职位</span>{/qb:tag}</td>
+            </tr>
+            <tr> 
+                <td class="morejob_box">
+                    <div class="morejob">
+                        {qb:tag name="pchr_show1_otherjob_listdata1" field="title" type="hr" rows="9" order="view" where="uid=$info.uid&id<>$info.id&status>0"}
+                        ·<a href="{$rs.url}">{$rs.title}</a><br>
+                        {/qb:tag}
+                    </div>
+                </td>
+            </tr>
+          </table>
+      </td>
+
+        <td class="content_right"> 
+          <table class="text">
+            <tr> 
+              <td class="head_black"> 
+                {qb:tag name="pchr_show1_showcontent_head" type="text"}<b>招聘信息</b>{/qb:tag}
+              </td>
+            </tr>
+            <tr> 
+              <td class="mian_text" valign="top">
+              
+                <div class="title"> 
+                      {qb:tag name="pchr_show1_showcontent_head" type="text"}<b>招聘职位：</b>{/qb:tag}
+                      <font color="#1aa4ed">{$info.title}</font> 
+              　　 <font color="#666666">发布日期：</font><a href="javascript:;">{:format_time($info.create_time)}</a>
+                </div>
+                
+                <div class="base">
+                      {qb:showpage field="picurl,title,content,keywords,maps,videourl"}
+                      <div class="bt"><font color="#666666">{$rs.title}：</font>{$rs.value} </div>
+                      {/qb:showpage}        
+                </div>
+                
+                <table class="btable">
+                  <tr>
+                    <td class="h3">
+                      {qb:tag name="pchr_show1_showdescription_head" type="text"}<div class="tag2">【职位描述】</div>{/qb:tag}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="c">
+                      <table style="width:100%">
+                        <tr> 
+                          <td class="duty">  
+                              {$info.content}
+                          </td>
+                         </tr>
+                      </table>
+                    </td>
+                  </tr>
+                </table>
+                <div class="sq">{qb:tag name="pchr_show1_join_job" type="text"}<a href="javascript:;" onclick="apply_job();">马上申请职位</a>{/qb:tag}</div>
+
+                <table class="btable" >
+                      <tr>
+                            <td class="h3">
+                                  {qb:tag name="pchr_show1_companyintroduce_head" type="text"}<div class="tag2">【公司介绍】</div>{/qb:tag}
+                            </td>
+                      </tr>
+                      <tr>
+                            <td class="c">
+                                  <table style="width:100%; line-height:30px; color:#666666; text-indent:2em;">
+                                  <tr> 
+                                        <td>
+                                            {:get_hy_contents(1,['uid'=>$info['uid']])['content']}
+                                        </td>
+                                  </tr>
+                                  </table>
+                            </td>
+                      </tr>
+                </table>
+
+                <table class="btable">
+                        <tr>
+                              <td class="h3">
+                                    <div class="tag2">{qb:tag name="pchr_show1_contact_head" type="text"}【联系方式】{/qb:tag}</div>
+                              </td>
+                        </tr>
+                        <tr>
+                              <td class="call">
+                                  {qb:tag name="pchr_show1_companycontact_telphone" type="text"}电话: {/qb:tag}{:get_hy_contents(1,['uid'=>$info['uid']])['telphone']}<br>
+                                 {qb:tag name="pchr_show1_companycontact_address" type="text"}地址: {/qb:tag}{:get_hy_contents(1,['uid'=>$info['uid']])['address']}<br>
+                              </td>
+                        </tr>
+                </table>
+
+                <div class="t_sq">
+                {qb:tag name="pchr_show1_join_job2" type="text"}<input type="button" value="申请职位" class="sp_input" onclick="apply_job()">{/qb:tag}
+                  
+                </div>
+                
+              </td>
+            </tr>
+          </table>
+          
+        </td>
+      </tr>
+    </table>
+
+
+<script>
+//申请职位
+function apply_job(){  
+  $.get("{:urls('applyjob',['id'=>$id])}?"+Math.random(),function(res){
+    console.log(res);
+    if(res.code==0){
+      layer.msg("申请职位成功！",{time:1500});
+    }else{
+      layer.msg("申请失败:"+res.msg,{time:1500});
+    } 
+  });
+}
+</script>
+
+
+
+
+</div> <!-- wrap E -->
+
+
+
+{/block}

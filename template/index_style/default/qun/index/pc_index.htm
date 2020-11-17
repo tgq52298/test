@@ -1,0 +1,489 @@
+﻿{extend name="$index_style_layout" /}
+
+<!--SEO相关-->
+{block name="head_title"}{$webdb.mseo_title?:$webdb.seo_title}{/block}
+{block name="head_keword"}{$webdb.mseo_keyword?:$webdb.seo_keyword}{/block}
+{block name="head_description"}{$webdb.mseo_description?:$webdb.seo_description}{/block}
+
+ 
+{block name="body_content"}
+
+<style type="text/css">
+.scroll-sort{
+	width:1200px;
+	margin:auto;
+	margin-top:10px;
+	margin-bottom:10px;
+	background:#FFF;
+	height:65px;
+	border:1px solid #eee;
+}
+.scroll-sort span a{
+	color:#666;
+}
+.scroll-sort span{
+	border-radius:4px;
+	margin-left:15px;
+	padding-left:13px;
+	padding-right:13px;
+	font-size:16px;
+	line-height:35px;
+	margin-top:15px;
+	height:35px;
+	background:#efefef;
+	display:block;
+	float:left;
+}
+.scroll-sort span:hover{
+	background:orange;
+}
+.scroll-sort span:hover a{
+	color:#fff;
+}
+.scroll-sort .choose{
+	background:orange;
+}
+.scroll-sort .choose a{
+	color:#fff;
+}
+.swiper-slide{width: auto!important;}
+</style>
+<link href="__STATIC__/libs/swiper/swiper.min.css" rel="stylesheet">
+	<div class="scroll-sort">
+		<div class="swiper-container">
+			<div class="swiper-wrapper">
+			{volist name=":sort_config()" id="rs"}
+				<span class='swiper-slide {eq name="$fid" value="$rs.id"}choose{/eq}'><a class="" href="{:urls('content/index',['fid'=>$rs['id']])}"><i class="{$rs.logo|default='fa fa-leaf'}"></i> {$rs.name}</a></span>
+			{/volist}
+			</div>
+		</div>
+	</div>
+<script src="__STATIC__/libs/swiper/swiper.min.js"></script>
+<script>
+    $(function () {
+        var swiper = new Swiper('.swiper-container', {
+            spaceBetween: 0,
+            slidesPerView:'auto',
+            freeMode: true,
+			autoplay: {
+				delay: 2000,
+				stopOnLastSlide: false,
+				disableOnInteraction: true,
+			},
+        });
+    })
+</script>
+
+ 
+  <link rel="stylesheet" href="__STATIC__/layui/css/layui.css" media="all">
+  <link rel="stylesheet" href="__STATIC__/layui/css/admin.css" media="all">
+  <link rel="stylesheet" href="__STATIC__/layui/css/template.css" media="all">
+
+<div style="width:1200px;margin:auto;margin-top:20px;margin-bottom:20px;background:#F7F7F7;">
+
+<div class="layui-fluid layui-row layui-col-space12">
+
+		<div class="layui-row  layadmin-homepage-padding8" style="margin-top:12px;">		
+          
+		  <div class="layui-col-md6">
+		  <a href="{:urls('ad/index')}" class="layui-btn layui-btn-normal">投放广告</a>
+		      <a href="{:urls('content/index',['mid'=>1])}" class="layui-btn layui-btn-danger">热门__QUN__</a>
+              
+              <a href="{:murl('content/myjoin')}" class="layui-btn _pop">我的__QUN__</a>			   
+			  <a href="{:murl('content/myvisit')}" class="layui-btn layui-btn-warm _pop">我的足迹</a> 
+          </div>
+
+          <div class="layui-col-md6 layadmin-homepage-padding8">
+            <div class="layui-row layadmin-homepage-text-center">
+				<div class="layui-col-md3 layui-col-sm3 layui-col-xs3">
+                <p class="h4">{:query('bbs_content1',['where'=>['ext_id'=>['>',0]],'count'=>'id'],600)}</p>
+                <mdall>共有主题</mdall>
+              </div> 
+              <div class="layui-col-md3 layui-col-sm3 layui-col-xs3">
+                <p class="h4">{:query('qun_content',['where'=>[],'count'=>'id'],1800)}</p>
+                <mdall>共有__QUN__</mdall>
+              </div>                           
+              <div class="layui-col-md3 layui-col-sm3 layui-col-xs3">
+                <p class="h4"><i class="layui-icon layui-icon-rate-solid"></i>{:query('qun_content1',['where'=>['status'=>2],'count'=>'id'],3600)}</p>
+                <mdall>认证__QUN__</mdall>
+              </div>
+			  <div class="layui-col-md3 layui-col-sm3 layui-col-xs3">
+                <a href="{:murl('content/postnew')}" class="layui-btn layui-btn-normal _pop">创建__QUN__</a>
+              </div>
+            </div>
+          </div>
+          <hr class="new-section-xs"></hr>
+        </div>
+
+		 <ul class="layui-fluid layui-row layui-col-space12 moreQun">
+		{qb:tag name="pc_qun_index001" mid="-1" js="moreQun" type="qun" order="list" by="desc" rows="12"}
+		<div class="layui-col-md2" title="{$rs.content|get_word=200}">
+		  <div class="layui-card layadmin-homepage-text-center">
+            <a href="{$rs.url}" target="_blank">
+			<div class="layadmin-homepage-pad-ver" style="position:relative;">
+				{if $rs.status==2}<img src="__STATIC__/group/v.png" style="position:absolute;bottom:0px;right:20px;width:30px;height:30px;">{/if}
+              <img onerror="this.src='__STATIC__/images/nopic.png'" class="layadmin-homepage-pad-img" src="{$rs.picurl}" width="96" height="96">
+            </div>
+            <h4 class="layadmin-homepage-font" style="height:25px;">{$rs.title}</h4> 
+			</a>            
+            <div class="layadmin-homepage-pad-ver">
+              <a href="javascript:;" style="color:#ccc;" title="__QUN__成员数" class="layui-icon layui-icon-user"></a> 
+			  {$rs.usernum}人
+              <a href="javascript:;" style="color:#ccc;" title="__QUN__人气" class="layui-icon layui-icon-fire"></a>
+			  {$rs.view}
+			  {// :fun('qun@count','bbs_content1',$rs.id)} 
+            </div>             
+          </div>
+		</div>
+		{/qb:tag}
+		</ul>
+		 
+</div>
+
+<div class="layui-fluid">
+	<div class="layui-col-md-offset5">
+		<button class="layui-btn layui-btn-primary show-more-qun-btn" onclick="show_more_qun()"><i class="fa fa-angle-double-down"></i> 点击查看更多</button>
+	</div>
+	<hr class="new-section-xs"></hr>
+<script type="text/javascript">
+var qun_page = 1;
+function show_more_qun(){
+	var url = "{qb:url name='pc_qun_index001' /}";
+	layer.load(1);
+	qun_page++;
+	$.get(url+qun_page,function(res){
+		layer.closeAll();
+		if(res.code==0){
+			if(res.data!=''){
+				$(".moreQun").append(res.data);
+			}else{
+				layer.msg('没有了!');
+				$(".show-more-qun-btn").hide();
+			}
+		}else{
+		}
+	});
+}
+</script>
+</div>
+
+<div class="layui-fluid layadmin-homepage-fluid">
+  <div class="layui-row layui-col-space8">
+    
+	
+    <div class="layui-col-md12">
+      <div class="layui-fluid layadmin-homepage-content">
+        
+        <div class="layui-row layui-col-space20 layadmin-homepage-list-imgtxt">
+          <div class="layui-col-md9">
+			
+
+
+			<!--快速发表内容开始-->{//include file="index/quick_post"}
+			
+
+			<div class="layui-tab">
+				<ul class="layui-tab-title" style="background:#fff;margin-bottom:5px;">
+	  				<!-- 分组标题名称 -->
+		 			<li class="layui-this" onclick="choose_type(0)">最新主题</li>
+		 			<li class="" onclick="choose_type(1)">最新回复</li>
+					<li class="" onclick="choose_type(2)">推荐主题</li>
+		 	   </ul>
+			  <div class="layui-tab-content" style="padding:0">
+				<div class="layui-tab-item layui-show pc_qun_indexbbspage_001">
+
+			{qb:tag name="pc_qun_indexbbspage_001" js="pc_qun_indexbbspage_001" order="id" type="bbs" where="ext_id>0&status>0" rows="4"}
+			 {php} if(fun('qun@getByid',$rs['ext_id'])['viewlimit']==1)continue; {/php}<!--私密圈不显示-->
+              <div class="panel-body layadmin-homepage-shadow">
+                <a href="javascript:;" class="media-left">
+                  <img onerror="this.src='__STATIC__/images/nobody.gif'" src="{$rs.user_icon}" height="46px" width="46px">
+                </a>
+                <div class="media-body">
+                  <div class="pad-btm" style="padding-bottom:2px;">
+                    <p class="fontColor"><a href="{:fun('qun@getByid',$rs.ext_id)['url']}" target="_blank">{:fun('qun@getByid',$rs.ext_id)['title']}</a> 圈内主题: <a target="_blank" href="{$rs.url}"><span>{$rs.title}</span></a></p>
+                    <p class="min-font">
+					  <span>
+                      <!--<span class="layui-breadcrumb" lay-separator="-">-->
+                        <a href="javascript:;" style="color:#666;" class="layui-icon layui-icon-log"></a> -
+                        <a href="javascript:;" style="color:#666;" target="_blank">{$rs.username}</a> 发表于  
+                        <a href="javascript:;" style="color:#666;">{:format_time($rs.create_time,true)}</a>
+                      </span>
+                    </p>         
+                  </div>
+                  <p>{:get_word(del_html($content=fun('bbs@getContents',$rs.id)),400)}</p>
+				  <div class="morepic">
+						  	{volist name=":getArray($pics=$rs.picurls?:fun('content@get_images',$content))" id="vs"}
+						  		{if $i<4}<a href="{$rs.url}"><img style="{if count($pics)==1}max-width:600px;{else /}height:100px;{/if}margin:5px 5px 15px 5px;" src="{$vs.picurl}"></a>{/if}
+							{/volist}
+				  </div>
+                 <!--<img class="h-img" src="http://www.layui.com/admin/std/dist/layuiadmin/style/res/template/huge.jpg">-->
+                  <div class="media" style="background:#f8f8f8;">
+                    <div class="media-right">
+                      <ul class="list-inline" style="color:#666;">
+                        <li>
+                          <i class="glyphicon glyphicon-eye-open"></i>
+                          <span>{$rs.view}</span>
+                        </li>
+                        <li>
+                          <i class="glyphicon glyphicon-comment"></i>
+                          <span>{$rs.replynum}</span>
+                        </li>
+                      </ul>
+                    </div>                     
+                  </div>
+                  <div class="media-list">
+                    
+					{volist name=":fun('bbs@getReply',$rs.id,3)" id="vs"}
+                    <div class="media-item">
+                      <a href="javascript:;" class="media-item-left">
+                        <img onerror="this.src='__STATIC__/images/nobody.gif'" class="img-xs" src="{$vs.uid|get_user_icon}">
+                      </a>
+                      <div class="media-text">
+                        <div>
+                            <a href="javascript:;">{$vs.uid|get_user_name}</a>
+                            <mdall> {$vs.create_time|format_time=true}</mdall>
+                        </div>
+                        <div>{:get_word(del_html($vs.content),100)}</div>
+                      </div>
+                    </div>
+					{/volist}
+                   {if $rs.replynum>3}<a href="{$rs.url}" target="blank" class="layui-btn">更多</a>{/if}
+                  </div>
+                </div>
+              </div>
+			{/qb:tag}	
+					
+				</div>
+				<!-- 最新回复 -->
+				<div class="layui-tab-item pc_qun_indexbbs_toppic">
+					{qb:tag name="pc_qun_indexbbs_toppic" js="pc_qun_indexbbs_toppic" where="ext_id>0" type="list" rows="10" order="id"}
+					{php} if(fun('qun@getByid',$rs['ext_id'])['viewlimit']==1)continue; {/php}<!--私密圈不显示-->
+					<div class="grid-demo">
+					  <div class="panel-body layadmin-homepage-shadow" style="padding-bottom:0px;">						 
+						<div class="media-body">
+							  <div class="pad-btm">
+								<p class="fontColor"> <span>主题:</span> <a href="{$rs.url}" target="_blank">{$rs.title|get_word=100}</a></p>
+								<p class="min-font">发表时间: {$rs.time}</p>         
+							  </div>
+						</div>
+					  </div>
+					</div>	
+					{/qb:tag}
+				</div>
+				<!-- 推荐 -->
+				<div class="layui-tab-item pc_qun_indexbbs_reply">
+					{qb:tag name="pc_qun_indexbbs_reply" js="pc_qun_indexbbs_reply" where="ext_id>0&status>1" rows="10" type="bbs" }
+					{php} if(fun('qun@getByid',$rs['ext_id'])['viewlimit']==1)continue; {/php}<!--私密圈不显示-->
+					<div class="grid-demo">
+					  <div class="panel-body layadmin-homepage-shadow" style="padding-bottom:0px;">						 
+						<div class="media-body">
+							  <div class="pad-btm">
+								<p class="fontColor"> <span>主题:</span> <a href="{$rs.url}" target="_blank">{$rs.title|get_word=100}</a></p>
+								<p class="min-font">发表时间: {$rs.time}</p>         
+							  </div>
+						</div>
+					  </div>
+					</div>	
+					{/qb:tag}
+				</div>
+			 </div>
+			  
+			   
+            </div>
+          </div>
+          <div class="layui-col-md3">
+            <div class="grid-demo">
+
+
+		<!--我的相关开始-->
+      <div class="layadmin-homepage-panel layadmin-homepage-shadow">
+        <div class="layui-card text-center">
+			<!--每天签到-->
+		  {include file="signin"}
+          <div class="layui-card-body">
+            <div class="layadmin-homepage-pad-ver">
+
+              <img onerror="this.src='__STATIC__/images/nobody.gif'" class="layadmin-homepage-pad-img" src="{$userdb?get_user_icon($userdb.uid):''}" width="96" height="96">
+            </div>
+            <h4 class="layadmin-homepage-font">{$userdb?get_user_name($userdb.uid):'游客'}</h4>
+            {if $userdb}
+			 <p class="layadmin-homepage-min-font">级别:{:getGroupByid(get_user($userdb.uid)['groupid'])}</p>
+			 <p>积分:{$userdb.money} 个</p>
+            <div class="layadmin-homepage-pad-ver">
+              <a href="javascript:;" style="color:blue;" title="验证,即可点亮" class="layui-icon layui-icon-cellphone"></a>
+              <a href="javascript:;" style="color:#ccc;" title="验证,即可点亮" class="layui-icon layui-icon-vercode"></a>
+              <a href="javascript:;" style="color:#ccc;" title="验证,即可点亮" class="layui-icon layui-icon-login-wechat"></a>
+            </div>
+			{/if}
+			{if !$userdb}
+			<button class="layui-btn layui-btn-fluid" onclick="window.location.href='{:get_url('login')}'">登录</button>
+			{elseif modules_config('weibo')&&fun('sns@weibo') /}
+			<button class="layui-btn layui-btn-fluid" onclick="#">进入我的微博</button>
+			{else /}
+			<a href="{:murl('content/postnew')}" class="_pop"><button class="layui-btn layui-btn-fluid">创建__QUN__</button></a>
+			{/if}            
+          </div>
+        </div>
+        <p class="layadmin-homepage-about">
+          __QUN__相关
+        </p>
+        <ul class="layadmin-homepage-list-group">
+          <li class="list-group-item"><a href="{:murl('content/index')}" class="color _pop"><i class="fa fa-life-ring"></i> 我创建的__QUN__</a></li>
+          <li class="list-group-item"><a href="{:murl('content/myjoin')}" class="color _pop"><i class="fa fa-street-view"></i> 我加入的__QUN__</a></li>
+		  <li class="list-group-item"><a href="{:murl('content/myvisit')}" class="color _pop"><i class="fa fa-blind"></i> 我访问过的__QUN__</a></li>
+		  <li class="list-group-item"><a href="javascript:;" class="color"><i class="glyphicon glyphicon-flag"></i> 我附近的__QUN__</a></li>
+        </ul>
+      </div>
+    <!--我的相关结束-->
+
+
+              <div class="layui-card homepage-top">
+                <div class="layui-card-header">
+                  <h3 class="panel-title">
+                    <i class="layui-icon layui-icon-username"></i>
+                    __QUN__最新访客
+                  </h3>
+                </div>
+                <div class="layui-card-body">
+                  <div class="layui-row layui-col-space15 qun_indexmember_pcshow">
+				  	{qb:tag name="qun_indexmember_pcshow" class="app\qun\model\Visit@get_label" rows="15" js="qun_indexmember_pcshow"}
+                    <div class="layui-col-md4">
+                      <a href="{:get_url('user','uid='.$rs.uid)}" target="_blank"><img style="border-radius:100%;width:40px;height:40px;" onerror="this.src='__STATIC__/images/nobody.gif'" src="{$rs.icon}"></a>
+                    </div>
+                    {/qb:tag}
+                    <div class="layui-col-md12 margin-top10">
+                      <a href="javascript:;"  class="layui-btn layui-btn-primary">更多</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="layui-card homepage-bottom">
+                <div class="layui-card-header">
+                  <h3 class="panel-title">
+                    <i class="layui-icon layui-icon-fire"></i>
+                    活跃__QUN__
+                  </h3>
+                </div>
+                <div class="layui-card-body qun_indexvisit_pcshow">
+					{qb:tag name="qun_indexvisit_pcshow" type="qun" order="list" rows="15" js="qun_indexvisit_pcshow"}
+                    <a href="{:urls('qun/content/show','id='.$rs.id)}" target="_blank" class="layadmin-privateletterlist-item">
+                      <div class="meida-left">
+                        <img onerror="this.src='__STATIC__/images/nobody.gif'" src="{$rs.picurl}">
+                      </div>
+                      <div class="meida-right">
+                        <p>{$rs.title}</p>
+                        <mdall><i class="si si-clock"></i> {$rs.update_time?format_time($rs.update_time,true):format_time($rs.list,true)}</mdall>
+                      </div>
+                    </a>
+                    {/qb:tag}
+                  </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+<script src="__STATIC__/layui/layui.js"></script>  
+<script type="text/javascript">
+layui.use(['form','element'], function(){
+  var form = layui.form;
+  var element = layui.element;
+});
+</script>
+
+<style type="text/css">
+.topUpCont{
+	position: fixed;
+	width: 80px;
+	border: #DDD solid 1px;
+	background: #FFF;
+	z-index: 10000;
+	right:10px;
+	bottom: 10px;
+	border-radius: 5px;
+	text-align: center;
+	padding: 10px 0px;
+	line-height: 20px;
+	cursor: pointer;
+	color: #999;
+	display: none;
+}
+.topUpCont i{
+	font-size:20px
+}
+.topUpCont:hover{
+	border:#F60 solid 1px;
+	background: #F90;
+	color: #FFF;
+}
+</style>
+<div class="topUpCont">
+    <ul>
+    	<ol><i class="fa fa-angle-double-up"></i></ol>
+        <li>回到顶部</li>
+    </ul>
+</div>
+
+
+<script type="text/javascript">
+
+var Mpage = [];	//存放分页码
+var default_i = 0; //默认显示第一个
+var urldb = ['{qb:url name="pc_qun_indexbbspage_001" /}','{qb:url name="pc_qun_indexbbs_toppic" /}','{qb:url name="pc_qun_indexbbs_reply" /}'];
+function ShowMoreInfo(){
+	if(Mpage[default_i]==undefined){
+		Mpage[default_i] = 1;
+	}
+	Mpage[default_i]++;
+	var url = urldb[default_i] + Mpage[default_i];
+	$.get(url,function(res){
+		layer.closeAll();
+		if(res.code==0){
+			if(res.data==''){
+				layer.msg("已经显示完了！",{time:500});
+			}else{
+				$(".layui-tab-content .layui-tab-item").eq(default_i).append(res.data);
+				scroll_get = true;
+			}
+		}else{
+			layer.msg(res.msg,{time:2500});
+		}
+	});
+}
+
+//滚动显示更多
+var scroll_get  = true;	//做个标志,不要反反复复的加载
+$(document).ready(function () {
+	$(window).scroll(function () {
+		if (scroll_get==true &&  (200 + $(window).scrollTop())>($(document).height() - $(window).height())) {
+			scroll_get = false;
+			layer.msg('内容加截中,请稍候',{time:1000});
+			ShowMoreInfo();
+		}
+
+		if ($(window).scrollTop() > 100) {
+			$(".topUpCont").show();
+		} else {
+			$(".topUpCont").hide();
+		}
+
+	});
+
+	$(".topUpCont").click(function () {
+		$("html,body").animate({scrollTop:0},500);
+	});
+});
+
+//切换显示
+function choose_type(i){
+	default_i = i;
+	scroll_get = true;
+}
+
+
+</script>
+
+{/block}

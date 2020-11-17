@@ -1,0 +1,130 @@
+﻿{extend name="$index_style_layout" /}
+{block name="head_title"}{:M('name')} {$s_info.name}- 列表页{/block}
+
+{block name="body_content"}
+<link rel="stylesheet" href="__STATIC__/group/list.css">	
+<div class="MainContainer ShowContentType">
+	<div class="ShowTypes">
+		<a href="#">我加入的</a>
+		<a href="#">我创建的</a>
+		<a href="#">我的足迹</a>
+	</div>
+	<div class="ListBox hy_wapmylist_001">
+	{qb:tag name="hy_wapmylist_001" js="hy_wapmylist_001" union="uid" order="update_time" by="desc" class="app\hy\model\Member@label_mygroup" rows="10"}
+		<div class="list">
+			<ul>
+				<li class="img"><a href="{$rs.url}"><img src="{$rs.picurl}" onerror="this.src='__STATIC__/images/nopic.png'"><span class="num{$i}">{$i}</span></a></li>
+				<li class="info">
+					<div class="title"><a href="{$rs.url}">{$rs.title}</a></div>
+					<div class="cnt">{$rs.content|get_word=200}</div>
+					<div class="other">
+						<span><i class="fa fa-fw fa-phone-square"></i><a href="tel:{$rs.telphone}">{$rs.telphone}</a></span>
+					</div>
+				</li>
+				<li class="join">{eq name="rs.uid" value="$userdb.uid"}<a href="{:murl('content/edit',['id'=>$rs['id']])}">设置</a>{else /} <a href="javascript:" onclick="quit_qun('{$rs.id}')">退出</a> {/eq}</li>
+			</ul>
+		</div>
+	{/qb:tag}
+	</div>
+	<div class="ListBox hy_wapmylist_002">
+	{qb:tag name="hy_wapmylist_002" js="hy_wapmylist_002" union="uid" order="id" by="desc" type="hy" rows="10"}
+		<div class="list">
+			<ul>
+				<li class="img"><a href="{$rs.url}"><img src="{$rs.picurl}" onerror="this.src='__STATIC__/images/nopic.png'"><span class="num{$i}">{$i}</span></a></li>
+				<li class="info">
+					<div class="title"><a href="{$rs.url}">{$rs.title}</a></div>
+					<div class="cnt">{$rs.content|get_word=200}</div>
+					<div class="other">
+						<span><i class="fa fa-fw fa-phone-square"></i><a href="tel:{$rs.telphone}">{$rs.telphone}</a></span>
+					</div>
+				</li>
+				<li class="join"><a href="{:murl('content/edit',['id'=>$rs['id']])}">设置</a></li>
+			</ul>
+		</div>
+	{/qb:tag}
+	</div>
+	<div class="ListBox hy_wapmylist_003">
+	{qb:tag name="hy_wapmylist_003" js="hy_wapmylist_003" union="uid" class="app\hy\model\Visit@get_label" rows="10"}
+		<div class="list">
+			<ul>
+				<li class="img"><a href="{$rs.url}"><img src="{$rs.picurl}" onerror="this.src='__STATIC__/images/nopic.png'"><span class="num{$i}">{$i}</span></a></li>
+				<li class="info">
+					<div class="title"><a href="{$rs.url}">{$rs.title}</a></div>
+					<div class="cnt">{$rs.content|get_word=200}</div>
+					<div class="other">
+						<span><i class="fa fa-fw fa-phone-square"></i><a href="tel:{$rs.telphone}">{$rs.telphone}</a></span>
+					</div>
+				</li>
+				<li class="join"><a href="{$rs.url}">进入</a></li>
+			</ul>
+		</div>
+	{/qb:tag}
+	</div>
+	<div class="addGroup">
+		<ul>
+			<ol><a href="{:urls('add')}"><i class="fa fa-plus"></i></a></ol>
+			<li>创建一个商铺</li>
+		</ul>
+	</div>
+	<div class="ShowMores">查看更多...</div>
+</div>	
+
+<script type="text/javascript">
+var ajax_url_db = ['{qb:url name="hy_wapmylist_001"/}','{qb:url name="hy_wapmylist_002"/}','{qb:url name="hy_wapmylist_003"/}'];
+var choose_i = 0; //选中第几项
+var shoppage = 1;
+var haveshowpage = []; //每一项,作个标志,已经已显示到第几页
+//显示更多
+function showMoreContent(){	
+	var url = ajax_url_db[choose_i];	//第几项对应的网址
+	shoppage++;
+	haveshowpage[choose_i] = shoppage;
+	$.get(url+shoppage+'&'+Math.random(),function(res){
+		if(res.code==0){
+			if(res.data==''){
+				layer.msg("已经显示完了！",{time:500});
+				$('.ShowMores').off("click");
+				$('.ShowMores').hide();
+			}else{
+				$('.ShowContentType .ListBox').eq(choose_i).append(res.data);
+			}
+		}else{
+			layer.msg(res.msg,{time:2500});
+		}
+	});
+}
+
+//切换显示
+function showContentType(num){
+
+	choose_i = num;
+	shoppage = haveshowpage[choose_i]>1 ? haveshowpage[choose_i] : 1;
+	$('.ShowMores').off("click"); //避免出现多次点击事件
+	$('.ShowMores').on("click",showMoreContent);
+	$('.ShowMores').show();
+
+	$('.ShowContentType .ShowTypes a').removeClass('ck');
+	$('.ShowContentType .ShowTypes a').eq(num).addClass('ck');
+	$('.ShowContentType .ListBox').hide();
+	$('.ShowContentType .ListBox').eq(num).show();
+}
+$('.ShowContentType .ShowTypes a').click(function(){
+	var thisnum=$(this).index();
+	showContentType(thisnum);
+});
+showContentType(0);
+
+
+//退出商铺
+function quit_qun(id){
+	$.get("{:urls('wxapp.member/quit')}?id="+id+'&'+Math.random(),function(res){
+		if(res.code==0){
+			location.reload();
+		}else{
+			layer.msg(res.msg,{time:2500});
+		}
+	});
+}
+</script>
+
+{/block}

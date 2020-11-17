@@ -1,0 +1,76 @@
+<style type="text/css">
+.menu_highlight{
+	color:orange;
+}
+</style>
+{if ($admin || $info['uid']==$userdb['uid'])}
+	<i onclick="delinfo({$info.id},0)" class="fa fa-trash-o"></i> <i onclick="editinfo({$info.id},0)" class="fa fa-edit"></i>
+{/if}
+
+{if $admin}
+	{if empty($info.list)}
+		<i onclick="api_get('{:urls('wxapp.api/recover','id='.$id)}','你要取消沉底吗?',this)" class="glyphicon glyphicon-arrow-down menu_highlight" title="取消沉底"></i>
+	{else /}
+		<i onclick="api_get('{:urls('wxapp.api/bottom','id='.$id)}','你要设置为沉底吗?',this)" title="排序沉底" class="glyphicon glyphicon-arrow-down"></i>
+	{/if}
+
+	{if $info.list>time()}
+		<i onclick="api_get('{:urls('wxapp.api/recover','id='.$id)}','你要取消置顶吗?',this)" class="glyphicon glyphicon-arrow-up menu_highlight" title="取消置顶"></i>
+	{else /}
+		<i onclick="set_topic_top('{:urls('wxapp.api/top','id='.$id)}',this)" class="glyphicon glyphicon-arrow-up" title="排序置顶"></i>
+	{/if}
+
+	{if $info.status>1}
+		<i onclick="api_get('{:urls('wxapp.api/unstar','id='.$id)}','你要取消推荐吗?',this)" class="fa fa-star menu_highlight" title="取消推荐"></i>
+	{else /}
+		<i onclick="api_get('{:urls('wxapp.api/star','id='.$id)}','你要设置为推荐吗?',this)" title="推荐" class="fa fa-star-o"></i>
+	{/if}
+
+{/if}
+
+
+<script type="text/javascript">
+
+function post_act_menu(url,obj){
+	layer.load(1);
+	$.get(url,function(res){
+		layer.closeAll();
+			if(res.code==0){
+				layer.msg('操作成功');
+				if($(obj).hasClass('menu_highlight')){
+					$(obj).removeClass('menu_highlight');
+				}else{
+					$(obj).addClass('menu_highlight');
+				}
+			}else if(res.code==1){
+				layer.alert(res.msg);
+			}else{
+				layer.alert('未知错误');
+			}
+	}).fail(function(){
+			layer.alert('页面出错');
+	});
+}
+
+function api_get(url,msg,obj){
+	layer.confirm(msg,{title:false,},function(index){
+		post_act_menu(url,obj);
+	});
+}
+
+function set_topic_top(url,obj){
+	layer.prompt({
+		  formType: 0,
+		  value: '3',
+		  title: '请输入要置顶多少天?',
+		  //area: ['100px', '20px'] //formType:2 自定义文本域宽高
+		}, function(value, index, elem){
+			layer.close(index);
+			var time = value * 24;	//单位小时
+			post_act_menu(url+'?time='+time,obj);
+	});
+}
+
+	
+
+</script>

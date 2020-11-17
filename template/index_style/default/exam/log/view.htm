@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>查看错题集</title>
+<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<link rel="stylesheet" href="__STATIC__/css/base.css">
+<link rel="stylesheet" href="__STATIC__/css/qb_ui.css">
+<link rel="stylesheet" href="__STATIC__/icon/icon.css">
+<link rel="stylesheet" href="__STATIC__/mui/css/mui.min.css">
+<script type="text/javascript" src="__STATIC__/js/core/jquery.min.js"></script>
+<script type="text/javascript" src="__STATIC__/layer/layer.js"></script>
+<style>
+body{
+	background: #F5F5F5;
+}
+.ExamAnswer{
+	max-width: 640px;
+	margin: auto;
+}
+.ExamAnswer .topBox{
+	height: 50px;
+	text-align: center;
+	background: #00C454;
+	line-height: 50px;
+	overflow: hidden;
+	padding: 0 50px;
+	color: #FFF;
+	font-size: 18px;
+	position: relative;
+}
+.ExamAnswer .topBox a{
+	color: #FFF;
+}
+.ExamAnswer .topBox i{
+	position: absolute;
+	left: 10px;
+	top:0;
+	line-height: 50px;
+	font-size:26px;
+}
+.ExamAnswer .content{
+	padding: 10px;
+}
+.ExamAnswer .content .title{
+	line-height: 25px;
+	padding: 10px 0;
+	border-bottom: #DDD solid 1px;
+}
+.ExamAnswer .content .title span{
+	display: inline-block;
+	border: #00C454 solid 1px;
+	color: #00C454;
+	padding: 0 5px;
+	border-radius: 5px;
+	margin-right: 8px;
+}
+.ExamAnswer .content .imgs{
+	padding: 10px 0;
+	border-bottom: #DDD solid 1px;
+}
+.ExamAnswer .content .imgs img{
+	width: 100%;
+}
+.mui-input-row{
+	border-bottom: #DDD solid 1px;
+}
+.ExamAnswer .Others{
+	padding: 15px 0;
+	height: 40px;
+	line-height: 38px;
+}
+.ExamAnswer .Others ol{
+	float: left;
+}
+.ExamAnswer .Others li{
+	float: right;
+}
+.ExamAnswer .Others a{
+	display: inline-block;
+	border: #DDD solid 1px;
+	background: #FFF;
+	color: #888;
+	padding: 0 10px;
+}
+.ExamAnswer .answer{
+	padding: 10px 0 0 10px;
+}
+</style>
+</head>
+<body>
+
+<i class="fa fa-star fav-exam" style="position:absolute;z-index:10;right:19px;top:15px;color:#fff;"> 收藏</i>
+<script type="text/javascript">
+$.get("{:purl('fav/api/check')}?type={:config('system_dirname')}&id={$info.id}",function(res){
+	if(res.code==0){
+		$(".fav-exam").html(' 已收藏');
+	}else{
+		$(".fav-exam").click(function(){
+			var url="{:purl('fav/api/add')}?type={:config('system_dirname')}&id={$info.id}";
+			$.get(url,function(res){
+				if(res.code==0){
+					$(".fav-exam").html(' 已收藏');
+					layer.msg('收藏成功');
+				}else{
+					layer.alert(res.msg);
+				}
+			})
+		});
+	}
+});
+</script>
+
+<div class="ExamAnswer">
+	<div class="topBox">
+		<i onclick="history.go(-1);" class="fa fa-angle-left"></i><a href="{:auto_url('category/index', ['fid'=>$fid])}">查看错题</a>
+	</div>
+	<div class="content">
+		<div class="title">
+			<span>{:model_config($info.mid)['title']}</span>
+			{$info.title}
+		</div>
+		{notempty name="info.picurl"}
+		<div class="imgs"><img src="{$info.picurl|tempdir}"/></div>
+		{/notempty}
+		<div class="Answers">
+			{if ($info.mid == 1)}
+				<div class="mui-input-row mui-radio mui-left">
+					<label>A、{$info.answer_a}</label>
+					<input name="radio1" type="radio" {in name="1" value="$info.answer1"}checked="checked"{/in} disabled>
+				</div>
+				<div class="mui-input-row mui-radio mui-left">
+					<label>B、{$info.answer_b}</label>
+					<input name="radio1" type="radio" {in name="2" value="$info.answer1"}checked="checked"{/in} disabled>
+				</div>
+				{if $info.answer_c!=''}
+				<div class="mui-input-row mui-radio mui-left">
+					<label>C、{$info.answer_c}</label>
+					<input name="radio1" type="radio" {in name="3" value="$info.answer1"}checked="checked"{/in} disabled>
+				</div>
+				{/if} 
+				{if $info.answer_d!=''}
+				<div class="mui-input-row mui-radio mui-left">
+					<label>D、{$info.answer_d}</label>
+					<input name="radio1" type="radio" {in name="4" value="$info.answer1"}checked="checked"{/in} disabled>
+				</div>
+				{/if} 
+			{elseif ($info.mid == 2) /}
+				<div class="mui-input-row mui-checkbox mui-left">
+					<label>A、{$info.answer_a}</label>
+					<input name="checkbox" value="Item 1" type="checkbox" {in name="1" value="$info.answer1"}checked="checked"{/in} disabled>
+				</div>
+				<div class="mui-input-row mui-checkbox mui-left">
+					<label>B、{$info.answer_b}</label>
+					<input name="checkbox" value="Item 1" type="checkbox" {in name="2" value="$info.answer1"}checked="checked"{/in} disabled>
+				</div>
+				{if $info.answer_c!=''}
+				<div class="mui-input-row mui-checkbox mui-left">
+					<label>C、{$info.answer_c}</label>
+					<input name="checkbox" value="Item 1" type="checkbox" {in name="3" value="$info.answer1"}checked="checked"{/in} disabled>
+				</div>
+				{/if} 
+				{if $info.answer_d!=''}
+				<div class="mui-input-row mui-checkbox mui-left">
+					<label>D、{$info.answer_d}</label>
+					<input name="checkbox" value="Item 1" type="checkbox" {in name="4" value="$info.answer1"}checked="checked"{/in} disabled>
+				</div> 
+				{/if} 
+			{elseif ($info.mid == 3) /}
+				<div class="mui-input-row mui-radio mui-left">
+					<label>正确</label>
+					<input name="radio1" type="radio" {in name="1" value="$info.answer1"}checked="checked"{/in} disabled>
+				</div>
+				<div class="mui-input-row mui-radio mui-left">
+					<label>错误</label>
+					<input name="radio1" type="radio" {in name="2" value="$info.answer1"}checked="checked"{/in} disabled>
+				</div>
+			{elseif ($info.mid == 4) /}
+				<div class="mui-input-row mui-left" style="width:100%;" >
+					<input style="border:0px;border-bottom:1px solid #324052;width:100%;background:#e3e6f3;color:#000;height:20px;" readonly name="text" placeholder="点击输入答案" value="{$info.answer1}" type="text">						
+				</div>
+			{/if}
+		</div>
+		<div class="fa fa-hand-o-right" style="margin:15px;" onclick="$('.answer').show()"> 点击查看答案</div>
+		<div class="answer" style="display:none;">答案是：{:get_answer($info.answer,$info.mid)}<br>{$info.content|format_math}</div>
+		<ul class="Others">
+			<ol><a href="{:urls('view',['id'=>$id,'type'=>'prev'])}">上一道题</a></ol>
+			<li><a href="{:urls('view',['id'=>$id,'type'=>'next'])}">下一道题</a></li>
+		</ul>
+	</div>
+</div>
+
+ {include file="index@footmenu" /}
+
+</body>
+</html>

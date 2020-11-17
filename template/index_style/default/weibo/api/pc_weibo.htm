@@ -1,0 +1,412 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>动态消息</title>
+<meta http-equiv="X-UA-Compatible" content="IE=8"><!-- 强制ie8,for 360 -->
+<meta name="keywords" content=''>
+<meta name="description" content=''>
+<link rel="stylesheet" href="__STATIC__/css/pc_reset.css">
+<link rel="stylesheet" href="__STATIC__/css/qb_ui.css">
+<link rel="stylesheet" href="__STATIC__/icon/icon.css">
+<script type="text/javascript" src="__STATIC__/js/core/jquery.min.js"></script>
+<script type="text/javascript" src="__STATIC__/layer/layer.js"></script>
+</head>
+<body>
+
+<link rel="stylesheet" href="__STATIC__/layui/css/layui.css" media="all">
+<link rel="stylesheet" href="__STATIC__/layui/css/admin.css" media="all">
+<link rel="stylesheet" href="__STATIC__/layui/css/template.css" media="all">
+
+<div style="margin:auto;background:#F7F7F7;">
+<div class="layui-fluid layadmin-homepage-fluid">
+  <div class="layui-row layui-col-space8">
+
+    <div class="layui-col-md12">
+      <div class="layui-fluid layadmin-homepage-content">
+        <div class="layui-row  layadmin-homepage-padding15">
+          <hr class="new-section-xs"></hr>
+          <div class="layui-col-md7 layadmin-homepage-padding8">
+            <div class="layui-row layadmin-homepage-text-center">
+              <div class="layui-col-md3 layui-col-sm3 layui-col-xs3">
+                <p class="h4">{:query('bbs_content',['where'=>['uid'=>$id],'count'=>'id'])}</p>
+                <mdall>主题</mdall>
+              </div>
+              <div class="layui-col-md3 layui-col-sm3 layui-col-xs3">
+                <p class="h4">{:query('bbs_reply',['where'=>['uid'=>$id],'count'=>'id'])}</p>
+                <mdall>回复</mdall>
+              </div>
+              <div class="layui-col-md3 layui-col-sm3 layui-col-xs3">
+                <p class="h4">{:query('weibo_member',['where'=>['aid'=>$id],'count'=>'id'])}</p>
+                <mdall>粉丝</mdall>
+              </div>
+              <div class="layui-col-md3 layui-col-sm3 layui-col-xs3">
+                <p class="h4"><i class="layui-icon layui-icon-rate-solid"></i>{:query('bbs_content1',['where'=>['uid'=>$id,'status'=>2],'count'=>'id'])}</p>
+                <mdall>贴子精华</mdall>
+              </div>
+            </div>
+          </div>
+          <div class="layui-col-md5">
+              <a href="javascript:;" class="layui-btn layui-btn-normal" onclick="join_fans({$id})">+关注TA</a>
+              <a href="javascript:;" class="layui-btn" onclick="pc_send_msg({$id})">发私信</a>
+			{if $userdb.uid==$info.uid}
+			<a href="{:murl('content/edit','id='.$info['id'])}" class="layui-btn layui-btn-warm">修改设置</a>
+			{else /}
+			  <a href="javascript:;" class="layui-btn layui-btn-warm" onclick="create_weibo()">我也创建一个</a>
+			  {/if}
+          </div>
+<script type="text/javascript">
+
+function pc_send_msg(uid){
+	layer.open({
+	  type: 2,
+	  title: '发消息',
+	  shade: [0.3,'#333'], 
+	  area: ['800px', '500px'],
+	  anim: 1,
+	  content: '{:urls("member/msg/add")}?uid='+uid,
+	  end: function(){ //关闭事件	
+	  }
+	});
+}
+
+function create_weibo(){
+	layer.msg('正在创建中,需要一点时间,请稍候...');
+	$.post("{:urls('wxapp.post/add')}",{'title':"{$userdb.username}",'picurl':"{$userdb.icon}"},function(res){
+		layer.closeAll();
+		if(res.code==0){
+			layer.msg('创建成功');
+			setTimeout(function(){
+				window.location.href="{:urls('show','id='.$userdb.uid)}";
+			},800);
+		}else{
+			layer.alert(res.msg);
+		}
+	});
+}
+
+function join_fans(){
+	layer.msg('正在拉取数据,需要一点时间,请稍候...');
+	$.get("{:urls('wxapp.member/join',['id'=>$id])}?"+Math.random(),function(res){
+		layer.closeAll();
+		if(res.code==0){
+			layer.msg("关注成功！");
+		}else{
+			layer.alert("关注失败:"+res.msg);
+		}	
+	});
+}
+
+</script>
+
+        </div>
+        <div class="layui-row layui-col-space20 layadmin-homepage-list-imgtxt">
+          <div class="layui-col-md9">
+			
+			<!--快速发表内容开始-->
+			{include file="index/quick_post"}
+
+			<div class="layui-tab">
+				<ul class="layui-tab-title" style="background:#fff;margin-bottom:5px;">
+	  				<!-- 分组标题名称 -->
+		 			<li class="layui-this" onclick="choose_type(0)">动态信息</li>
+		 			<li class="" onclick="choose_type(1)">论坛主题</li>
+					<li class="" onclick="choose_type(2)">论坛回复</li>
+		 	   </ul>
+			  <div class="layui-tab-content" style="padding:0">
+				<div class="layui-tab-item layui-show pc_weibo_index_feed">
+
+					{qb:tag name="pc_weibo_index_feed" js="pc_weibo_index_feed" class="app\weibo\model\Feed@getList" rows="10" union="uid=info[uid]"}
+					<div class="grid-demo">
+					  <div class="panel-body layadmin-homepage-shadow" style="padding-bottom:0px;">
+						<a href="{:urls('weibo/content/show','id='.$rs.uid)}" class="media-left">
+						  <img onerror="this.src='__STATIC__/images/nobody.gif'" src="{$rs.user_icon}" height="46px" width="46px">
+						</a>
+						<div class="media-body">
+						  {if empty($rs.aid)}
+						  		<div class="pad-btm">
+								<p class="fontColor">{$rs.username}</span> {$rs.about}</p>
+								<p class="min-font">{$rs.time}</p>
+						  {else /}
+							  <div class="pad-btm">
+								<p class="fontColor"><a href="javascript::" onclick="pc_send_msg({$rs.uid})">{$rs.username}</a> {$rs.time}  在 <span>{$rs['topic']['sys_name']}</span> {:fun('sns@type',$rs.type)}了主题: <a href="{$rs.url}" target="_blank">{$rs.title|get_word=40}</a></p>
+								{if $rs.content}<p class="min-font">{:get_word(del_html($rs.content),100)}</p>{/if}         
+							  </div>
+						  {/if}
+						</div>
+					  </div>
+					</div>	
+					{/qb:tag}	
+					
+				</div>
+				<!-- 论坛主题 -->
+				<div class="layui-tab-item pc_bbs_toppic">
+					{qb:tag name="pc_bbs_toppic" js="pc_bbs_toppic" type="bbs" rows="10" union="uid=info[uid]"}
+					<div class="grid-demo">
+					  <div class="panel-body layadmin-homepage-shadow" style="padding-bottom:0px;">						 
+						<div class="media-body">
+							  <div class="pad-btm">
+								<p class="fontColor"> <span>主题:</span> <a href="{$rs.url}" target="_blank">{$rs.title|get_word=100}</a></p>
+								<p class="min-font">发表时间: {$rs.time}</p>         
+							  </div>
+						</div>
+					  </div>
+					</div>	
+					{/qb:tag}
+				</div>
+				<!-- 论坛回复 -->
+				<div class="layui-tab-item pc_bbs_reply">
+					{qb:tag name="pc_bbs_reply" js="pc_bbs_reply" class="app\bbs\model\Reply@get_label" rows="10" union="uid=info[uid]"}
+					<div class="grid-demo">
+					  <div class="panel-body layadmin-homepage-shadow" style="padding-bottom:0px;">						 
+						<div class="media-body">
+							  <div class="pad-btm">
+								<p class="fontColor"> <span>{:format_time($rs.create_time,true)}</span> 回复主题: <a href="{:urls('bbs/content/show','id='.$rs.aid)}" target="_blank">{:query('bbs_content1',['where'=>['id'=>$rs.aid],'value'=>'title'])}</a></p>
+								<p class="min-font">回复内容: {:get_word(del_html($rs.content),200)}</p>         
+							  </div>
+						</div>
+					  </div>
+					</div>	
+					{/qb:tag}
+				</div>
+			 </div>
+			  
+		     
+				<!-- 开始 
+              <div class="panel-body layadmin-homepage-shadow">
+                <a href="javascript:;" class="media-left">
+                  <img onerror="this.src='__STATIC__/images/nobody.gif'" src="../../layuiadmin/style/res/template/portrait.png" height="46px" width="46px">
+                </a>
+                <div class="media-body">
+                  <div class="pad-btm">
+                    <p class="fontColor"><a href="javascript:;">胡歌</a>为<span>普通照片</span>添加了新的<span>照片</span></p>
+                    <p class="min-font">
+                      <span class="layui-breadcrumb" lay-separator="-">
+                        <a href="javascript:;" class="layui-icon layui-icon-cellphone"></a>
+                        <a href="javascript:;">从移动</a>
+                        <a href="javascript:;">11分钟前</a>
+                      </span>
+                    </p>         
+                  </div>
+                  <p>历经打磨，@索尼中国 再献新作品—OLED电视A8F完美诞生。很开心一起参加了A8F的“首映礼”！[鼓掌]正如我们演员对舞台的热爱，索尼对科技与艺术的追求才创造出了让人惊喜的作品。作为A1兄弟款，A8F沿袭了黑科技“屏幕发声技术”和高清画质，色彩的出众表现和高端音质，让人在体验的时候如同身临其境。A8F，这次的“视帝”要颁发给你！  索尼官网预售： O网页链接 索尼旗舰店预售：</p>
+                 <img onerror="this.src='__STATIC__/images/nobody.gif'" class="h-img" >
+                  <div class="media">
+                    <div class="media-right">
+                      <ul class="list-inline">
+                        <li>
+                          <i class="layui-icon layui-icon-camera-fill"></i>
+                          <span>107</span>
+                        </li>
+                        <li>
+                          <i class="layui-icon layui-icon-group"></i>
+                          <span>95</span>
+                        </li>
+                      </ul>
+                    </div>                     
+                  </div>
+                  <div class="media-list">
+                    <div class="media-item">
+                      <a href="javascript:;" class="media-item-left">
+                        <img onerror="this.src='__STATIC__/images/nobody.gif'" class="img-xs" src="../../layuiadmin/style/res/template/portrait.png">
+                      </a>
+                      <div class="media-text">
+                        <div>
+                            <a href="javascript:;">胡歌</a>
+                            <mdall> 3月21日 19:56</mdall>
+                        </div>
+                        <div>一次难忘更难得的拍摄经历 谢谢</div>
+                      </div>
+                    </div>
+                    <div class="media-item">
+                      <a href="javascript:;" class="media-item-left">
+                        <img onerror="this.src='__STATIC__/images/nobody.gif'" class="img-xs" src="../../layuiadmin/style/res/template/portrait.png">
+                      </a>
+                      <div class="media-text">
+                        <div>
+                            <a href="javascript:;">胡歌</a>
+                            <mdall> 3月21日 19:56</mdall>
+                        </div>
+                        <div>一次难忘更难得的拍摄经历 谢谢</div>
+                      </div>
+                    </div>
+                    <div class="media-item">
+                      <a href="javascript:;" class="media-item-left">
+                        <img onerror="this.src='__STATIC__/images/nobody.gif'" class="img-xs" src="../../layuiadmin/style/res/template/portrait.png">
+                      </a>
+                      <div class="media-text">
+                        <div>
+                            <a href="javascript:;">胡歌</a>
+                            <mdall> 3月21日 19:56</mdall>
+                        </div>
+                        <div>一次难忘更难得的拍摄经历 谢谢</div>
+                      </div>
+                    </div>
+                   <a href="javascript:;" class="layui-btn">更多</a>
+                  </div>
+                </div>
+              </div>
+			  结束--> 
+            </div>
+          </div>
+          <div class="layui-col-md3">
+		  <!--签到领积分-->
+		  {include file="signin"}
+            <div class="grid-demo">
+              <div class="layui-card homepage-top">
+                <div class="layui-card-header">
+                  <h3 class="panel-title">
+                    <i class="fa fa-group"></i>
+                    粉丝用户
+                  </h3>
+                </div>
+                <div class="layui-card-body">
+                  <div class="layui-row layui-col-space15 weibo_member_pcshow">
+				  	{qb:tag name="weibo_member_pcshow" class="app\weibo\model\Member@get_label" rows="9" union="aid=id" js="weibo_member_pcshow"}
+                    <div class="layui-col-md4">
+                      <a href="{:urls('weibo/content/show','id='.$rs.uid)}" target="_blank"><img style="border-radius:100%;width:40px;height:40px;" onerror="this.src='__STATIC__/images/nobody.gif'" src="{$rs.icon}"></a>
+                    </div>
+                    {/qb:tag}
+                    <div class="layui-col-md12 margin-top10">
+                      <a href="javascript:;"  class="layui-btn layui-btn-primary">更多</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="layui-card homepage-bottom">
+                <div class="layui-card-header">
+                  <h3 class="panel-title">
+                    <i class="layui-icon layui-icon-user"></i>
+                    最新访客
+                  </h3>
+                </div>
+                <div class="layui-card-body weibo_visit_pcshow">
+					{qb:tag name="weibo_visit_pcshow" class="app\weibo\model\Visit@get_label" rows="10" union="aid=id" js="weibo_visit_pcshow"}
+                    <a href="{:urls('weibo/content/show','id='.$rs.uid)}" target="_blank" class="layadmin-privateletterlist-item">
+                      <div class="meida-left">
+                        <img onerror="this.src='__STATIC__/images/nobody.gif'" src="{$rs.icon}">
+                      </div>
+                      <div class="meida-right">
+                        <p>{$rs.username}</p>
+                        <mdall>{:format_time($rs.visittime,true)}</mdall>
+                      </div>
+                    </a>
+                     {/qb:tag}
+                  </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<script src="__STATIC__/layui/layui.js"></script>  
+<script type="text/javascript">
+layui.use(['form','element'], function(){
+  var form = layui.form;
+  var element = layui.element;
+});
+</script>
+
+<style type="text/css">
+.topUpCont{
+	position: fixed;
+	width: 80px;
+	border: #DDD solid 1px;
+	background: #FFF;
+	z-index: 10000;
+	right:10px;
+	bottom: 10px;
+	border-radius: 5px;
+	text-align: center;
+	padding: 10px 0px;
+	line-height: 20px;
+	cursor: pointer;
+	color: #999;
+	display: none;
+}
+.topUpCont i{
+	font-size:20px
+}
+.topUpCont:hover{
+	border:#F60 solid 1px;
+	background: #F90;
+	color: #FFF;
+}
+</style>
+<div class="topUpCont">
+    <ul>
+    	<ol><i class="fa fa-angle-double-up"></i></ol>
+        <li>回到顶部</li>
+    </ul>
+</div>
+
+
+<script type="text/javascript">
+
+var Mpage = [];	//存放分页码
+var default_i = 0; //默认显示第一个
+var urldb = ['{qb:url name="pc_weibo_index_feed" /}','{qb:url name="pc_bbs_toppic" /}','{qb:url name="pc_bbs_reply" /}'];
+function ShowMoreInfo(){
+	if(Mpage[default_i]==undefined){
+		Mpage[default_i] = 1;
+	}
+	Mpage[default_i]++;
+	var url = urldb[default_i] + Mpage[default_i];
+	$.get(url,function(res){
+		layer.closeAll();
+		if(res.code==0){
+			if(res.data==''){
+				layer.msg("已经显示完了！",{time:500});
+			}else{
+				$(".layui-tab-content .layui-tab-item").eq(default_i).append(res.data);
+				scroll_get = true;
+			}
+		}else{
+			layer.msg(res.msg,{time:2500});
+		}
+	});
+}
+
+//滚动显示更多
+var scroll_get  = true;	//做个标志,不要反反复复的加载
+$(document).ready(function () {
+	$(window).scroll(function () {
+		if (scroll_get==true &&  (200 + $(window).scrollTop())>($(document).height() - $(window).height())) {
+			scroll_get = false;
+			layer.msg('内容加截中,请稍候',{time:1000});
+			ShowMoreInfo();
+		}
+
+		if ($(window).scrollTop() > 100) {
+			$(".topUpCont").show();
+		} else {
+			$(".topUpCont").hide();
+		}
+
+	});
+
+	$(".topUpCont").click(function () {
+		$("html,body").animate({scrollTop:0},500);
+	});
+});
+
+//切换显示
+function choose_type(i){
+	default_i = i;
+	scroll_get = true;
+}
+
+$.get("{:urls('wxapp.visit/check_visit',['id'=>$id])}",function(res){
+		if(res.code==0){
+			//layer.msg("更新浏览量成功!");
+		}else{
+			//layer.msg("并没有更新到浏览量!");
+		}	
+});
+</script>
+
+</body>
+</html>

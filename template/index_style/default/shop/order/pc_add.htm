@@ -1,0 +1,81 @@
+﻿{extend name="$index_style_layout" /}
+{block name="head_title"}确定购买商品{/block}
+{block name="body_content"}
+<link rel="stylesheet" href="__STATIC__/css/pc_order.css">
+<div class="PostOrder">
+	<div class="tag"><i class="fa fa-wpforms"></i>订单提交</div>
+	<form action="{:urls('add')}" method="post">
+		<ul>
+			<ol>收货地址:</ol>
+			<li>
+				 <select name="address_id" style="height:35px;">
+					<option value="" selected>请选择</option>
+{volist name="$address" id="rs"}
+					<option {if $rs.often==1}selected{/if} value="{$rs.id}" data-user="{$rs.user}" data-telphone="{$rs.telphone}" data-address="{$rs.address}">{$rs.user} {$rs.telphone} {$rs.address}</option>
+{/volist}
+				 </select>
+<script type="text/javascript">
+$(function(){
+	$("select[name='address_id']").change(function(){
+		set_address($(this))
+	});
+	set_address($("select[name='address_id']"));
+});
+function set_address(that){
+	var address = that.find("option:selected").data('address');
+	var user = that.find("option:selected").data('user');
+	var telphone = that.find("option:selected").data('telphone');
+	$("input[name='linkman']").val(user);
+	$("input[name='telphone']").val(telphone);
+	$("input[name='address']").val(address);
+}
+</script>  　[<a href="{:murl('shop/address/index')}" class="_pop">管理地址</a>]
+			</li>
+		</ul>
+{qb:form name="xxx" field="title,picurl" mid="-1"}
+		<ul>
+			<ol>{$rs.title}</ol>
+			<li>{$rs.value}</li>
+		</ul>
+{/qb:form}
+		<ul>
+			<ol>应付金额</ol>
+			<li>共 {$total_money} 元</li>
+		</ul>
+<!--
+		<dl>
+			<dt>支付类型</dt>
+			<dd>
+				<input type="radio" name="ifolpay" value="1" checked />在线付款(总共:{$total_money}元)
+				<input type="radio" name="ifolpay" value="0" />货到付款
+			</dd>
+		</dl>
+-->
+{volist name="$money_array" id="money" key="shop_uid"}
+{php} $array=fun('Coupon@get_list',$userdb['uid'],$money,$shop_uid); {/php}
+
+<!--非通用券处理开始-->
+{php}
+foreach($listdb[$shop_uid] AS $rs){
+	if($rs['coupon_tag']&&$_array=fun('Coupon@get_list',$userdb['uid'],fun('shop@get_price',$rs,$rs['_car_']['type1']-1),$shop_uid,$rs['coupon_tag']))$array=$array?array_merge($array,$_array):$_array;
+}
+{/php}
+<!--非通用券处理结束-->
+	{if $array}
+		<dl> 
+			<dd>
+			    <div style="color:red;margin:10px;">商家：{:get_user_name($shop_uid)} 派发的可用代金券如下,请选择</div>
+				{volist name="$array" id="rs"}
+					<input type="radio" name="cid[{$rs.shop_uid}]" value="{$rs.id}">面额：{$rs.quan_money} 元 ， 累计满{$rs.min_money}元可用【{$rs.coupon_tag?'非通用券':'通用券'}】<br>
+				{/volist}
+			</dd>
+		</dl>
+	{/if}
+{/volist}
+		<div class="butter">
+			<button type="submit">提交</button>
+			<button type="button" onclick="javascript:history.back(-1);return false;">返回</button>
+		</div>
+	</form>
+</div>
+{/block}

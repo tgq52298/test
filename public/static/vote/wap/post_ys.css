@@ -1,0 +1,219 @@
+.FromContainer{
+	max-width:640px;
+	margin:auto;
+}
+.FromContainer .TopCont{
+	height:60px;
+	background:#5BB5FA;
+	position:relative;
+}
+.FromContainer .TopCont .home{
+	background:#8CCAFB;
+	width:80px;
+	height:40px;
+	position:absolute;
+	top:10px;
+	left:10px;
+	border-radius:8px;
+	line-height:40px;
+	overflow:hidden;
+}
+.FromContainer .TopCont .home a{
+	display:block;
+	padding-left:28px;	
+	color:#EEE;
+	font-size:18px;
+}
+.FromContainer .TopCont .home:before,.FromContainer .TopCont .home:after{
+	content:'';
+	display:block;
+	width:0;
+	height:0;
+	border:10px solid transparent;	
+	border-left:0;
+	position:absolute;
+	top:11px;
+}
+.FromContainer .TopCont .home:before{
+	border-right:10px solid rgba(255,255,255,0.8);
+	left:10px;
+}
+.FromContainer .TopCont .home:after{
+	border-right:10px solid #8CCAFB;
+	left:12px;
+}
+.FromContainer .TopCont .tag{
+	text-align:center;
+	padding:0 100px;
+	line-height:60px;
+	overflow:hidden;
+	color:#EEE;
+	font-size:20px;
+}
+.FromContainer .NoteCont{
+	text-align:center;
+	padding:10px;
+	line-height:40px;
+	font-size:18px;
+	color:#F30;
+}
+.FromContainer .ListInput{
+	padding:0 10px 10px 10px;
+}
+.FromContainer .ListInput input[type=text]{
+	width:99%;
+	border:#DDD solid 1px;
+	height:40px;
+	line-height:40px;
+	border-radius:5px;
+	text-indent:5px;
+}
+.FromContainer .ListTextarea{
+	padding:0 10px;
+}
+.FromContainer .ListTextarea dl{
+	width:99%;
+	border:#DDD solid 1px;
+	border-radius:5px 5px 0 0;
+}
+.FromContainer .ListTextarea dl dt{
+	border-bottom:#DDD solid 1px;
+	padding:5px;
+}
+.FromContainer .ListTextarea dl dt textarea{
+	width:100%;
+	height:100px;
+	border:0;
+	background:none;
+	line-height:30px;
+}
+.FromContainer .ListTextarea dl dd{
+	padding:5px;
+}
+.UpFiles .AddPic{
+	height:40px;
+	line-height:40px;
+	background:url(addpic.png) 5px 5px no-repeat;
+	background-size:30px 30px;
+	padding-left:40px;
+	font-size:18px;
+	color:#3399FF;
+}
+.UpFiles .ListPics:after{
+	content:'';
+	display:block;
+	width:100%;
+	height:1px;
+	clear:both;
+}
+.UpFiles .ListPics ul{
+	width:120px;
+	height:160px;
+	border:#DDD solid 1px;
+	border-radius:5px;
+	overflow:hidden;
+	margin:5px 5px 0 0;
+	float:left;
+}
+.UpFiles .ListPics ul ol{
+	width:110px;
+	height:110px;
+	overflow:hidden;
+	margin:5px auto;
+	text-align:center;
+	line-height:110px;
+}
+.UpFiles .ListPics ul ol img{
+	max-width:110px;
+	max-height:110px;
+	vertical-align:middle;
+}
+.UpFiles .ListPics ul ol input{
+	display:none;
+}
+.UpFiles .ListPics ul li{
+	border-top:#DDD solid 1px;
+}
+.UpFiles .ListPics ul li span{
+	display:block;
+	height:25px;
+	width:80px;
+	text-align:center;
+	line-height:25px;
+	background:#EFEFEF;
+	border:#DDD solid 1px;
+	margin:5px auto 0 auto;
+	color:#999;
+	border-radius:5px;
+}
+.FromContainer .prompt{
+	padding:15px 10px 10px 15px;
+	line-height:30px;
+	font-size:16px;
+	color:#666;
+}
+.FromContainer .submits span{
+	display:block;
+	width:90%;
+	height:50px;
+	text-align:center;
+	line-height:50px;
+	background:#39F;
+	color:#FFF;
+	font-size:20px;
+	border-radius:8px;
+	margin:10px auto;
+}
+/*****/
+.fullbg { 
+	background-color:#000; 
+	opacity:0; 
+	top:0; 
+	left:0; 
+	width:100%; 
+	height:100%; 
+	z-index:1001;
+	position:fixed;
+	display:none;
+}
+.showBigPic { 
+	position:fixed;
+	top:0;  
+	top:0; 
+	z-index:1002;
+	display:none; 
+}
+.upflieBox{
+	width:300px;
+	height:100px;
+	border:#F90 solid 1px;
+	background:#FFF;
+	border-radius:5px;
+	padding:100px 0 0 0;
+	position:fixed;
+	top:0;  
+	top:0; 
+	z-index:1002;
+	display:none;
+	text-align:center;
+}
+.upflieBox p{
+	height:30px;
+	background:#F90;
+	width:100%;
+	position:absolute;
+	top:1px;
+	text-align:center;
+	line-height:30px;
+	color:#FFF;
+	border-radius:5px 5px 0 0;
+}
+.upflieBox a{
+	display:inline-block;
+	padding:5px 10px;
+	border:#F30 solid 1px;
+	background:#F60;
+	border-radius: 5px;
+	color:#FFF;
+	margin:5px auto 20px auto;
+}

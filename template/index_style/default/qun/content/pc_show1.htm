@@ -1,0 +1,76 @@
+﻿{extend name="$index_style_layout" /}
+
+<!--SEO相关-->
+{block name="head_title"}{$info.title}{/block}
+{block name="head_keword"}{$info.keywords?:$info.title}  {$s_info.name} {/block}
+{block name="head_description"}{:get_word(del_html($info['content']),300)}{/block}
+
+
+{block name="body_AllScorllSlide"}
+	{notempty name="$info.banner"}
+	<div class="qb_ui_AllscrollBanner" style="height:250px;">
+		<a href="{:get_url('user',$info.uid)}" target="_blank"><img src="{$info.banner}"></a>
+	</div>
+	{else /}
+	<div class="qb_ui_AllscrollBanner" style="height:200px;position:relative;"><a href="{:get_url('user',$info.uid)}" target="_blank"><img onerror="this.src='__STATIC__/images/s0.jpg'" src="__STATIC__/images/qun-banner.jpg" /><em class="fa fa-twitter" style="position:absolute;left:20%;top:50px;color:#FFF;font-size:60px;"> {$info.title}</em></a></div>
+	{/notempty}
+{/block}
+
+
+{block name="body_content"}
+
+{include file="content/notice" /}
+<!--加入圈子-->
+<script type="text/javascript">var qun_api_url = "{:urls('wxapp.member/api')}";</script>
+<script type="text/javascript" src="__STATIC__/qun/qun.js?u"></script>
+<link rel="stylesheet" href="__STATIC__/group/circle_list/circle_list.css?f">
+
+{qb:hy name="qun_pc_show_body1920" where="index_style/default/qun/content/pcshow/player" val="datas" type="labelmodel"}
+	{$datas}
+{/qb:hy}
+
+<div class="contbox">
+	<div class="content">
+		<div class="maincont1">
+			{qb:hy name="qun_pc_show_body1200" where="index_style/default/qun/content/pcshow/quninfo" val="datas" type="labelmodel"}
+				{$datas}
+			{/qb:hy}
+		</div>
+		<!--maincont1 end-->
+		<div class="maincont2">
+			<div class="left">
+				{qb:hy name="qun_pc_show_main" where="index_style/default/qun/content/pcshow/main" val="datas" type="labelmodel"}
+					{$datas}
+				{/qb:hy}
+			</div>
+			<!--right end-->
+			<div class="right"> 
+ 				{qb:hy name="qun_pc_show_side" where="index_style/default/qun/content/pcshow/sideinfo,index_style/default/qun/content/pcshow/sideusers" val="datas" type="labelmodel"}
+					{$datas}
+				{/qb:hy}
+			</div>
+			<!--left end-->
+		</div>
+		<!--maincont2 end-->		
+	</div>
+	<!--content end-->
+</div>
+
+<script type="text/javascript">
+//更新浏览量
+$.get("{:urls('wxapp.visit/check_visit',['id'=>$id])}",function(res){if(res.code==0){}else{}});
+</script>
+<script type="text/javascript">
+function show_qun_online(obj,type){
+	if(type=='goin'){
+		$.notify({
+			html: "<!--<h3>提示:</h3>--><p>有新用户："+obj.data[0].username+" 进来了</p>"
+		}, 10000);
+	}else if(type=='getout'){
+		$.notify({
+			html: "<!--<h3>提示:</h3>--><p>"+obj.msg+"</p>"
+		}, 10000);
+	}
+}
+</script>
+{/block}

@@ -1,0 +1,45 @@
+{extend name="$member_style_layout" /}
+
+{block name="title"}二维码管理{/block}
+{block name="content"}
+<ul class="qb_ui_page_menu">
+	<li><a href="{:urls('content/index')}" class="blue fa fa-fw fa-mail-reply-all"style="width:60px;"> 返回</a></li>
+	<li class="right"><a href="{:iurl('content/show',['id'=>$id])}" class="red fa fa-external-link-square" style="width:60px;"> 预览</a></li>
+</ul>
+<link rel="stylesheet" href="__STATIC__/css/waplistshop.css">
+<div class="MyshopBox">
+ 
+	<div class="ListShop">
+		<dl>
+			<dt><a href="{:get_qrcode(iurl('content/show',['id'=>$id,'my_qid'=>$id,'p_uid'=>$userdb.uid]))}"><img src="{:get_qrcode(iurl('content/show',['id'=>$id,'my_qid'=>$id,'p_uid'=>$userdb.uid]))}" onerror="this.src='__STATIC__/images/nopic.png';"/></a></dt>
+			<dd>
+				<div class="t">通用二维码</div>
+				<div class="f">不仅仅可以在微信上浏览，也可以在其它APP上，比如支付宝上浏览</div>
+				<div class="time"> </div>
+			</dd>
+		</dl> 
+	</div>
+ {if (config('webdb.wxapp_appid')&&config('webdb.wxapp_appsecret'))}
+ 	<div class="ListShop">
+		<dl>
+			<dt><a href="{:fun('wxapp@qun_code',$id.'p'.$userdb['uid'])}"><img src="{:fun('wxapp@qun_code',$id.'p'.$userdb['uid'])}" onerror="this.src='__STATIC__/images/nopic.png';"/></a></dt>
+			<dd>
+				<div class="t">小程序二维码</div>
+				<div class="f">仅可以用微信扫码浏览</div>
+				<div class="time"> </div>
+			</dd>
+		</dl> 
+	</div>
+{/if}
+ 	<div class="ListShop">
+		<dl>
+			<dt><a href="{:get_qrcode(iurl('content/apply',['id'=>$id,'p_uid'=>$userdb.uid]))}"><img src="{:get_qrcode(iurl('content/apply',['id'=>$id,'p_uid'=>$userdb.uid]))}" onerror="this.src='__STATIC__/images/nopic.png';"/></a></dt>
+			<dd>
+				<div class="t">扫码加__QUN__</div>
+				<div class="f">给其它用户扫码,即可加入__QUN__，如果你设置了审核才能加入的话，需要你手工验证审核</div>
+				<div class="time"> </div>
+			</dd>
+		</dl> 
+	</div>
+</div> 
+{/block}

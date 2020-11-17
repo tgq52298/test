@@ -1,0 +1,81 @@
+﻿{extend name="$index_style_layout" /}
+
+<!--SEO相关-->
+{block name="head_title"}{$info.title}{/block}
+{block name="head_keword"}{$info.keywords?:$info.title}  {$s_info.name} {/block}
+{block name="head_description"}{:get_word(del_html($info['content']),300)}{/block}
+
+
+{block name="body_AllScorllSlide"} {/block}
+
+
+{block name="body_content"}
+
+{include file="content/notice" /}
+{php}define('CK','index');{/php}
+{include file="content/pc_head5" /}
+
+<div class="MainContainers">
+    <div class="LeftContainers">
+        {include file="content/pc_left" /}
+    </div>
+    <div class="RightContainers">
+		<div class="RightMainBox">
+            <div class="head"><span class="tag">商家产品<em>Company goods</em></span>
+            </div>
+            <div class="cont">
+                <div class="ListShops">
+					{qb:tag name="qun_pcindex_index_model001" union="uid=$info.uid" type="shop" order="id" by="asc" rows="8"}
+                    <dl>
+                        <dt><a href="{$rs.url}" target="_blank"><span><img onerror="this.src='__STATIC__/images/nopic.png'" src='{$rs.picurl}'></span></a></dt>
+                        <dd>
+                            <ul>
+                                <ol><a href="{$rs.url}" target="_blank">{$rs.title}</a>
+                                </ol>
+                                <li>&yen;{$rs.price}</li>
+                            </ul>
+                        </dd>
+                    </dl> 
+					{/qb:tag}
+                </div>
+            </div>
+        </div>
+	  <div class="RightMainBox" style="clear:both;">
+            <div class="head"><span class="tag">商家介绍<em>Business profile</em></span>
+            </div>
+            <div class="cont">
+                <div class="abouttitle">{$info.title}</div>
+                <div class="aboutcontent">
+                   {$info.content}
+                    <!--<div class="showmore"><a href='#'>【查看更多】</a></div>-->
+                </div>
+            </div>
+        </div>
+        <div class="RightMainBox">
+            <div class="head"><span class="tag">联系信息<em>Contact us</em></span>
+            </div>
+            <div class="cont">
+                <dl class="aboutUs">
+				   <dt>
+						<ul>
+							<li><i class="fa fa-phone"></i>联系电话：{$info.telphone}</li>
+							<li><i class="glyphicon glyphicon-map-marker"></i>联系地址：{$info.address}</li>
+							{if $info.wxid}<li><i class="fa fa-commenting"></i>微信帐号：{$info.wxid}</li>{/if}
+						</ul>
+					</dt>
+                    <dd>
+                        <ul>
+                            <ol>【扫一扫 手机访问】</ol>
+                            <li>
+                                <img src="{:get_qrcode(urls('show',['id'=>$id,'my_qid'=>$id,'p_uid'=>$userdb.uid]))}" />
+                            </li>
+                        </ul>
+                    </dd>
+                </dl>
+            </div>
+        </div>
+         
+    </div>
+</div>
+
+{/block}

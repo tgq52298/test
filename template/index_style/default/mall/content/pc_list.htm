@@ -1,0 +1,10 @@
+{extend name="$index_style_layout" /}
+
+<!--SEO相关-->
+{block name="head_title"}{:del_html(get_sort($fid,'seo_title')?:get_sort($fid))}{/block}
+{block name="head_keword"}{:del_html(get_sort($fid,'seo_keywords')?:get_sort($fid))}{/block}
+{block name="head_description"}{:get_sort($fid,'seo_description')}{/block}
+
+{block name="body_content"}
+	{include file="mall@content/main_content" /}
+{/block}

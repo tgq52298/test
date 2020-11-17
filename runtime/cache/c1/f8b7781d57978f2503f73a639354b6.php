@@ -1,0 +1,4 @@
+<?php
+//000000000000
+ exit();?>
+a:22:{s:2:"id";i:4;s:4:"name";s:13:"pc_layout_001";s:8:"pagename";s:32:"7590ca6bf62fdd095819816249f5509a";s:9:"class_cfg";s:42:"app\index\controller\Labelmodels@get_label";s:3:"cfg";s:98:"a:2:{s:8:"tag_name";s:13:"pc_layout_001";s:9:"page_name";s:32:"7590ca6bf62fdd095819816249f5509a";}";s:10:"extend_cfg";s:4:"null";s:4:"type";s:10:"labelmodel";s:6:"ifdata";i:0;s:4:"hide";i:0;s:10:"cache_time";i:0;s:3:"uid";i:1;s:11:"create_time";s:19:"2020-11-16 09:16:03";s:11:"update_time";s:19:"2020-11-16 09:16:03";s:9:"system_id";i:0;s:5:"if_js";i:0;s:9:"power_cfg";s:0:"";s:8:"view_tpl";s:0:"";s:3:"fid";i:0;s:5:"title";s:0:"";s:4:"list";i:0;s:7:"ext_sys";i:0;s:6:"ext_id";i:0;}

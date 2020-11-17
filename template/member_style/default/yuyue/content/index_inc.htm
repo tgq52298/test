@@ -1,0 +1,48 @@
+<script type="text/javascript">
+function give_msg(id){
+	var url ="{:urls('kehu_order/msg_all')}?id="+id;
+	var str =  `<input type="radio" name="type" value="1">快速通知组团成功(已付订但未付全款)<br>
+				<input type="radio" name="type" value="2">通知仅支付订金的用户(未付全款)<br>
+				<input type="radio" name="type" value="3">通知已支付全款的用户<br>
+				<input type="radio" name="type" value="4">通知所有付过钱的用户<br>
+				<input type="radio" name="type" value="5">通知未付过钱的用户<br>
+				<input type="radio" name="type" value="6">通知所有用户(含未付款)<br>`;
+
+	layer.alert('<style type="text/css">.layui-form-radio {margin-right:0;padding-right: 0px;}</style><div class="choose_type layui-form">'+str+'</div>',{title:'请选择一种类型'},function(i){
+		var type = $(".choose_type input:checked").val();
+		layer.close(i);
+		if(!type){
+			layer.msg('你并没有选择任何操作!');
+			return ;
+		}
+		if(type==1){			
+			layer.msg("消息已加入队列");
+			$.get(url ,function(res){				
+				if(res.code==0){
+					layer.msg("发送成功");
+				}else{
+					layer.alert(res.msg);
+				}
+			});
+		}else{
+			sendmsg(type);
+		}
+	});
+	layui.use(['form'], function(){layui.form.render();});
+	function sendmsg(type){
+		layer.prompt({
+			title: '请输入通知内容',
+			formType: 2
+		}, function(value){
+			layer.closeAll();
+			$.post(url,{content:value,type:type},function(res){
+				if(res.code==0){
+					layer.msg(res.msg);
+				}else{
+					layer.alert(res.msg);
+				}
+			});
+		});
+	}
+}
+</script>

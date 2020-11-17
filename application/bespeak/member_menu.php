@@ -1,0 +1,30 @@
+<?php
+return array(
+	'bespeak'=>array(
+			'title'=>'bespeak',
+			'sons'=>array(
+					array(
+						'title'=>'预约服务系统',
+						'sons'=>array(
+								array(
+									'title'=>'商家信息管理',
+									'link'=>'content/index',
+								),
+								array(
+									'title'=>'登记商家信息',
+									'link'=>'content/postnew',
+								),
+						        array(
+						                'title'=>'我的预约单',
+						                'link'=>'order/index',
+						        ),
+						        array(
+						                'title'=>'客户的预约单',
+						                'link'=>'kehu_order/index',
+						        ),
+						),
+					),
+			),
+	),
+);
+ 

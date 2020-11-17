@@ -1,0 +1,45 @@
+<!--论坛发新贴及信息统计-->
+				<dl class="RightBase taglabel">
+					<dt>
+						<a href="{:urls('content/add')}"><button type="button">发表新贴</button></a>
+						 <ul><ol><span>主题 </span><em id="div_total_topic">00</em></ol> <li><span>帖子 </span><em id="div_total_post">00</em></li></ul>
+						<div>共 <span id="div_total_member">20</span> 位会员 欢迎新会员 <a href="#" id="div_new_member">xxx</a></div> 
+					</dt>
+<script type="text/javascript">
+$(function(){
+	var today_post = 0;
+	var yesterday_post = 0;
+	var total_post = 0;
+	var total_topic = 0;
+	var day_top_post = 0;
+	var total_member = 1;
+	var new_member = '';
+	$.get("{:urls('wxapp.infomsg/index')}",function(res){
+		if(res.code==0){
+			today_post = res.data.today_post;
+			yesterday_post = res.data.yesterday_post;
+			total_post = res.data.total_post;
+			total_topic = res.data.total_topic;
+			day_top_post = res.data.day_top_post;
+		}
+		$("#div_today_post").html(today_post);
+		$("#div_yesterday_post").html(yesterday_post);
+		$("#div_total_topic").html(total_topic);
+		$("#div_total_post").html(total_post);
+		$("#div_max_post").html(day_top_post);
+		
+	});
+
+	$.get("{:urls('index/wxapp.member/get_list',['rows'=>1])}",function(res){
+		if(res.code==0){
+			new_member = res.data[0].username;
+			total_member = res.paginate.total;
+		}
+		$("#div_total_member").html(total_member);
+		$("#div_new_member").html(new_member);
+	});
+
+});
+
+</script>
+				</dl>

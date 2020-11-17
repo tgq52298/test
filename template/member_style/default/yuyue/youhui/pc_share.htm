@@ -1,0 +1,41 @@
+{extend name="$member_style_layout" /}
+ 
+{block name="title"} {$tab_ext.page_title} {/block}
+
+{block name="content"}
+
+
+
+
+<div class="MainCont">
+	<div class="head"><div class="tag">推广有收益</div></div>
+    
+  <div class="cont"> 
+    <ul class="aboutnote">
+      <li> 通过QQ或微信或者转发到其它网站，只要他们领取优惠券并使用，你就有收益。</li>
+ 
+      <li> 
+        <input type="text" name="textfield" size="80" id="urlcode" value="{$share_url}">
+        <input type="submit" name="Submit" value="选中分享网址" onClick="JM_cc('urlcode');">	
+		<!--<center>优惠券领取二维码<br><img width="200" src="{$codeimg}"></center>-->
+      </li>
+<SCRIPT LANGUAGE="JavaScript">
+function JM_cc(ob){
+	var obj=document.getElementById(ob); 
+	obj.select();
+	var js = obj.createTextRange();
+	js.execCommand("Copy");
+	alert('网址复制成功！');
+}
+</SCRIPT>
+    </ul>
+
+	<div style="width:600px;margin:auto;">
+		<div style="margin:auto;cursor:pointer;background:orange;border-radius:8px;line-height:40px;width:300px;color:#fff;text-align:center;font-size:15px;" onclick="share_btn()">点击把下面的内容生成海报图片</div>
+		{include file="youhui/haibao"}
+	</div>
+
+    </div>
+</div>
+ 
+{/block}

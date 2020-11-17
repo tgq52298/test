@@ -1,0 +1,18 @@
+<!--发新贴按钮及圈子信息-->
+			{notempty name="$info.qun"}
+			   <dl class="WXcode">
+					<dt>{$info['qun']['title']}</dt>
+					<dd style="position:relative;">{if $info['qun']['status']==2}<img src="__STATIC__/group/v.png" style="position:absolute;width:30px;height:30px;z-index:9;">{/if}<a target="_blank" href="{:urls('qun/content/show',['id'=>$info['ext_id']])}"><img style="width:220px;height:220px;" src="{:tempdir($info['qun']['picurl'])}" onerror="this.src='__STATIC__/images/nopic.png'" /></a>
+					</dd>
+				</dl>
+			{/notempty}
+				<dl class="RightBase">
+					<dt>
+					{notempty name="$info.qun"}
+						<a href="{:urls('content/add',['fid'=>$info['fid'],'ext_sys'=>$info['ext_sys'],'ext_id'=>$info['ext_id'],])}"><button type="button">发表圈内新贴</button></a>
+						<ul><ol><span>圈内贴子</span><em id="div_total_topic">{$info['qun']['replynum']}</em></ol> <li><span>__QUN__成员</span><em id="div_total_post">{$info['qun']['usernum']}</em></li></ul>
+					{else /}
+						<a href="{:urls('content/add',['fid'=>$info['fid']])}"><button type="button">发表新贴</button></a>
+					{/notempty}
+					</dt>
+				</dl>

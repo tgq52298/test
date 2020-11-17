@@ -1,0 +1,60 @@
+<style type="text/css">
+.OpenAction{
+	width:100%;
+	background:#000;
+	filter:alpha(opacity=90);
+	opacity:0.8;
+}
+.OpenAction ul{
+	width:100%;
+	display: table;
+}
+.OpenAction ul li{
+	display: table-cell;
+	text-align:center;
+	vertical-align:middle;
+	padding:8px 0 8px 0;
+}
+.OpenAction ul li.text{
+	text-align:left;
+	line-height:20px;
+	padding-left:10px;
+	font-weight:bold;
+}
+.OpenAction ul li.close{
+	width:35px;
+}
+.OpenAction{	
+	font-size:15px;
+	background:#000  center no-repeat;
+}
+.OpenAction ul li.text a{
+	color:yellow;
+}
+</style>
+
+{if (($ads = fun('qun@adByid',$info['qun']['id'])) || $info['qun']['notice'])}
+
+<div class="OpenAction">
+	<ul>
+	<li class="text">
+{if $ads.ad}
+	<a href="{$ads['ad']['url']}">{$ads['ad']['title']}</a>
+{elseif($ads.set) /}
+	<a href="{:murl('qun/aduser/add',['aid'=>$info['qun']['id']])}">本__QUN__ 广告位招租：{$ads['set']['price']}元（{$ads['set']['day']}天），点击购买</a>
+{else /}	
+	<a href="{:urls('qun/content/show',['id'=>$info['qun']['id'],'my_qid'=>$info['qun']['id']])}">{$info['qun']['notice']}</a>
+{/if}
+	</li>
+	<li class="close"><a href="javascript:;" style="color:#fff;font-size:20px;" class="fa fa-times-circle"></a></li>
+	</ul>
+</div>
+
+{/if}
+<SCRIPT LANGUAGE="JavaScript">
+$('.OpenAction ul .close').click(function(){
+	$('.OpenAction').animate({'height':'0px'},300,function(){
+		$(this).css({'display':'none'});
+	});
+});
+</SCRIPT>

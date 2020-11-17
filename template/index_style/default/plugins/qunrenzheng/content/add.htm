@@ -1,0 +1,32 @@
+{extend name="$index_style_layout" /}
+
+{block name="body_content"}
+<link rel="stylesheet" href="__STATIC__/layui/css/layui.css" media="all">
+<link rel="stylesheet" href="__STATIC__/layui/css/admin.css" media="all">
+<link rel="stylesheet" type="text/css" href="__STATIC__/member/default/wap/global.css">
+<link rel="stylesheet" type="text/css" href="__STATIC__/member/default/wap/wap.css">
+<link rel="stylesheet" type="text/css" href="__STATIC__/css/wapmember.css">
+<style type="text/css">
+.MainCont{
+	width:1200px;
+	margin:auto;
+	margin-top:20px;
+}
+</style>
+	{include file="member@common/form" /}
+
+<script type="text/javascript">
+//jQuery(document).ready(function() {
+	//$("form.ajax_post:last").attr('action',"{:purl('wxapp.post/add',['mid'=>$mid])}");
+//});
+</script>
+ 
+<script type="text/javascript" src="__STATIC__/js/qibo.js"></script>
+<script src="__STATIC__/layui/layui.js"></script>
+<script type="text/javascript">
+layui.use(['form','element'], function(){
+  var form = layui.form;
+  var element = layui.element;
+});
+</script>
+{/block}
