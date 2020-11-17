@@ -1,0 +1,4 @@
+<?php
+//000000000060
+ exit();?>
+a:20:{s:12:"mysqlVersion";s:10:"5.7.31-log";s:8:"ifcookie";s:7:"SUCCESS";s:10:"sysversion";s:5:"7.1.9";s:10:"max_upload";s:2:"2M";s:11:"max_ex_time";s:6:"30 秒";s:8:"sys_mail";s:25:"SMTP ( Server: localhost)";s:10:"systemtime";s:19:"2020-11-17 11:26 AM";s:8:"onlineip";s:9:"127.0.0.1";s:5:"gdpic";s:6:"支持";s:15:"allow_url_fopen";s:21:"On 支持采集数据";s:9:"safe_mode";s:6:"关闭";s:13:"DOCUMENT_ROOT";s:27:"F:/phpstudy_pro/qb.hmqr.net";s:11:"SERVER_ADDR";s:9:"127.0.0.1";s:11:"SERVER_PORT";s:2:"80";s:15:"SERVER_SOFTWARE";s:13:"nginx/1.15.11";s:15:"SCRIPT_FILENAME";s:37:"F:/phpstudy_pro/qb.hmqr.net/admin.php";s:11:"SERVER_NAME";s:6:"nxcypt";s:11:"zendVersion";s:5:"3.1.0";s:17:"memory_user_limit";s:4:"256M";s:12:"file_uploads";s:6:"允许";}
